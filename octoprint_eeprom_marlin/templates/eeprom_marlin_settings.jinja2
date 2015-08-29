@@ -1,0 +1,20 @@
+<h4>EEprom Marlin Plugin</h4>
+This plugin is designed to get, change and save the values in the Eeprom of your Marlin Firmware based Machine.<br>
+Your machine is <span style="color: red" data-bind="visible: isConnected() && !isMarlinFirmware()">not</span> Marlin Firmware based
+</>
+
+<form class="form-horizontal">
+    <button data-bind="enabled: isMarlinFirmware, click: loadEeprom">{{ _('Load EEprom') }}</button>
+    <button data-bind="enabled: isMarlinFirmware, click: saveEeprom">{{ _('Save EEprom') }}</button>
+</form>
+
+<div data-bind="foreach: eepromData">
+    <form class="form-horizontal">
+        <div class="control-group">
+            <label class="control-label" style="width: 300px" data-bind="text: description, attr: { 'for': position }"></label>
+            <div class="controls" style="margin-left: 320px; width: 30%" >
+                <input type="text" class="input-block-level" data-bind="value: value, attr: { 'id': position }">
+            </div>
+        </div>
+    </form>
+</div>
