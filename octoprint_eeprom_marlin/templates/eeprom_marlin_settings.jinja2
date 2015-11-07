@@ -5,7 +5,7 @@ Your machine is <span style="color: red" data-bind="visible: isConnected() && !i
 
 <form class="form-horizontal">
     <button data-bind="enabled: isMarlinFirmware, click: loadEeprom">{{ _('Load EEprom') }}</button>
-    <button data-bind="enabled: isMarlinFirmware, click: saveEeprom">{{ _('Save EEprom') }}</button>
+    <button data-bind="enabled: isMarlinFirmware, click: saveEeprom">{{ _('Save to EEprom') }}</button>
 </form>
 
 <div data-bind="foreach: eepromData">
