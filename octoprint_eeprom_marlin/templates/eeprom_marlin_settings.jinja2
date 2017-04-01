@@ -6,8 +6,13 @@ This plugin is designed to get, change and save the values in the EEPROM of your
 <div data-bind="visible: isConnected() && isMarlinFirmware()">
 <b>Firmware:</b> <span data-bind="text: firmware_name()"></span>
 <form class="form-horizontal">
+<<<<<<< HEAD
     <button data-bind="enabled: isMarlinFirmware, click: loadEeprom" class="btn icon-download-alt" aria-hidden="true">&nbsp;{{ _('Load EEPROM') }}</button>
     <button data-bind="enabled: isMarlinFirmware, click: saveEeprom" class="btn icon-upload-alt" aria-hidden="true">&nbsp;{{ _('Upload EEPROM') }}</button>
+=======
+    <button data-bind="enabled: isMarlinFirmware, click: loadEeprom">{{ _('Load EEprom') }}</button>
+    <button data-bind="enabled: isMarlinFirmware, click: saveEeprom">{{ _('Save to EEprom') }}</button>
+>>>>>>> origin/master
 </form>
 <h4 data-bind="visible: eepromDataStepsCount()">&nbsp;</h4>
 <h4 data-bind="visible: eepromDataStepsCount()">Steps per mm</h4>
