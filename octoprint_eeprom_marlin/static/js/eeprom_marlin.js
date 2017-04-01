@@ -14,7 +14,9 @@ $(function() {
             self.eepromM206RegEx = /M206 ([X])(.*)[^0-9]([Y])(.*)[^0-9]([Z])(.*)/;
             self.eepromM851RegEx = /M851 ([Z])(.*)/;
             self.eepromM200RegEx = /M200 ([D])(.*)/;
+            self.eepromM666RegEx = /M666 ([X])(.*)[^0-9]([Y])(.*)[^0-9]([Z])(.*)/;
             self.eepromM304RegEx = /M304 ([P])(.*)[^0-9]([I])(.*)[^0-9]([D])(.*)/;
+            self.eepromM665RegEx = /M665 ([L])(.*)[^0-9]([R])(.*)[^0-9]([S])(.*)[^0-9]([A])(.*)[^0-9]([B])(.*)[^0-9]([C])(.*)/;
 
             // Specific versions
             if (version == 'lastest' || version == 'Marlin 1.1.0-RC8') {
@@ -74,6 +76,9 @@ $(function() {
         self.eepromDataMaterialHS1 = ko.observableArray([]);
         self.eepromDataMaterialHS2 = ko.observableArray([]);
         self.eepromDataFilament = ko.observableArray([]);
+        self.eepromDataEndstop = ko.observableArray([]);
+        self.eepromDataDelta1 = ko.observableArray([]);
+        self.eepromDataDelta2 = ko.observableArray([]);
 
         self.onStartup = function() {
             $('#settings_plugin_eeprom_marlin_link a').on('show', function(e) {
@@ -247,6 +252,95 @@ $(function() {
                     label: 'Z axis',
                     origValue: match[6],
                     value: match[6],
+                    unit: 'mm',
+                    description: ''
+                });
+            }
+
+            // M666 Endstop adjustment
+            match = self.eepromM666RegEx.exec(line);
+            if (match) {
+                self.eepromDataEndstop.push({
+                    dataType: 'M666 X',
+                    label: 'X axis',
+                    origValue: match[2],
+                    value: match[2],
+                    unit: 'mm',
+                    description: ''
+                });
+
+                self.eepromDataEndstop.push({
+                    dataType: 'M666 Y',
+                    label: 'Y axis',
+                    origValue: match[4],
+                    value: match[4],
+                    unit: 'mm',
+                    description: ''
+                });
+
+                self.eepromDataEndstop.push({
+                    dataType: 'M666 Z',
+                    label: 'Z axis',
+                    origValue: match[6],
+                    value: match[6],
+                    unit: 'mm',
+                    description: ''
+                });
+            }
+
+            // M665 Delta settings
+            match = self.eepromM665RegEx.exec(line);
+            if (match) {
+                self.eepromDataDelta1.push({
+                    dataType: 'M665 L',
+                    label: 'Diag Rod',
+                    origValue: match[2],
+                    value: match[2],
+                    unit: 'mm',
+                    description: ''
+                });
+
+                self.eepromDataDelta1.push({
+                    dataType: 'M665 R',
+                    label: 'Radius',
+                    origValue: match[4],
+                    value: match[4],
+                    unit: 'mm',
+                    description: ''
+                });
+
+                self.eepromDataDelta1.push({
+                    dataType: 'M665 S',
+                    label: 'Segments',
+                    origValue: match[6],
+                    value: match[6],
+                    unit: 's',
+                    description: ''
+                });
+
+                self.eepromDataDelta2.push({
+                    dataType: 'M665 A',
+                    label: 'Diag A',
+                    origValue: match[8],
+                    value: match[8],
+                    unit: 'mm',
+                    description: ''
+                });
+
+                self.eepromDataDelta2.push({
+                    dataType: 'M665 B',
+                    label: 'Diag B',
+                    origValue: match[10],
+                    value: match[10],
+                    unit: 'mm',
+                    description: ''
+                });
+
+                self.eepromDataDelta2.push({
+                    dataType: 'M665 C',
+                    label: 'Diag C',
+                    origValue: match[12],
+                    value: match[12],
                     unit: 'mm',
                     description: ''
                 });
@@ -1079,8 +1173,6 @@ $(function() {
                     self.FIRMWARE_NAME(match[1] + ' ' + match[2]);
                     self.setRegExVars(self.firmware_name());
                     console.debug('Firmware: ' + self.firmware_name());
-                    console.debug(match);
-                    console.debug(line);
                     if (self.marlinRegEx.exec(match[0]))
                     self.isMarlinFirmware(true);
                 }
@@ -1095,8 +1187,6 @@ $(function() {
                         self.FIRMWARE_NAME(match[1] + ' ' + match[2]);
                         self.setRegExVars(self.firmware_name());
                         console.debug('Firmware: ' + self.firmware_name());
-                        console.debug(match);
-                        console.debug(line);
                         if (self.marlinRegEx.exec(match[0]))
                         self.isMarlinFirmware(true);
                     }
@@ -1146,6 +1236,13 @@ $(function() {
             return self.eepromDataFilament().length > 0;
         });
 
+        self.eepromDataEndstopCount = ko.computed(function() {
+            return self.eepromDataEndstop().length > 0;
+        });
+        self.eepromDataDeltaCount = ko.computed(function() {
+            return (self.eepromDataDelta1().length + self.eepromDataDelta2().length) > 0;
+        });
+
         self.onEventConnected = function() {
             self._requestFirmwareInfo();
             setTimeout(function() {self.loadEeprom(); }, 5000);
@@ -1173,6 +1270,9 @@ $(function() {
             self.eepromDataMaterialHS1([]);
             self.eepromDataMaterialHS2([]);
             self.eepromDataFilament([]);
+            self.eepromDataEndstop([]);
+            self.eepromDataDelta1([]);
+            self.eepromDataDelta2([]);
 
             self._requestEepromData();
         };
@@ -1276,6 +1376,30 @@ $(function() {
             });
 
             eepromData = self.eepromDataFilament();
+            _.each(eepromData, function(data) {
+                if (data.origValue != data.value) {
+                    self._requestSaveDataToEeprom(data.dataType, data.value);
+                    data.origValue = data.value;
+                }
+            });
+
+            eepromData = self.eepromDataEndstop();
+            _.each(eepromData, function(data) {
+                if (data.origValue != data.value) {
+                    self._requestSaveDataToEeprom(data.dataType, data.value);
+                    data.origValue = data.value;
+                }
+            });
+
+            eepromData = self.eepromDataDelta1();
+            _.each(eepromData, function(data) {
+                if (data.origValue != data.value) {
+                    self._requestSaveDataToEeprom(data.dataType, data.value);
+                    data.origValue = data.value;
+                }
+            });
+
+            eepromData = self.eepromDataDelta2();
             _.each(eepromData, function(data) {
                 if (data.origValue != data.value) {
                     self._requestSaveDataToEeprom(data.dataType, data.value);
