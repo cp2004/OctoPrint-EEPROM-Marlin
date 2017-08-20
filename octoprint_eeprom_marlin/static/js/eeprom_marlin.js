@@ -1,6 +1,7 @@
 /**
 * Created by Salandora on 27.07.2015.
-* Modified by Anderson Silva on 08.04.2017.
+* Modified by Anderson Silva on 20.08.2017.
+* Contribution of CyberDracula on 15.08.2017.
 */
 $(function() {
     function EepromMarlinViewModel(parameters) {
@@ -435,15 +436,6 @@ $(function() {
                     self.eepromData2.push({
                         dataType: 'M205 Y',
                         label: 'Max Y jerk',
-                        origValue: match[8],
-                        value: match[8],
-                        unit: 'mm/s',
-                        description: ''
-                    });
-
-                    self.eepromData2.push({
-                        dataType: 'M205 Z',
-                        label: 'Max Z jerk',
                         origValue: match[10],
                         value: match[10],
                         unit: 'mm/s',
@@ -451,10 +443,19 @@ $(function() {
                     });
 
                     self.eepromData2.push({
-                        dataType: 'M205 E',
-                        label: 'Max E jerk',
+                        dataType: 'M205 Z',
+                        label: 'Max Z jerk',
                         origValue: match[12],
                         value: match[12],
+                        unit: 'mm/s',
+                        description: ''
+                    });
+
+                    self.eepromData2.push({
+                        dataType: 'M205 E',
+                        label: 'Max E jerk',
+                        origValue: match[14],
+                        value: match[14],
                         unit: 'mm/s',
                         description: ''
                     });
@@ -649,15 +650,6 @@ $(function() {
                     self.eepromData2.push({
                         dataType: 'M205 Y',
                         label: 'Max Y jerk',
-                        origValue: match[8],
-                        value: match[8],
-                        unit: 'mm/s',
-                        description: ''
-                    });
-
-                    self.eepromData2.push({
-                        dataType: 'M205 Z',
-                        label: 'Max Z jerk',
                         origValue: match[10],
                         value: match[10],
                         unit: 'mm/s',
@@ -665,10 +657,19 @@ $(function() {
                     });
 
                     self.eepromData2.push({
-                        dataType: 'M205 E',
-                        label: 'Max E jerk',
+                        dataType: 'M205 Z',
+                        label: 'Max Z jerk',
                         origValue: match[12],
                         value: match[12],
+                        unit: 'mm/s',
+                        description: ''
+                    });
+
+                    self.eepromData2.push({
+                        dataType: 'M205 E',
+                        label: 'Max E jerk',
+                        origValue: match[14],
+                        value: match[14],
                         unit: 'mm/s',
                         description: ''
                     });
@@ -992,15 +993,6 @@ $(function() {
                     self.eepromData2.push({
                         dataType: 'M205 Y',
                         label: 'Max Y jerk',
-                        origValue: match[8],
-                        value: match[8],
-                        unit: 'mm/s',
-                        description: ''
-                    });
-
-                    self.eepromData2.push({
-                        dataType: 'M205 Z',
-                        label: 'Max Z jerk',
                         origValue: match[10],
                         value: match[10],
                         unit: 'mm/s',
@@ -1008,10 +1000,19 @@ $(function() {
                     });
 
                     self.eepromData2.push({
-                        dataType: 'M205 E',
-                        label: 'Max E jerk',
+                        dataType: 'M205 Z',
+                        label: 'Max Z jerk',
                         origValue: match[12],
                         value: match[12],
+                        unit: 'mm/s',
+                        description: ''
+                    });
+
+                    self.eepromData2.push({
+                        dataType: 'M205 E',
+                        label: 'Max E jerk',
+                        origValue: match[14],
+                        value: match[14],
                         unit: 'mm/s',
                         description: ''
                     });
