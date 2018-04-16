@@ -6,9 +6,14 @@
 $(function() {
     function EepromMarlinViewModel(parameters) {
         var self = this;
+        self.execBackup = false;
+        self.startBackup = false;
+        self.backupConfig = "";
 
         self.setRegExVars = function(version) {
             // All versions
+            self.eepromM503RegEx = /M503/;
+            self.eepromOKRegEx = /ok/;
             self.eepromM92RegEx = /M92 ([X])(.*)[^0-9]([Y])(.*)[^0-9]([Z])(.*)[^0-9]([E])(.*)/;
             self.eepromM203RegEx = /M203 ([X])(.*)[^0-9]([Y])(.*)[^0-9]([Z])(.*)[^0-9]([E])(.*)/;
             self.eepromM201RegEx = /M201 ([X])(.*)[^0-9]([Y])(.*)[^0-9]([Z])(.*)[^0-9]([E])(.*)/;
@@ -1195,6 +1200,43 @@ $(function() {
             }
             else
             {
+                match = self.eepromM503RegEx.exec(data.logs);
+                if (match) {
+                    self.startBackup = true;
+                }
+                if (self.execBackup && self.startBackup) {
+                    self.backupConfig += data.logs + "\n";
+
+                    match = self.eepromM851RegEx.exec(self.backupConfig);
+                    matchOK = self.eepromOKRegEx.exec(self.backupConfig);
+                    console.debug('teste: ' + matchOK);
+                    if (match || matchOK) {
+                        self.execBackup = false;
+                        self.backupConfig = self.backupConfig.replace(/Recv/gi, "\nRecv");
+
+                        console.debug("EEPROM Config: " + self.backupConfig);
+                        var currentBackupDate = new Date();
+                        var backupYear = currentBackupDate.getFullYear();
+                        var backupMonth = currentBackupDate.getMonth();
+                        if (backupMonth < 10)
+                            backupMonth = '0' + backupMonth;
+                        var backupDay = currentBackupDate.getDate();
+                        if (backupDay < 10)
+                            backupDay = '0' + backupDay;
+                        var backupDate = backupYear + '-' + backupMonth + '-' + backupDay;
+
+                        var element = document.createElement('a');
+                        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(self.backupConfig));
+                        element.setAttribute('download', 'eeprom_marlin_' + backupDate + '.cfg');
+                        element.style.display = 'none';
+                        document.body.appendChild(element);
+
+                        element.click();
+
+                        document.body.removeChild(element);
+                    }
+                }
+
                 _.each(data.logs, function (line) {
                     self.eepromFieldParse(line);
                 });
@@ -1255,6 +1297,58 @@ $(function() {
 
         self.onEventDisconnected = function() {
             self.isMarlinFirmware(false);
+        };
+
+        self.backupEeprom = function() {
+            self.execBackup = true;
+            self.backupConfig = "";
+
+            self.eepromData1([]);
+            self.eepromData2([]);
+            self.eepromDataSteps([]);
+            self.eepromDataFRates([]);
+            self.eepromDataMaxAccel([]);
+            self.eepromDataAccel([]);
+            self.eepromDataPID([]);
+            self.eepromDataPIDB([]);
+            self.eepromDataHoming([]);
+            self.eepromDataMaterialHS0([]);
+            self.eepromDataMaterialHS1([]);
+            self.eepromDataMaterialHS2([]);
+            self.eepromDataFilament([]);
+            self.eepromDataEndstop([]);
+            self.eepromDataDelta1([]);
+            self.eepromDataDelta2([]);
+
+            self._requestEepromData();
+        };
+
+        self.restoreEeprom = function() {
+            if (window.File && window.FileReader && window.FileList && window.Blob) {
+                // Great success! All the File APIs are supported.
+            } else {
+                alert('The File APIs are not fully supported in this browser.');
+            }
+
+            document.getElementById('fileBackup').addEventListener('change', self.handleFileSelect, false);
+            document.getElementById('fileBackup').click();
+        };
+
+        self.handleFileSelect = function(evt) {
+            var files = evt.target.files;
+
+            for (var i = 0, f; f = files[i]; i++) {
+              var reader = new FileReader();
+
+              reader.onload = (function(cFile) {
+                return function(e) {
+                  self.backupConfig = e.target.result;
+                };
+              })(f);
+
+              reader.readAsText(f);
+            }
+            console.debug(self.backupConfig);
         };
 
         self.loadEeprom = function() {

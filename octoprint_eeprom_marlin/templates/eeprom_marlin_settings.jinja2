@@ -6,9 +6,12 @@ This plugin is designed to get, change and save the values in the EEPROM of your
 <div data-bind="visible: isConnected() && isMarlinFirmware()">
 <b>Firmware:</b> <span data-bind="text: firmware_name()"></span>
 <form class="form-horizontal">
-    <button data-bind="enabled: isMarlinFirmware, click: loadEeprom" class="btn icon-download-alt" aria-hidden="true">&nbsp;{{ _('Load EEPROM') }}</button>
-    <button data-bind="enabled: isMarlinFirmware, click: saveEeprom" class="btn icon-upload-alt" aria-hidden="true">&nbsp;{{ _('Upload EEPROM') }}</button>
+    <button data-bind="enabled: isMarlinFirmware, click: loadEeprom" class="btn icon-download-alt" aria-hidden="true">&nbsp;{{ _('Load') }}</button>
+    <button data-bind="enabled: isMarlinFirmware, click: saveEeprom" class="btn icon-upload-alt" aria-hidden="true">&nbsp;{{ _('Upload') }}</button>
+    <button data-bind="enabled: isMarlinFirmware, click: backupEeprom" class="btn icon-cloud-download" aria-hidden="true">&nbsp;{{ _('Backup') }}</button>
+    <button data-bind="enabled: isMarlinFirmware, click: restoreEeprom" class="btn icon-cloud-upload" aria-hidden="true">&nbsp;{{ _('Restore') }}</button>
 </form>
+<div style="display: none;"><input type="file" id="fileBackup" name="fileBackup" /></div>
 <h4 data-bind="visible: eepromDataStepsCount()">&nbsp;</h4>
 <h4 data-bind="visible: eepromDataStepsCount()">Steps per mm</h4>
 <div class="row-fluid" data-bind="foreach: eepromDataSteps">
