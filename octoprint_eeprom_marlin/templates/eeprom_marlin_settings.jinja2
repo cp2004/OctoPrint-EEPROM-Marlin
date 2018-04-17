@@ -6,10 +6,10 @@ This plugin is designed to get, change and save the values in the EEPROM of your
 <div data-bind="visible: isConnected() && isMarlinFirmware()">
 <b>Firmware:</b> <span data-bind="text: firmware_name()"></span>
 <form class="form-horizontal">
-    <button data-bind="enabled: isMarlinFirmware, click: loadEeprom" class="btn icon-download-alt" aria-hidden="true">&nbsp;{{ _('Load') }}</button>
-    <button data-bind="enabled: isMarlinFirmware, click: saveEeprom" class="btn icon-upload-alt" aria-hidden="true">&nbsp;{{ _('Upload') }}</button>
-    <button data-bind="enabled: isMarlinFirmware, click: backupEeprom" class="btn icon-cloud-download" aria-hidden="true">&nbsp;{{ _('Backup') }}</button>
-    <button data-bind="enabled: isMarlinFirmware, click: restoreEeprom" class="btn icon-cloud-upload" aria-hidden="true">&nbsp;{{ _('Restore') }}</button>
+    <button id="eeprom_marlin_load" data-bind="enabled: isMarlinFirmware, click: loadEeprom" class="btn icon-download-alt" aria-hidden="true">&nbsp;{{ _('Load') }}</button>
+    <button id="eeprom_marlin_upload" data-bind="enabled: isMarlinFirmware, click: saveEeprom" class="btn icon-upload-alt" aria-hidden="true">&nbsp;{{ _('Upload') }}</button>
+    <button id="eeprom_marlin_backup" data-bind="enabled: isMarlinFirmware, click: backupEeprom" class="btn icon-cloud-download" aria-hidden="true">&nbsp;{{ _('Backup') }}</button>
+    <button id="eeprom_marlin_restore" data-bind="enabled: isMarlinFirmware, click: restoreEeprom" class="btn icon-cloud-upload" aria-hidden="true">&nbsp;{{ _('Restore') }}</button>
 </form>
 <div style="display: none;"><input type="file" id="fileBackup" name="fileBackup" /></div>
 <h4 data-bind="visible: eepromDataStepsCount()">&nbsp;</h4>
@@ -19,7 +19,7 @@ This plugin is designed to get, change and save the values in the EEPROM of your
         <label class="control-label" data-bind="text: label"></label>
         <div class="controls">
             <div class="input-append">
-                <input type="number" class="input-small text-right" data-bind="value: value">
+                <input type="number" class="input-small text-right" data-bind="value: value" onchange="changedEepromForm();">
                 <span class="add-on" data-bind="text: unit"></span>
             </div>
             <span class="help-block" data-bind="text: description"></span>
@@ -33,7 +33,7 @@ This plugin is designed to get, change and save the values in the EEPROM of your
         <label class="control-label" data-bind="text: label"></label>
         <div class="controls">
             <div class="input-append">
-                <input type="number" class="input-small text-right" data-bind="value: value">
+                <input type="number" class="input-small text-right" data-bind="value: value" onchange="changedEepromForm();">
                 <span class="add-on" data-bind="text: unit"></span>
             </div>
             <span class="help-block" data-bind="text: description"></span>
@@ -47,7 +47,7 @@ This plugin is designed to get, change and save the values in the EEPROM of your
         <label class="control-label" data-bind="text: label"></label>
         <div class="controls">
             <div class="input-append">
-                <input type="number" class="input-small text-right" data-bind="value: value">
+                <input type="number" class="input-small text-right" data-bind="value: value" onchange="changedEepromForm();">
                 <span class="add-on" data-bind="text: unit"></span>
             </div>
             <span class="help-block" data-bind="text: description"></span>
@@ -61,7 +61,7 @@ This plugin is designed to get, change and save the values in the EEPROM of your
         <label class="control-label" data-bind="text: label"></label>
         <div class="controls">
             <div class="input-append">
-                <input type="number" class="input-small text-right" data-bind="value: value">
+                <input type="number" class="input-small text-right" data-bind="value: value" onchange="changedEepromForm();">
                 <span class="add-on" data-bind="text: unit"></span>
             </div>
             <span class="help-block" data-bind="text: description"></span>
@@ -75,7 +75,7 @@ This plugin is designed to get, change and save the values in the EEPROM of your
         <label class="control-label" data-bind="text: label"></label>
         <div class="controls">
             <div class="input-append">
-                <input type="number" class="input-mini text-right" data-bind="value: value">
+                <input type="number" class="input-mini text-right" data-bind="value: value" onchange="changedEepromForm();">
                 <span class="add-on" data-bind="text: unit"></span>
             </div>
             <span class="help-block" data-bind="text: description"></span>
@@ -89,7 +89,7 @@ This plugin is designed to get, change and save the values in the EEPROM of your
         <label class="control-label" data-bind="text: label"></label>
         <div class="controls">
             <div class="input-append">
-                <input type="number" class="input-mini text-right" data-bind="value: value">
+                <input type="number" class="input-mini text-right" data-bind="value: value" onchange="changedEepromForm();">
                 <span class="add-on" data-bind="text: unit"></span>
             </div>
             <span class="help-block" data-bind="text: description"></span>
@@ -101,7 +101,7 @@ This plugin is designed to get, change and save the values in the EEPROM of your
         <label class="control-label" data-bind="text: label"></label>
         <div class="controls">
             <div class="input-append">
-                <input type="number" class="input-mini text-right" data-bind="value: value">
+                <input type="number" class="input-mini text-right" data-bind="value: value" onchange="changedEepromForm();">
                 <span class="add-on" data-bind="text: unit"></span>
             </div>
             <span class="help-block" data-bind="text: description"></span>
@@ -115,7 +115,7 @@ This plugin is designed to get, change and save the values in the EEPROM of your
         <label class="control-label" data-bind="text: label"></label>
         <div class="controls">
             <div class="input-append">
-                <input type="number" class="input-mini text-right" data-bind="value: value">
+                <input type="number" class="input-mini text-right" data-bind="value: value" onchange="changedEepromForm();">
                 <span class="add-on" data-bind="text: unit"></span>
             </div>
             <span class="help-block" data-bind="text: description"></span>
@@ -127,7 +127,7 @@ This plugin is designed to get, change and save the values in the EEPROM of your
         <label class="control-label" data-bind="text: label"></label>
         <div class="controls">
             <div class="input-append">
-                <input type="number" class="input-mini text-right" data-bind="value: value">
+                <input type="number" class="input-mini text-right" data-bind="value: value" onchange="changedEepromForm();">
                 <span class="add-on" data-bind="text: unit"></span>
             </div>
             <span class="help-block" data-bind="text: description"></span>
@@ -139,7 +139,7 @@ This plugin is designed to get, change and save the values in the EEPROM of your
         <label class="control-label" data-bind="text: label"></label>
         <div class="controls">
             <div class="input-append">
-                <input type="number" class="input-mini text-right" data-bind="value: value">
+                <input type="number" class="input-mini text-right" data-bind="value: value" onchange="changedEepromForm();">
                 <span class="add-on" data-bind="text: unit"></span>
             </div>
             <span class="help-block" data-bind="text: description"></span>
@@ -153,7 +153,7 @@ This plugin is designed to get, change and save the values in the EEPROM of your
         <label class="control-label" data-bind="text: label"></label>
         <div class="controls">
             <div class="input-append">
-                <input type="number" class="input-mini text-right" data-bind="value: value">
+                <input type="number" class="input-mini text-right" data-bind="value: value" onchange="changedEepromForm();">
                 <span class="add-on" data-bind="text: unit"></span>
             </div>
             <span class="help-block" data-bind="text: description"></span>
@@ -167,7 +167,7 @@ This plugin is designed to get, change and save the values in the EEPROM of your
         <label class="control-label" data-bind="text: label"></label>
         <div class="controls">
             <div class="input-append">
-                <input type="number" class="input-mini text-right" data-bind="value: value">
+                <input type="number" class="input-mini text-right" data-bind="value: value" onchange="changedEepromForm();">
                 <span class="add-on" data-bind="text: unit"></span>
             </div>
             <span class="help-block" data-bind="text: description"></span>
@@ -181,7 +181,7 @@ This plugin is designed to get, change and save the values in the EEPROM of your
         <label class="control-label" data-bind="text: label"></label>
         <div class="controls">
             <div class="input-append">
-                <input type="number" class="input-mini text-right" data-bind="value: value">
+                <input type="number" class="input-mini text-right" data-bind="value: value" onchange="changedEepromForm();">
                 <span class="add-on" data-bind="text: unit"></span>
             </div>
             <span class="help-block" data-bind="text: description"></span>
@@ -193,7 +193,7 @@ This plugin is designed to get, change and save the values in the EEPROM of your
         <label class="control-label" data-bind="text: label"></label>
         <div class="controls">
             <div class="input-append">
-                <input type="number" class="input-mini text-right" data-bind="value: value">
+                <input type="number" class="input-mini text-right" data-bind="value: value" onchange="changedEepromForm();">
                 <span class="add-on" data-bind="text: unit"></span>
             </div>
             <span class="help-block" data-bind="text: description"></span>
@@ -207,7 +207,7 @@ This plugin is designed to get, change and save the values in the EEPROM of your
         <label class="control-label" data-bind="text: label"></label>
         <div class="controls">
             <div class="input-append">
-                <input type="number" class="input-mini text-right" data-bind="value: value">
+                <input type="number" class="input-mini text-right" data-bind="value: value" onchange="changedEepromForm();">
                 <span class="add-on" data-bind="text: unit"></span>
             </div>
             <span class="help-block" data-bind="text: description"></span>
@@ -219,7 +219,7 @@ This plugin is designed to get, change and save the values in the EEPROM of your
         <label class="control-label" data-bind="text: label"></label>
         <div class="controls">
             <div class="input-append">
-                <input type="number" class="input-mini text-right" data-bind="value: value">
+                <input type="number" class="input-mini text-right" data-bind="value: value" onchange="changedEepromForm();">
                 <span class="add-on" data-bind="text: unit"></span>
             </div>
             <span class="help-block" data-bind="text: description"></span>

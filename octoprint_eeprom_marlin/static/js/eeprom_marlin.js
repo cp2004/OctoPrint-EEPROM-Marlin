@@ -3,6 +3,7 @@
 * Modified by Anderson Silva on 20.08.2017.
 * Contribution of CyberDracula on 15.08.2017.
 */
+var hasChangedEepromForm = false;
 $(function() {
     function EepromMarlinViewModel(parameters) {
         var self = this;
@@ -1186,6 +1187,7 @@ $(function() {
         };
 
         self.fromCurrentData = function(data) {
+            hasChangedEepromForm = true;
             if (!self.isMarlinFirmware()) {
                 _.each(data.logs, function (line) {
                     var match = self.firmwareRegEx.exec(line);
@@ -1209,10 +1211,10 @@ $(function() {
 
                     match = self.eepromM851RegEx.exec(self.backupConfig);
                     matchOK = self.eepromOKRegEx.exec(self.backupConfig);
-                    console.debug('teste: ' + matchOK);
                     if (match || matchOK) {
                         self.execBackup = false;
                         self.backupConfig = self.backupConfig.replace(/Recv/gi, "\nRecv");
+                        self.backupConfig = self.backupConfig.replace(/,\n/gi, "\n");
 
                         console.debug("EEPROM Config: " + self.backupConfig);
                         var currentBackupDate = new Date();
@@ -1241,6 +1243,7 @@ $(function() {
                     self.eepromFieldParse(line);
                 });
             }
+            hasChangedEepromForm = false;
         };
 
         self.eepromDataCount = ko.computed(function() {
@@ -1349,6 +1352,8 @@ $(function() {
               reader.readAsText(f);
             }
             console.debug(self.backupConfig);
+            console.debug(files);
+            $('#eeprom_marlin_upload').addClass("btn-primary");
         };
 
         self.loadEeprom = function() {
@@ -1370,6 +1375,9 @@ $(function() {
             self.eepromDataDelta2([]);
 
             self._requestEepromData();
+
+            $('#eeprom_marlin_upload').removeClass("btn-primary");
+            hasChangedEepromForm = false;
         };
 
         self.saveEeprom = function()  {
@@ -1504,7 +1512,15 @@ $(function() {
 
             self.control.sendCustomCommand({ command: cmd });
 
-            alert('EEPROM data stored.');
+            $('#eeprom_marlin_upload').removeClass("btn-primary");
+            hasChangedEepromForm = false;
+
+            new PNotify({
+            				title: 'EEPROM Marlin',
+            				text: 'EEPROM data stored.',
+            				type: 'success',
+            				hide: true
+            			});
         };
 
         self._requestFirmwareInfo = function() {
@@ -1527,3 +1543,10 @@ $(function() {
         "#settings_plugin_eeprom_marlin"
     ]);
 });
+
+changedEepromForm = function() {
+    if (!hasChangedEepromForm) {
+        $('#eeprom_marlin_upload').addClass("btn-primary");
+        hasChangedEepromForm = true;
+    }
+};
