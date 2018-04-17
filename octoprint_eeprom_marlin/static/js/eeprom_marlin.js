@@ -1345,14 +1345,33 @@ $(function() {
 
               reader.onload = (function(cFile) {
                 return function(e) {
-                  self.backupConfig = e.target.result;
+                    self.backupConfig = e.target.result;
+
+                    self.eepromData1([]);
+                    self.eepromData2([]);
+                    self.eepromDataSteps([]);
+                    self.eepromDataFRates([]);
+                    self.eepromDataMaxAccel([]);
+                    self.eepromDataAccel([]);
+                    self.eepromDataPID([]);
+                    self.eepromDataPIDB([]);
+                    self.eepromDataHoming([]);
+                    self.eepromDataMaterialHS0([]);
+                    self.eepromDataMaterialHS1([]);
+                    self.eepromDataMaterialHS2([]);
+                    self.eepromDataFilament([]);
+                    self.eepromDataEndstop([]);
+                    self.eepromDataDelta1([]);
+                    self.eepromDataDelta2([]);
+
+                    _.each(self.backupConfig.split('\n'), function (line) {
+                        self.eepromFieldParse(line);
+                    });
                 };
               })(f);
 
               reader.readAsText(f);
             }
-            console.debug(self.backupConfig);
-            console.debug(files);
             $('#eeprom_marlin_upload').addClass("btn-primary");
         };
 
