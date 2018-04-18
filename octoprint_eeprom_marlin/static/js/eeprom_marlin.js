@@ -1356,6 +1356,24 @@ $(function() {
             document.getElementById('fileBackup').click();
         };
 
+        self.resetEeprom = function() {
+            showConfirmationDialog({
+                        message: 'Do you really want to reset EEPROM settings?',
+                        onproceed: function() {
+                            self.control.sendCustomCommand({ command: "M502" });
+
+                            new PNotify({
+                                            title: 'EEPROM Marlin',
+                                            text: 'Default settings was restored.',
+                                            type: 'success',
+                                            hide: true
+                                        });
+
+                            self.loadEeprom();
+                        },
+                    });
+        };
+
         self.handleFileSelect = function(evt) {
             var files = evt.target.files;
 

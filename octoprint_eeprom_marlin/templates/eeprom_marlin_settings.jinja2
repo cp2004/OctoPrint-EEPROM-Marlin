@@ -10,6 +10,7 @@ This plugin is designed to get, change and save the values in the EEPROM of your
         <button id="eeprom_marlin_upload" data-bind="enabled: isMarlinFirmware, click: saveEeprom" class="btn icon-upload-alt" aria-hidden="true">&nbsp;{{ _('Upload') }}</button>
         <button id="eeprom_marlin_backup" data-bind="enabled: isMarlinFirmware, click: backupEeprom" class="btn icon-cloud-download" aria-hidden="true">&nbsp;{{ _('Backup') }}</button>
         <button id="eeprom_marlin_restore" data-bind="enabled: isMarlinFirmware, click: restoreEeprom" class="btn icon-cloud-upload" aria-hidden="true">&nbsp;{{ _('Restore') }}</button>
+        <button id="eeprom_marlin_reset" data-bind="enabled: isMarlinFirmware, click: resetEeprom" class="btn btn-danger icon-eraser pull-right" aria-hidden="true">&nbsp;{{ _('Reset') }}</button>
     </form>
     <div style="display: none;"><input type="file" id="fileBackup" name="fileBackup" /></div>
     <ul class="nav nav-pills">
