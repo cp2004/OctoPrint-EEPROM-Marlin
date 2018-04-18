@@ -1361,6 +1361,7 @@ $(function() {
                         message: 'Do you really want to reset EEPROM settings?',
                         onproceed: function() {
                             self.control.sendCustomCommand({ command: "M502" });
+                            self.control.sendCustomCommand({ command: "M504" });
 
                             new PNotify({
                                             title: 'EEPROM Marlin',
@@ -1571,6 +1572,8 @@ $(function() {
             $('#eeprom_marlin_upload').removeClass("btn-primary");
             hasChangedEepromForm = false;
 
+            self.control.sendCustomCommand({ command: "M504" });
+
             new PNotify({
             				title: 'EEPROM Marlin',
             				text: 'EEPROM data stored.',
@@ -1584,6 +1587,7 @@ $(function() {
         };
 
         self._requestEepromData = function() {
+            self.control.sendCustomCommand({ command: "M504" });
             self.control.sendCustomCommand({ command: "M503" });
         };
 
