@@ -26,13 +26,14 @@ $(function() {
             self.eepromM665RegEx = /M665 ([L])(.*)[^0-9]([R])(.*)[^0-9]([S])(.*)[^0-9]([A])(.*)[^0-9]([B])(.*)[^0-9]([C])(.*)/;
 
             // Specific versions
-            if (version == 'lastest' || version == 'Marlin 1.1.0-RC8' || version == 'Marlin 1.1.1' || version == 'Marlin 1.1.2' || version == 'Marlin 1.1.3' || version == 'Marlin 1.1.4' || version == 'Marlin 1.1.5' || version == 'Marlin 1.1.6' || version == 'Marlin 1.1.7' || version == 'Marlin 1.1.8') {
+            if (version == 'latest' || version == 'Marlin 1.1.0-RC8' || version == 'Marlin 1.1.1' || version == 'Marlin 1.1.2' || version == 'Marlin 1.1.3' || version == 'Marlin 1.1.4' || version == 'Marlin 1.1.5' || version == 'Marlin 1.1.6' || version == 'Marlin 1.1.7' || version == 'Marlin 1.1.8') {
                 self.eepromM205RegEx = /M205 ([S])(.*)[^0-9]([T])(.*)[^0-9]([B])(.*)[^0-9]([X])(.*)[^0-9]([Y])(.*)[^0-9]([Z])(.*)[^0-9]([E])(.*)/;
                 self.eepromM145S0RegEx = /M145 S0 ([H])(.*)[^0-9]([B])(.*)[^0-9]([F])(.*)/;
                 self.eepromM145S1RegEx = /M145 S1 ([H])(.*)[^0-9]([B])(.*)[^0-9]([F])(.*)/;
                 self.eepromM145S2RegEx = /M145 S2 ([H])(.*)[^0-9]([B])(.*)[^0-9]([F])(.*)/;
                 self.eepromM301RegEx = /M301 ([P])(.*)[^0-9]([I])(.*)[^0-9]([D])(.*)/;
                 self.eepromM204RegEx = /M204 ([P])(.*)[^0-9]([R])(.*)[^0-9]([T])(.*)/;
+                self.eepromM420RegEx = /M420 ([S])([0-1]*)[^0-9]*([Z]*)(.*)/;
             } else if (version == 'Marlin 1.1.0-RC1' || version == 'Marlin 1.1.0-RC2' || version == 'Marlin 1.1.0-RC3' || version == 'Marlin 1.1.0-RC4' || version == 'Marlin 1.1.0-RC5' || version == 'Marlin 1.1.0-RC6' || version == 'Marlin 1.1.0-RC7') {
                 self.eepromM205RegEx = /M205 ([S])(.*)[^0-9]([T])(.*)[^0-9]([B])(.*)[^0-9]([X])(.*)[^0-9]([Z])(.*)[^0-9]([E])(.*)/;
                 self.eepromM145S0RegEx = /M145 M0 ([H])(.*)[^0-9]([B])(.*)[^0-9]([F])(.*)/;
@@ -40,6 +41,7 @@ $(function() {
                 self.eepromM145S2RegEx = /M145 M2 ([H])(.*)[^0-9]([B])(.*)[^0-9]([F])(.*)/;
                 self.eepromM301RegEx = /M301 ([P])(.*)[^0-9]([I])(.*)[^0-9]([D])(.*)[^0-9]([C])(.*)[^0-9]([L])(.*)/;
                 self.eepromM204RegEx = /M204 ([P])(.*)[^0-9]([R])(.*)[^0-9]([T])(.*)/;
+                self.eepromM420RegEx = /M420 ([S])([0-1]*)[^0-9]*([Z]*)(.*)/;
             } else if (version == 'Marlin 1.0.2+' || version == 'Marlin V1.0.2;' || version == 'Marlin 1.0.2' || version == 'Marlin V1;') {
                 self.eepromM204RegEx = /M204 ([S])(.*)[^0-9]([T])(.*)/;
                 self.eepromM205RegEx = /M205 ([S])(.*)[^0-9]([T])(.*)[^0-9]([B])(.*)[^0-9]([X])(.*)[^0-9]([Z])(.*)[^0-9]([E])(.*)/;
@@ -51,6 +53,7 @@ $(function() {
                 self.eepromM145S2RegEx = /M145 S2 ([H])(.*)[^0-9]([B])(.*)[^0-9]([F])(.*)/;
                 self.eepromM301RegEx = /M301 ([P])(.*)[^0-9]([I])(.*)[^0-9]([D])(.*)/;
                 self.eepromM204RegEx = /M204 ([P])(.*)[^0-9]([R])(.*)[^0-9]([T])(.*)/;
+                self.eepromM420RegEx = /M420 ([S])([0-1]*)[^0-9]*([Z]*)(.*)/;
             }
         };
 
@@ -63,7 +66,7 @@ $(function() {
         self.firmwareCapRegEx = /Cap:([^\s]*)/i;
         self.marlinRegEx = /Marlin[^\s]*/i;
 
-        self.setRegExVars('lastest');
+        self.setRegExVars('latest');
 
         self.isMarlinFirmware = ko.observable(false);
 
@@ -74,6 +77,7 @@ $(function() {
 
         self.eepromData1 = ko.observableArray([]);
         self.eepromData2 = ko.observableArray([]);
+        self.eepromDataLevel = ko.observableArray([]);
         self.eepromDataSteps = ko.observableArray([]);
         self.eepromDataFRates = ko.observableArray([]);
         self.eepromDataMaxAccel = ko.observableArray([]);
@@ -405,7 +409,7 @@ $(function() {
                 });
             }
 
-            if (self.firmware_name() == 'Marlin 1.1.0-RC8') {
+            if (self.firmware_name() == 'Marlin 1.1.0-RC8' || self.firmware_name() == 'Marlin 1.1.1' || self.firmware_name() == 'Marlin 1.1.2' || self.firmware_name() == 'Marlin 1.1.3' || self.firmware_name() == 'Marlin 1.1.4' || self.firmware_name() == 'Marlin 1.1.5' || self.firmware_name() == 'Marlin 1.1.6' || self.firmware_name() == 'Marlin 1.1.7' || self.firmware_name() == 'Marlin 1.1.8') {
                 // M205 Advanced variables
                 match = self.eepromM205RegEx.exec(line);
                 if (match) {
@@ -618,6 +622,30 @@ $(function() {
                         unit: '',
                         description: ''
                     });
+                }
+
+                // M420 Auto-level
+                match = self.eepromM420RegEx.exec(line);
+                if (match) {
+                    self.eepromDataLevel.push({
+                        dataType: 'M420 S',
+                        label: 'Auto Bed Leveling',
+                        origValue: match[2],
+                        value: match[2],
+                        unit: '0/1',
+                        description: ''
+                    });
+
+                    if (match.length >= 3) {
+                        self.eepromDataLevel.push({
+                            dataType: 'M420 Z',
+                            label: 'Fade height',
+                            origValue: match[4],
+                            value: match[4],
+                            unit: 'mm',
+                            description: ''
+                        });
+                    }
                 }
             } else if (self.firmware_name() == 'Marlin 1.1.0-RC1' || self.firmware_name() == 'Marlin 1.1.0-RC2' || self.firmware_name() == 'Marlin 1.1.0-RC3' || self.firmware_name() == 'Marlin 1.1.0-RC4' || self.firmware_name() == 'Marlin 1.1.0-RC5' || self.firmware_name() == 'Marlin 1.1.0-RC6' || self.firmware_name() == 'Marlin 1.1.0-RC7') {
                 // M205 Advanced variables
@@ -1176,6 +1204,30 @@ $(function() {
                         description: ''
                     });
                 }
+
+                // M420 Auto-level
+                match = self.eepromM420RegEx.exec(line);
+                if (match) {
+                    self.eepromDataLevel.push({
+                        dataType: 'M420 S',
+                        label: 'Auto Bed Leveling',
+                        origValue: match[2],
+                        value: match[2],
+                        unit: '0/1',
+                        description: ''
+                    });
+
+                    if (match.length >= 3) {
+                        self.eepromDataLevel.push({
+                            dataType: 'M420 Z',
+                            label: 'Fade height',
+                            origValue: match[4],
+                            value: match[4],
+                            unit: 'mm',
+                            description: ''
+                        });
+                    }
+                }
             }
         };
 
@@ -1327,6 +1379,7 @@ $(function() {
 
             self.eepromData1([]);
             self.eepromData2([]);
+            self.eepromDataLevel([]);
             self.eepromDataSteps([]);
             self.eepromDataFRates([]);
             self.eepromDataMaxAccel([]);
@@ -1387,6 +1440,7 @@ $(function() {
 
                     self.eepromData1([]);
                     self.eepromData2([]);
+                    self.eepromDataLevel([]);
                     self.eepromDataSteps([]);
                     self.eepromDataFRates([]);
                     self.eepromDataMaxAccel([]);
@@ -1416,6 +1470,7 @@ $(function() {
         self.loadEeprom = function() {
             self.eepromData1([]);
             self.eepromData2([]);
+            self.eepromDataLevel([]);
             self.eepromDataSteps([]);
             self.eepromDataFRates([]);
             self.eepromDataMaxAccel([]);
@@ -1448,6 +1503,14 @@ $(function() {
             });
 
             eepromData = self.eepromData2();
+            _.each(eepromData, function(data) {
+                if (data.origValue != data.value) {
+                    self._requestSaveDataToEeprom(data.dataType, data.value);
+                    data.origValue = data.value;
+                }
+            });
+
+            eepromData = self.eepromDataLevel();
             _.each(eepromData, function(data) {
                 if (data.origValue != data.value) {
                     self._requestSaveDataToEeprom(data.dataType, data.value);
