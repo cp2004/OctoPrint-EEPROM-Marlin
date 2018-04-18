@@ -23,7 +23,10 @@ $(function() {
             self.eepromM200RegEx = /M200 ([D])(.*)/;
             self.eepromM666RegEx = /M666 ([X])(.*)[^0-9]([Y])(.*)[^0-9]([Z])(.*)/;
             self.eepromM304RegEx = /M304 ([P])(.*)[^0-9]([I])(.*)[^0-9]([D])(.*)/;
-            self.eepromM665RegEx = /M665 ([L])(.*)[^0-9]([R])(.*)[^0-9]([S])(.*)[^0-9]([A])(.*)[^0-9]([B])(.*)[^0-9]([C])(.*)/;
+            self.eepromM665RegEx = /M665 ([L])(.*)[^0-9]([R])(.*)[^0-9]([H])(.*)[^0-9]([S])(.*)[^0-9]([B])(.*)[^0-9]([X])(.*)[^0-9]([Y])(.*)[^0-9]([Z])(.*)/;
+            self.eepromM420RegEx = /M420 ([S])([0-1]*)[^0-9]*([Z]*)(.*)/;
+            self.eepromM900RegEx = /M900 ([K])(.*)[^0-9]([R])(.*)/;
+
 
             // Specific versions
             if (version == 'latest' || version == 'Marlin 1.1.0-RC8' || version == 'Marlin 1.1.1' || version == 'Marlin 1.1.2' || version == 'Marlin 1.1.3' || version == 'Marlin 1.1.4' || version == 'Marlin 1.1.5' || version == 'Marlin 1.1.6' || version == 'Marlin 1.1.7' || version == 'Marlin 1.1.8') {
@@ -33,7 +36,6 @@ $(function() {
                 self.eepromM145S2RegEx = /M145 S2 ([H])(.*)[^0-9]([B])(.*)[^0-9]([F])(.*)/;
                 self.eepromM301RegEx = /M301 ([P])(.*)[^0-9]([I])(.*)[^0-9]([D])(.*)/;
                 self.eepromM204RegEx = /M204 ([P])(.*)[^0-9]([R])(.*)[^0-9]([T])(.*)/;
-                self.eepromM420RegEx = /M420 ([S])([0-1]*)[^0-9]*([Z]*)(.*)/;
             } else if (version == 'Marlin 1.1.0-RC1' || version == 'Marlin 1.1.0-RC2' || version == 'Marlin 1.1.0-RC3' || version == 'Marlin 1.1.0-RC4' || version == 'Marlin 1.1.0-RC5' || version == 'Marlin 1.1.0-RC6' || version == 'Marlin 1.1.0-RC7') {
                 self.eepromM205RegEx = /M205 ([S])(.*)[^0-9]([T])(.*)[^0-9]([B])(.*)[^0-9]([X])(.*)[^0-9]([Z])(.*)[^0-9]([E])(.*)/;
                 self.eepromM145S0RegEx = /M145 M0 ([H])(.*)[^0-9]([B])(.*)[^0-9]([F])(.*)/;
@@ -41,7 +43,6 @@ $(function() {
                 self.eepromM145S2RegEx = /M145 M2 ([H])(.*)[^0-9]([B])(.*)[^0-9]([F])(.*)/;
                 self.eepromM301RegEx = /M301 ([P])(.*)[^0-9]([I])(.*)[^0-9]([D])(.*)[^0-9]([C])(.*)[^0-9]([L])(.*)/;
                 self.eepromM204RegEx = /M204 ([P])(.*)[^0-9]([R])(.*)[^0-9]([T])(.*)/;
-                self.eepromM420RegEx = /M420 ([S])([0-1]*)[^0-9]*([Z]*)(.*)/;
             } else if (version == 'Marlin 1.0.2+' || version == 'Marlin V1.0.2;' || version == 'Marlin 1.0.2' || version == 'Marlin V1;') {
                 self.eepromM204RegEx = /M204 ([S])(.*)[^0-9]([T])(.*)/;
                 self.eepromM205RegEx = /M205 ([S])(.*)[^0-9]([T])(.*)[^0-9]([B])(.*)[^0-9]([X])(.*)[^0-9]([Z])(.*)[^0-9]([E])(.*)/;
@@ -53,7 +54,6 @@ $(function() {
                 self.eepromM145S2RegEx = /M145 S2 ([H])(.*)[^0-9]([B])(.*)[^0-9]([F])(.*)/;
                 self.eepromM301RegEx = /M301 ([P])(.*)[^0-9]([I])(.*)[^0-9]([D])(.*)/;
                 self.eepromM204RegEx = /M204 ([P])(.*)[^0-9]([R])(.*)[^0-9]([T])(.*)/;
-                self.eepromM420RegEx = /M420 ([S])([0-1]*)[^0-9]*([Z]*)(.*)/;
             }
         };
 
@@ -92,6 +92,7 @@ $(function() {
         self.eepromDataEndstop = ko.observableArray([]);
         self.eepromDataDelta1 = ko.observableArray([]);
         self.eepromDataDelta2 = ko.observableArray([]);
+        self.eepromDataLinear = ko.observableArray([]);
 
         self.onStartup = function() {
             $('#settings_plugin_eeprom_marlin_link a').on('show', function(e) {
@@ -358,6 +359,28 @@ $(function() {
                     label: 'Diag C',
                     origValue: match[12],
                     value: match[12],
+                    unit: 'mm',
+                    description: ''
+                });
+            }
+
+            // M900 Linear settings
+            match = self.eepromM900RegEx.exec(line);
+            if (match) {
+                self.eepromDataLinear.push({
+                    dataType: 'M900 K',
+                    label: 'Linear Advance K',
+                    origValue: match[2],
+                    value: match[2],
+                    unit: 'mm',
+                    description: ''
+                });
+
+                self.eepromDataLinear.push({
+                    dataType: 'M900 R',
+                    label: 'Linear Ratio',
+                    origValue: match[4],
+                    value: match[4],
                     unit: 'mm',
                     description: ''
                 });
@@ -1292,10 +1315,10 @@ $(function() {
                         var backupYear = currentBackupDate.getFullYear();
                         var backupMonth = currentBackupDate.getMonth();
                         if (backupMonth < 10)
-                            backupMonth = '0' + backupMonth;
+                        backupMonth = '0' + backupMonth;
                         var backupDay = currentBackupDate.getDate();
                         if (backupDay < 10)
-                            backupDay = '0' + backupDay;
+                        backupDay = '0' + backupDay;
                         var backupDate = backupYear + '-' + backupMonth + '-' + backupDay;
 
                         var element = document.createElement('a');
@@ -1394,6 +1417,7 @@ $(function() {
             self.eepromDataEndstop([]);
             self.eepromDataDelta1([]);
             self.eepromDataDelta2([]);
+            self.eepromDataLinear([]);
 
             self._requestEepromData();
         };
@@ -1411,58 +1435,59 @@ $(function() {
 
         self.resetEeprom = function() {
             showConfirmationDialog({
-                        message: 'Do you really want to reset EEPROM settings?',
-                        onproceed: function() {
-                            self.control.sendCustomCommand({ command: "M502" });
-                            self.control.sendCustomCommand({ command: "M504" });
+                message: 'Do you really want to reset EEPROM settings?',
+                onproceed: function() {
+                    self.control.sendCustomCommand({ command: "M502" });
+                    self.control.sendCustomCommand({ command: "M504" });
 
-                            new PNotify({
-                                            title: 'EEPROM Marlin',
-                                            text: 'Default settings was restored.',
-                                            type: 'success',
-                                            hide: true
-                                        });
-
-                            self.loadEeprom();
-                        },
+                    new PNotify({
+                        title: 'EEPROM Marlin',
+                        text: 'Default settings was restored.',
+                        type: 'success',
+                        hide: true
                     });
+
+                    self.loadEeprom();
+                },
+            });
         };
 
         self.handleFileSelect = function(evt) {
             var files = evt.target.files;
 
             for (var i = 0, f; f = files[i]; i++) {
-              var reader = new FileReader();
+                var reader = new FileReader();
 
-              reader.onload = (function(cFile) {
-                return function(e) {
-                    self.backupConfig = e.target.result;
+                reader.onload = (function(cFile) {
+                    return function(e) {
+                        self.backupConfig = e.target.result;
 
-                    self.eepromData1([]);
-                    self.eepromData2([]);
-                    self.eepromDataLevel([]);
-                    self.eepromDataSteps([]);
-                    self.eepromDataFRates([]);
-                    self.eepromDataMaxAccel([]);
-                    self.eepromDataAccel([]);
-                    self.eepromDataPID([]);
-                    self.eepromDataPIDB([]);
-                    self.eepromDataHoming([]);
-                    self.eepromDataMaterialHS0([]);
-                    self.eepromDataMaterialHS1([]);
-                    self.eepromDataMaterialHS2([]);
-                    self.eepromDataFilament([]);
-                    self.eepromDataEndstop([]);
-                    self.eepromDataDelta1([]);
-                    self.eepromDataDelta2([]);
+                        self.eepromData1([]);
+                        self.eepromData2([]);
+                        self.eepromDataLevel([]);
+                        self.eepromDataSteps([]);
+                        self.eepromDataFRates([]);
+                        self.eepromDataMaxAccel([]);
+                        self.eepromDataAccel([]);
+                        self.eepromDataPID([]);
+                        self.eepromDataPIDB([]);
+                        self.eepromDataHoming([]);
+                        self.eepromDataMaterialHS0([]);
+                        self.eepromDataMaterialHS1([]);
+                        self.eepromDataMaterialHS2([]);
+                        self.eepromDataFilament([]);
+                        self.eepromDataEndstop([]);
+                        self.eepromDataDelta1([]);
+                        self.eepromDataDelta2([]);
+                        self.eepromDataLinear([]);
 
-                    _.each(self.backupConfig.split('\n'), function (line) {
-                        self.eepromFieldParse(line);
-                    });
-                };
-              })(f);
+                        _.each(self.backupConfig.split('\n'), function (line) {
+                            self.eepromFieldParse(line);
+                        });
+                    };
+                })(f);
 
-              reader.readAsText(f);
+                reader.readAsText(f);
             }
             $('#eeprom_marlin_upload').addClass("btn-primary");
         };
@@ -1485,6 +1510,7 @@ $(function() {
             self.eepromDataEndstop([]);
             self.eepromDataDelta1([]);
             self.eepromDataDelta2([]);
+            self.eepromDataLinear([]);
 
             self._requestEepromData();
 
@@ -1630,6 +1656,14 @@ $(function() {
                 }
             });
 
+            eepromData = self.eepromDataLinear();
+            _.each(eepromData, function(data) {
+                if (data.origValue != data.value) {
+                    self._requestSaveDataToEeprom(data.dataType, data.value);
+                    data.origValue = data.value;
+                }
+            });
+
             self.control.sendCustomCommand({ command: cmd });
 
             $('#eeprom_marlin_upload').removeClass("btn-primary");
@@ -1638,11 +1672,11 @@ $(function() {
             self.control.sendCustomCommand({ command: "M504" });
 
             new PNotify({
-            				title: 'EEPROM Marlin',
-            				text: 'EEPROM data stored.',
-            				type: 'success',
-            				hide: true
-            			});
+                title: 'EEPROM Marlin',
+                text: 'EEPROM data stored.',
+                type: 'success',
+                hide: true
+            });
         };
 
         self._requestFirmwareInfo = function() {
