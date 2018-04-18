@@ -26,7 +26,7 @@ $(function() {
             self.eepromM665RegEx = /M665 ([L])(.*)[^0-9]([R])(.*)[^0-9]([S])(.*)[^0-9]([A])(.*)[^0-9]([B])(.*)[^0-9]([C])(.*)/;
 
             // Specific versions
-            if (version == 'lastest' || version == 'Marlin 1.1.0-RC8') {
+            if (version == 'lastest' || version == 'Marlin 1.1.0-RC8' || version == 'Marlin 1.1.1' || version == 'Marlin 1.1.2' || version == 'Marlin 1.1.3' || version == 'Marlin 1.1.4' || version == 'Marlin 1.1.5' || version == 'Marlin 1.1.6' || version == 'Marlin 1.1.7' || version == 'Marlin 1.1.8') {
                 self.eepromM205RegEx = /M205 ([S])(.*)[^0-9]([T])(.*)[^0-9]([B])(.*)[^0-9]([X])(.*)[^0-9]([Y])(.*)[^0-9]([Z])(.*)[^0-9]([E])(.*)/;
                 self.eepromM145S0RegEx = /M145 S0 ([H])(.*)[^0-9]([B])(.*)[^0-9]([F])(.*)/;
                 self.eepromM145S1RegEx = /M145 S1 ([H])(.*)[^0-9]([B])(.*)[^0-9]([F])(.*)/;
