@@ -13,7 +13,7 @@ $(function() {
 
         self.setRegExVars = function(version) {
             // All versions
-            self.eepromM503RegEx = /M503/;
+            self.eepromM501RegEx = /M501/;
             self.eepromOKRegEx = /ok/;
             self.eepromM92RegEx = /M92 ([X])(.*)[^0-9]([Y])(.*)[^0-9]([Z])(.*)[^0-9]([E])(.*)/;
             self.eepromM203RegEx = /M203 ([X])(.*)[^0-9]([Y])(.*)[^0-9]([Z])(.*)[^0-9]([E])(.*)/;
@@ -1221,7 +1221,7 @@ $(function() {
             }
             else
             {
-                match = self.eepromM503RegEx.exec(data.logs);
+                match = self.eepromM501RegEx.exec(data.logs);
                 if (match) {
                     self.startBackup = true;
                 }
@@ -1588,7 +1588,7 @@ $(function() {
 
         self._requestEepromData = function() {
             self.control.sendCustomCommand({ command: "M504" });
-            self.control.sendCustomCommand({ command: "M503" });
+            self.control.sendCustomCommand({ command: "M501" });
         };
 
         self._requestSaveDataToEeprom = function(data_type, value) {
