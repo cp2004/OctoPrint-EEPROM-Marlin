@@ -57,8 +57,10 @@ $(function() {
         self.control = parameters[0];
         self.connection = parameters[1];
         self.FIRMWARE_NAME = ko.observable("");
+        self.FIRMWARE_INFO = ko.observable("");
 
         self.firmwareRegEx = /FIRMWARE_NAME:([^\s]*) ([^\s]*)/i;
+        self.firmwareCapRegEx = /Cap:([^\s]*)/i;
         self.marlinRegEx = /Marlin[^\s]*/i;
 
         self.setRegExVars('lastest');
@@ -97,6 +99,10 @@ $(function() {
 
         self.firmware_name = function() {
             return self.FIRMWARE_NAME();
+        };
+
+        self.firmware_info = function() {
+            return self.FIRMWARE_INFO();
         };
 
         self.eepromFieldParse = function(line) {
@@ -1178,10 +1184,16 @@ $(function() {
                 var match = self.firmwareRegEx.exec(line);
                 if (match !== null) {
                     self.FIRMWARE_NAME(match[1] + ' ' + match[2]);
+                    self.FIRMWARE_INFO(line.replace('Recv: ', ''));
                     self.setRegExVars(self.firmware_name());
                     console.debug('Firmware: ' + self.firmware_name());
                     if (self.marlinRegEx.exec(match[0]))
                     self.isMarlinFirmware(true);
+                }
+
+                var match = self.firmwareCapRegEx.exec(line);
+                if (match !== null) {
+                    self.FIRMWARE_INFO(self.firmware_info() + '\n' + line.replace('Recv: Cap:', ''));
                 }
             });
         };
@@ -1193,10 +1205,17 @@ $(function() {
                     var match = self.firmwareRegEx.exec(line);
                     if (match) {
                         self.FIRMWARE_NAME(match[1] + ' ' + match[2]);
+                        self.FIRMWARE_INFO(line.replace('Recv: ', ''));
                         self.setRegExVars(self.firmware_name());
                         console.debug('Firmware: ' + self.firmware_name());
                         if (self.marlinRegEx.exec(match[0]))
                         self.isMarlinFirmware(true);
+                    }
+
+                    var match = self.firmwareCapRegEx.exec(line);
+                    if (match) {
+                        self.FIRMWARE_INFO(self.firmware_info() + '\n' + line.replace('Recv: Cap:', ''));
+                        console.debug(line.replace('Recv: ', ''));
                     }
                 });
             }
