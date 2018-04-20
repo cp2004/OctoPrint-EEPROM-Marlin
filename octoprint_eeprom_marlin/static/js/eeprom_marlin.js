@@ -1313,7 +1313,7 @@ $(function() {
                         console.debug("EEPROM Config: " + self.backupConfig);
                         var currentBackupDate = new Date();
                         var backupYear = currentBackupDate.getFullYear();
-                        var backupMonth = currentBackupDate.getMonth();
+                        var backupMonth = currentBackupDate.getMonth() + 1;
                         if (backupMonth < 10)
                         backupMonth = '0' + backupMonth;
                         var backupDay = currentBackupDate.getDate();
