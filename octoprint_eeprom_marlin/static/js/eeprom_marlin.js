@@ -1319,7 +1319,16 @@ $(function() {
                         var backupDay = currentBackupDate.getDate();
                         if (backupDay < 10)
                         backupDay = '0' + backupDay;
-                        var backupDate = backupYear + '-' + backupMonth + '-' + backupDay;
+                        var backupHours = currentBackupDate.getHours();
+                        if (backupHours < 10)
+                        backupHours = '0' + backupHours;
+                        var backupMinutes = currentBackupDate.getMinutes();
+                        if (backupMinutes < 10)
+                        backupMinutes = '0' + backupMinutes;
+                        var backupSeconds = currentBackupDate.getSeconds();
+                        if (backupSeconds < 10)
+                        backupSeconds = '0' + backupSeconds;
+                        var backupDate = backupYear + '-' + backupMonth + '-' + backupDay + '_' + backupHours + backupMinutes + backupSeconds;
 
                         var element = document.createElement('a');
                         element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(self.backupConfig));
