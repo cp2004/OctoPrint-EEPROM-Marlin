@@ -69,6 +69,9 @@ $(function() {
         self.setRegExVars('latest');
 
         self.isMarlinFirmware = ko.observable(false);
+        self.isMarlinFirmware.subscribe(function (newValue) {
+            self.loadEeprom();
+        });
 
         self.isConnected = ko.computed(function() {
             return self.connection.isOperational() || self.connection.isPrinting() ||
