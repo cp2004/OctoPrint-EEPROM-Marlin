@@ -52,7 +52,7 @@ This plugin is designed to get, change and save the values in the EEPROM of your
         <div id="eeprom_marlin_info" class="tab-pane active">
             <fieldset>
                 <legend data-bind="visible: eepromDataStepsCount()">Firmware Info</legend>
-                <span data-bind="text: firmware_info()"></span>
+                <span style="white-space: pre-wrap;" data-bind="text: firmware_info()"></span>
             </fieldset>
         </div>
         <div id="eeprom_marlin_steps" class="tab-pane">

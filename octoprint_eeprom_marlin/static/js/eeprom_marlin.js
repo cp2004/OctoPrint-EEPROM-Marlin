@@ -1271,7 +1271,7 @@ $(function() {
 
                 var match = self.firmwareCapRegEx.exec(line);
                 if (match !== null) {
-                    self.FIRMWARE_INFO(self.firmware_info() + '\n<br>' + line.replace('Recv: Cap:', ''));
+                    self.FIRMWARE_INFO('\n\n' + self.firmware_info() + '\n' + line.replace('Recv: Cap:', ''));
                 }
             });
         };
