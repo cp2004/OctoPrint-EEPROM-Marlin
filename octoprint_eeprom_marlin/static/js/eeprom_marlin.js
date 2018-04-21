@@ -110,14 +110,14 @@ $(function() {
             return self.FIRMWARE_INFO();
         };
 
-        self.eepromFieldParse = function(line) {
+        self.eepromFieldParse = function(line, restoreBackup = false) {
             // M92 steps per unit
             var match = self.eepromM92RegEx.exec(line);
             if (match) {
                 self.eepromDataSteps.push({
                     dataType: 'M92 X',
                     label: 'X axis',
-                    origValue: match[2],
+                    origValue: ((restoreBackup) ? '' : match[2]),
                     value: match[2],
                     unit: 'mm',
                     description: 'steps per unit'
@@ -126,7 +126,7 @@ $(function() {
                 self.eepromDataSteps.push({
                     dataType: 'M92 Y',
                     label: 'Y axis',
-                    origValue: match[4],
+                    origValue: ((restoreBackup) ? '' : match[4]),
                     value: match[4],
                     unit: 'mm',
                     description: 'steps per unit'
@@ -135,7 +135,7 @@ $(function() {
                 self.eepromDataSteps.push({
                     dataType: 'M92 Z',
                     label: 'Z axis',
-                    origValue: match[6],
+                    origValue: ((restoreBackup) ? '' : match[6]),
                     value: match[6],
                     unit: 'mm',
                     description: 'steps per unit'
@@ -144,7 +144,7 @@ $(function() {
                 self.eepromDataSteps.push({
                     dataType: 'M92 E',
                     label: 'Extruder',
-                    origValue: match[8],
+                    origValue: ((restoreBackup) ? '' : match[8]),
                     value: match[8],
                     unit: 'mm',
                     description: 'steps per unit'
@@ -157,7 +157,7 @@ $(function() {
                 self.eepromDataFRates.push({
                     dataType: 'M203 X',
                     label: 'X axis',
-                    origValue: match[2],
+                    origValue: ((restoreBackup) ? '' : match[2]),
                     value: match[2],
                     unit: 'mm',
                     description: 'rate per unit'
@@ -166,7 +166,7 @@ $(function() {
                 self.eepromDataFRates.push({
                     dataType: 'M203 Y',
                     label: 'Y axis',
-                    origValue: match[4],
+                    origValue: ((restoreBackup) ? '' : match[4]),
                     value: match[4],
                     unit: 'mm',
                     description: 'rate per unit'
@@ -175,7 +175,7 @@ $(function() {
                 self.eepromDataFRates.push({
                     dataType: 'M203 Z',
                     label: 'Z axis',
-                    origValue: match[6],
+                    origValue: ((restoreBackup) ? '' : match[6]),
                     value: match[6],
                     unit: 'mm',
                     description: 'rate per unit'
@@ -184,7 +184,7 @@ $(function() {
                 self.eepromDataFRates.push({
                     dataType: 'M203 E',
                     label: 'Extruder',
-                    origValue: match[8],
+                    origValue: ((restoreBackup) ? '' : match[8]),
                     value: match[8],
                     unit: 'mm',
                     description: 'rate per unit'
@@ -197,7 +197,7 @@ $(function() {
                 self.eepromDataMaxAccel.push({
                     dataType: 'M201 X',
                     label: 'X axis',
-                    origValue: match[2],
+                    origValue: ((restoreBackup) ? '' : match[2]),
                     value: match[2],
                     unit: 'mm/s2',
                     description: ''
@@ -206,7 +206,7 @@ $(function() {
                 self.eepromDataMaxAccel.push({
                     dataType: 'M201 Y',
                     label: 'Y axis',
-                    origValue: match[4],
+                    origValue: ((restoreBackup) ? '' : match[4]),
                     value: match[4],
                     unit: 'mm/s2',
                     description: ''
@@ -215,7 +215,7 @@ $(function() {
                 self.eepromDataMaxAccel.push({
                     dataType: 'M201 Z',
                     label: 'Z axis',
-                    origValue: match[6],
+                    origValue: ((restoreBackup) ? '' : match[6]),
                     value: match[6],
                     unit: 'mm/s2',
                     description: ''
@@ -224,7 +224,7 @@ $(function() {
                 self.eepromDataMaxAccel.push({
                     dataType: 'M201 E',
                     label: 'Extruder',
-                    origValue: match[8],
+                    origValue: ((restoreBackup) ? '' : match[8]),
                     value: match[8],
                     unit: 'mm/s2',
                     description: ''
@@ -237,7 +237,7 @@ $(function() {
                 self.eepromData1.push({
                     dataType: 'M851 Z',
                     label: 'Z-Probe Offset',
-                    origValue: match[2],
+                    origValue: ((restoreBackup) ? '' : match[2]),
                     value: match[2],
                     unit: 'mm',
                     description: ''
@@ -250,7 +250,7 @@ $(function() {
                 self.eepromDataHoming.push({
                     dataType: 'M206 X',
                     label: 'X axis',
-                    origValue: match[2],
+                    origValue: ((restoreBackup) ? '' : match[2]),
                     value: match[2],
                     unit: 'mm',
                     description: ''
@@ -259,7 +259,7 @@ $(function() {
                 self.eepromDataHoming.push({
                     dataType: 'M206 Y',
                     label: 'Y axis',
-                    origValue: match[4],
+                    origValue: ((restoreBackup) ? '' : match[4]),
                     value: match[4],
                     unit: 'mm',
                     description: ''
@@ -268,7 +268,7 @@ $(function() {
                 self.eepromDataHoming.push({
                     dataType: 'M206 Z',
                     label: 'Z axis',
-                    origValue: match[6],
+                    origValue: ((restoreBackup) ? '' : match[6]),
                     value: match[6],
                     unit: 'mm',
                     description: ''
@@ -281,7 +281,7 @@ $(function() {
                 self.eepromDataEndstop.push({
                     dataType: 'M666 X',
                     label: 'X axis',
-                    origValue: match[2],
+                    origValue: ((restoreBackup) ? '' : match[2]),
                     value: match[2],
                     unit: 'mm',
                     description: ''
@@ -290,7 +290,7 @@ $(function() {
                 self.eepromDataEndstop.push({
                     dataType: 'M666 Y',
                     label: 'Y axis',
-                    origValue: match[4],
+                    origValue: ((restoreBackup) ? '' : match[4]),
                     value: match[4],
                     unit: 'mm',
                     description: ''
@@ -299,7 +299,7 @@ $(function() {
                 self.eepromDataEndstop.push({
                     dataType: 'M666 Z',
                     label: 'Z axis',
-                    origValue: match[6],
+                    origValue: ((restoreBackup) ? '' : match[6]),
                     value: match[6],
                     unit: 'mm',
                     description: ''
@@ -312,7 +312,7 @@ $(function() {
                 self.eepromDataDelta1.push({
                     dataType: 'M665 L',
                     label: 'Diag Rod',
-                    origValue: match[2],
+                    origValue: ((restoreBackup) ? '' : match[2]),
                     value: match[2],
                     unit: 'mm',
                     description: ''
@@ -321,7 +321,7 @@ $(function() {
                 self.eepromDataDelta1.push({
                     dataType: 'M665 R',
                     label: 'Radius',
-                    origValue: match[4],
+                    origValue: ((restoreBackup) ? '' : match[4]),
                     value: match[4],
                     unit: 'mm',
                     description: ''
@@ -330,7 +330,7 @@ $(function() {
                 self.eepromDataDelta1.push({
                     dataType: 'M665 S',
                     label: 'Segments',
-                    origValue: match[6],
+                    origValue: ((restoreBackup) ? '' : match[6]),
                     value: match[6],
                     unit: 's',
                     description: ''
@@ -339,7 +339,7 @@ $(function() {
                 self.eepromDataDelta2.push({
                     dataType: 'M665 A',
                     label: 'Diag A',
-                    origValue: match[8],
+                    origValue: ((restoreBackup) ? '' : match[8]),
                     value: match[8],
                     unit: 'mm',
                     description: ''
@@ -348,7 +348,7 @@ $(function() {
                 self.eepromDataDelta2.push({
                     dataType: 'M665 B',
                     label: 'Diag B',
-                    origValue: match[10],
+                    origValue: ((restoreBackup) ? '' : match[10]),
                     value: match[10],
                     unit: 'mm',
                     description: ''
@@ -357,7 +357,7 @@ $(function() {
                 self.eepromDataDelta2.push({
                     dataType: 'M665 C',
                     label: 'Diag C',
-                    origValue: match[12],
+                    origValue: ((restoreBackup) ? '' : match[12]),
                     value: match[12],
                     unit: 'mm',
                     description: ''
@@ -370,7 +370,7 @@ $(function() {
                 self.eepromDataLinear.push({
                     dataType: 'M900 K',
                     label: 'Linear Advance K',
-                    origValue: match[2],
+                    origValue: ((restoreBackup) ? '' : match[2]),
                     value: match[2],
                     unit: 'mm',
                     description: ''
@@ -379,7 +379,7 @@ $(function() {
                 self.eepromDataLinear.push({
                     dataType: 'M900 R',
                     label: 'Linear Ratio',
-                    origValue: match[4],
+                    origValue: ((restoreBackup) ? '' : match[4]),
                     value: match[4],
                     unit: 'mm',
                     description: ''
@@ -393,7 +393,7 @@ $(function() {
                     self.eepromDataFilament.push({
                         dataType: 'M200 D',
                         label: 'Diameter',
-                        origValue: match[2],
+                        origValue: ((restoreBackup) ? '' : match[2]),
                         value: match[2],
                         unit: 'mm',
                         description: ''
@@ -407,7 +407,7 @@ $(function() {
                 self.eepromDataPIDB.push({
                     dataType: 'M304 P',
                     label: 'Bed Kp',
-                    origValue: match[2],
+                    origValue: ((restoreBackup) ? '' : match[2]),
                     value: match[2],
                     unit: 'term',
                     description: ''
@@ -416,7 +416,7 @@ $(function() {
                 self.eepromDataPIDB.push({
                     dataType: 'M304 I',
                     label: 'Ki',
-                    origValue: match[4],
+                    origValue: ((restoreBackup) ? '' : match[4]),
                     value: match[4],
                     unit: 'term',
                     description: ''
@@ -425,7 +425,7 @@ $(function() {
                 self.eepromDataPIDB.push({
                     dataType: 'M304 D',
                     label: 'Kd',
-                    origValue: match[6],
+                    origValue: ((restoreBackup) ? '' : match[6]),
                     value: match[6],
                     unit: 'term',
                     description: ''
@@ -439,7 +439,7 @@ $(function() {
                     self.eepromData1.push({
                         dataType: 'M205 S',
                         label: 'Min feedrate',
-                        origValue: match[2],
+                        origValue: ((restoreBackup) ? '' : match[2]),
                         value: match[2],
                         unit: 'mm/s',
                         description: ''
@@ -448,7 +448,7 @@ $(function() {
                     self.eepromData1.push({
                         dataType: 'M205 T',
                         label: 'Min travel',
-                        origValue: match[4],
+                        origValue: ((restoreBackup) ? '' : match[4]),
                         value: match[4],
                         unit: 'mm/s',
                         description: ''
@@ -457,7 +457,7 @@ $(function() {
                     self.eepromData1.push({
                         dataType: 'M205 B',
                         label: 'Min segment',
-                        origValue: match[6],
+                        origValue: ((restoreBackup) ? '' : match[6]),
                         value: match[6],
                         unit: 'mm/s',
                         description: ''
@@ -466,7 +466,7 @@ $(function() {
                     self.eepromData2.push({
                         dataType: 'M205 X',
                         label: 'Max X jerk',
-                        origValue: match[8],
+                        origValue: ((restoreBackup) ? '' : match[8]),
                         value: match[8],
                         unit: 'mm/s',
                         description: ''
@@ -475,7 +475,7 @@ $(function() {
                     self.eepromData2.push({
                         dataType: 'M205 Y',
                         label: 'Max Y jerk',
-                        origValue: match[10],
+                        origValue: ((restoreBackup) ? '' : match[10]),
                         value: match[10],
                         unit: 'mm/s',
                         description: ''
@@ -484,7 +484,7 @@ $(function() {
                     self.eepromData2.push({
                         dataType: 'M205 Z',
                         label: 'Max Z jerk',
-                        origValue: match[12],
+                        origValue: ((restoreBackup) ? '' : match[12]),
                         value: match[12],
                         unit: 'mm/s',
                         description: ''
@@ -493,7 +493,7 @@ $(function() {
                     self.eepromData2.push({
                         dataType: 'M205 E',
                         label: 'Max E jerk',
-                        origValue: match[14],
+                        origValue: ((restoreBackup) ? '' : match[14]),
                         value: match[14],
                         unit: 'mm/s',
                         description: ''
@@ -506,7 +506,7 @@ $(function() {
                     self.eepromDataAccel.push({
                         dataType: 'M204 P',
                         label: 'Printing moves',
-                        origValue: match[2],
+                        origValue: ((restoreBackup) ? '' : match[2]),
                         value: match[2],
                         unit: 'mm/s2',
                         description: ''
@@ -515,7 +515,7 @@ $(function() {
                     self.eepromDataAccel.push({
                         dataType: 'M204 R',
                         label: 'Retract',
-                        origValue: match[4],
+                        origValue: ((restoreBackup) ? '' : match[4]),
                         value: match[4],
                         unit: 'mm/s2',
                         description: ''
@@ -524,7 +524,7 @@ $(function() {
                     self.eepromDataAccel.push({
                         dataType: 'M204 T',
                         label: 'Travel',
-                        origValue: match[6],
+                        origValue: ((restoreBackup) ? '' : match[6]),
                         value: match[6],
                         unit: 'mm/s2',
                         description: ''
@@ -537,7 +537,7 @@ $(function() {
                     self.eepromDataPID.push({
                         dataType: 'M301 P',
                         label: 'Hotend Kp',
-                        origValue: match[2],
+                        origValue: ((restoreBackup) ? '' : match[2]),
                         value: match[2],
                         unit: 'term',
                         description: ''
@@ -546,7 +546,7 @@ $(function() {
                     self.eepromDataPID.push({
                         dataType: 'M301 I',
                         label: 'Ki',
-                        origValue: match[4],
+                        origValue: ((restoreBackup) ? '' : match[4]),
                         value: match[4],
                         unit: 'term',
                         description: ''
@@ -555,7 +555,7 @@ $(function() {
                     self.eepromDataPID.push({
                         dataType: 'M301 D',
                         label: 'Kd',
-                        origValue: match[6],
+                        origValue: ((restoreBackup) ? '' : match[6]),
                         value: match[6],
                         unit: 'term',
                         description: ''
@@ -568,7 +568,7 @@ $(function() {
                     self.eepromDataMaterialHS0.push({
                         dataType: 'M145 S0 H',
                         label: 'S0 Hotend Temperature',
-                        origValue: match[2],
+                        origValue: ((restoreBackup) ? '' : match[2]),
                         value: match[2],
                         unit: '',
                         description: ''
@@ -576,7 +576,7 @@ $(function() {
                     self.eepromDataMaterialHS0.push({
                         dataType: 'M145 S0 B',
                         label: 'Bed Temperature',
-                        origValue: match[4],
+                        origValue: ((restoreBackup) ? '' : match[4]),
                         value: match[4],
                         unit: '',
                         description: ''
@@ -584,7 +584,7 @@ $(function() {
                     self.eepromDataMaterialHS0.push({
                         dataType: 'M145 S0 F',
                         label: 'Fan Speed',
-                        origValue: match[6],
+                        origValue: ((restoreBackup) ? '' : match[6]),
                         value: match[6],
                         unit: '',
                         description: ''
@@ -596,7 +596,7 @@ $(function() {
                     self.eepromDataMaterialHS1.push({
                         dataType: 'M145 S1 H',
                         label: 'S1 Hotend Temperature',
-                        origValue: match[2],
+                        origValue: ((restoreBackup) ? '' : match[2]),
                         value: match[2],
                         unit: '',
                         description: ''
@@ -604,7 +604,7 @@ $(function() {
                     self.eepromDataMaterialHS1.push({
                         dataType: 'M145 S1 B',
                         label: 'Bed Temperature',
-                        origValue: match[4],
+                        origValue: ((restoreBackup) ? '' : match[4]),
                         value: match[4],
                         unit: '',
                         description: ''
@@ -612,7 +612,7 @@ $(function() {
                     self.eepromDataMaterialHS1.push({
                         dataType: 'M145 S1 F',
                         label: 'Fan Speed',
-                        origValue: match[6],
+                        origValue: ((restoreBackup) ? '' : match[6]),
                         value: match[6],
                         unit: '',
                         description: ''
@@ -624,7 +624,7 @@ $(function() {
                     self.eepromDataMaterialHS2.push({
                         dataType: 'M145 S2 H',
                         label: 'S2 Hotend Temperature',
-                        origValue: match[2],
+                        origValue: ((restoreBackup) ? '' : match[2]),
                         value: match[2],
                         unit: '',
                         description: ''
@@ -632,7 +632,7 @@ $(function() {
                     self.eepromDataMaterialHS2.push({
                         dataType: 'M145 S2 B',
                         label: 'Bed Temperature',
-                        origValue: match[4],
+                        origValue: ((restoreBackup) ? '' : match[4]),
                         value: match[4],
                         unit: '',
                         description: ''
@@ -640,7 +640,7 @@ $(function() {
                     self.eepromDataMaterialHS2.push({
                         dataType: 'M145 S2 F',
                         label: 'Fan Speed',
-                        origValue: match[6],
+                        origValue: ((restoreBackup) ? '' : match[6]),
                         value: match[6],
                         unit: '',
                         description: ''
@@ -653,7 +653,7 @@ $(function() {
                     self.eepromDataLevel.push({
                         dataType: 'M420 S',
                         label: 'Auto Bed Leveling',
-                        origValue: match[2],
+                        origValue: ((restoreBackup) ? '' : match[2]),
                         value: match[2],
                         unit: '0/1',
                         description: ''
@@ -663,7 +663,7 @@ $(function() {
                         self.eepromDataLevel.push({
                             dataType: 'M420 Z',
                             label: 'Fade height',
-                            origValue: match[4],
+                            origValue: ((restoreBackup) ? '' : match[4]),
                             value: match[4],
                             unit: 'mm',
                             description: ''
@@ -677,7 +677,7 @@ $(function() {
                     self.eepromData1.push({
                         dataType: 'M205 S',
                         label: 'Min feedrate',
-                        origValue: match[2],
+                        origValue: ((restoreBackup) ? '' : match[2]),
                         value: match[2],
                         unit: 'mm/s',
                         description: ''
@@ -686,7 +686,7 @@ $(function() {
                     self.eepromData1.push({
                         dataType: 'M205 T',
                         label: 'Min travel',
-                        origValue: match[4],
+                        origValue: ((restoreBackup) ? '' : match[4]),
                         value: match[4],
                         unit: 'mm/s',
                         description: ''
@@ -695,7 +695,7 @@ $(function() {
                     self.eepromData1.push({
                         dataType: 'M205 B',
                         label: 'Min segment',
-                        origValue: match[6],
+                        origValue: ((restoreBackup) ? '' : match[6]),
                         value: match[6],
                         unit: 'mm/s',
                         description: ''
@@ -704,7 +704,7 @@ $(function() {
                     self.eepromData2.push({
                         dataType: 'M205 X',
                         label: 'Max X jerk',
-                        origValue: match[8],
+                        origValue: ((restoreBackup) ? '' : match[8]),
                         value: match[8],
                         unit: 'mm/s',
                         description: ''
@@ -713,7 +713,7 @@ $(function() {
                     self.eepromData2.push({
                         dataType: 'M205 Y',
                         label: 'Max Y jerk',
-                        origValue: match[10],
+                        origValue: ((restoreBackup) ? '' : match[10]),
                         value: match[10],
                         unit: 'mm/s',
                         description: ''
@@ -722,7 +722,7 @@ $(function() {
                     self.eepromData2.push({
                         dataType: 'M205 Z',
                         label: 'Max Z jerk',
-                        origValue: match[12],
+                        origValue: ((restoreBackup) ? '' : match[12]),
                         value: match[12],
                         unit: 'mm/s',
                         description: ''
@@ -731,7 +731,7 @@ $(function() {
                     self.eepromData2.push({
                         dataType: 'M205 E',
                         label: 'Max E jerk',
-                        origValue: match[14],
+                        origValue: ((restoreBackup) ? '' : match[14]),
                         value: match[14],
                         unit: 'mm/s',
                         description: ''
@@ -744,7 +744,7 @@ $(function() {
                     self.eepromDataAccel.push({
                         dataType: 'M204 P',
                         label: 'Printing moves',
-                        origValue: match[2],
+                        origValue: ((restoreBackup) ? '' : match[2]),
                         value: match[2],
                         unit: 'mm/s2',
                         description: ''
@@ -753,7 +753,7 @@ $(function() {
                     self.eepromDataAccel.push({
                         dataType: 'M204 R',
                         label: 'Retract',
-                        origValue: match[4],
+                        origValue: ((restoreBackup) ? '' : match[4]),
                         value: match[4],
                         unit: 'mm/s2',
                         description: ''
@@ -762,7 +762,7 @@ $(function() {
                     self.eepromDataAccel.push({
                         dataType: 'M204 T',
                         label: 'Travel',
-                        origValue: match[6],
+                        origValue: ((restoreBackup) ? '' : match[6]),
                         value: match[6],
                         unit: 'mm/s2',
                         description: ''
@@ -775,7 +775,7 @@ $(function() {
                     self.eepromDataPID.push({
                         dataType: 'M301 P',
                         label: 'Hotend Kp',
-                        origValue: match[2],
+                        origValue: ((restoreBackup) ? '' : match[2]),
                         value: match[2],
                         unit: 'term',
                         description: ''
@@ -784,7 +784,7 @@ $(function() {
                     self.eepromDataPID.push({
                         dataType: 'M301 I',
                         label: 'Ki',
-                        origValue: match[4],
+                        origValue: ((restoreBackup) ? '' : match[4]),
                         value: match[4],
                         unit: 'term',
                         description: ''
@@ -793,7 +793,7 @@ $(function() {
                     self.eepromDataPID.push({
                         dataType: 'M301 D',
                         label: 'Kd',
-                        origValue: match[6],
+                        origValue: ((restoreBackup) ? '' : match[6]),
                         value: match[6],
                         unit: 'term',
                         description: ''
@@ -802,7 +802,7 @@ $(function() {
                     self.eepromDataPID.push({
                         dataType: 'M301 C',
                         label: 'Kc',
-                        origValue: match[8],
+                        origValue: ((restoreBackup) ? '' : match[8]),
                         value: match[8],
                         unit: 'term',
                         description: ''
@@ -811,7 +811,7 @@ $(function() {
                     self.eepromDataPID.push({
                         dataType: 'M301 L',
                         label: 'LPQ',
-                        origValue: match[10],
+                        origValue: ((restoreBackup) ? '' : match[10]),
                         value: match[10],
                         unit: 'len',
                         description: ''
@@ -824,7 +824,7 @@ $(function() {
                     self.eepromDataMaterialHS0.push({
                         dataType: 'M145 M0 H',
                         label: 'M0 Hotend Temperature',
-                        origValue: match[2],
+                        origValue: ((restoreBackup) ? '' : match[2]),
                         value: match[2],
                         unit: '',
                         description: ''
@@ -832,7 +832,7 @@ $(function() {
                     self.eepromDataMaterialHS0.push({
                         dataType: 'M145 M0 B',
                         label: 'Bed Temperature',
-                        origValue: match[4],
+                        origValue: ((restoreBackup) ? '' : match[4]),
                         value: match[4],
                         unit: '',
                         description: ''
@@ -840,7 +840,7 @@ $(function() {
                     self.eepromDataMaterialHS0.push({
                         dataType: 'M145 M0 F',
                         label: 'Fan Speed',
-                        origValue: match[6],
+                        origValue: ((restoreBackup) ? '' : match[6]),
                         value: match[6],
                         unit: '',
                         description: ''
@@ -852,7 +852,7 @@ $(function() {
                     self.eepromDataMaterialHS1.push({
                         dataType: 'M145 M1 H',
                         label: 'M1 Hotend Temperature',
-                        origValue: match[2],
+                        origValue: ((restoreBackup) ? '' : match[2]),
                         value: match[2],
                         unit: '',
                         description: ''
@@ -860,7 +860,7 @@ $(function() {
                     self.eepromDataMaterialHS1.push({
                         dataType: 'M145 M1 B',
                         label: 'Bed Temperature',
-                        origValue: match[4],
+                        origValue: ((restoreBackup) ? '' : match[4]),
                         value: match[4],
                         unit: '',
                         description: ''
@@ -868,7 +868,7 @@ $(function() {
                     self.eepromDataMaterialHS1.push({
                         dataType: 'M145 M1 F',
                         label: 'Fan Speed',
-                        origValue: match[6],
+                        origValue: ((restoreBackup) ? '' : match[6]),
                         value: match[6],
                         unit: '',
                         description: ''
@@ -880,7 +880,7 @@ $(function() {
                     self.eepromDataMaterialHS2.push({
                         dataType: 'M145 M2 H',
                         label: 'M2 Hotend Temperature',
-                        origValue: match[2],
+                        origValue: ((restoreBackup) ? '' : match[2]),
                         value: match[2],
                         unit: '',
                         description: ''
@@ -888,7 +888,7 @@ $(function() {
                     self.eepromDataMaterialHS2.push({
                         dataType: 'M145 M2 B',
                         label: 'Bed Temperature',
-                        origValue: match[4],
+                        origValue: ((restoreBackup) ? '' : match[4]),
                         value: match[4],
                         unit: '',
                         description: ''
@@ -896,7 +896,7 @@ $(function() {
                     self.eepromDataMaterialHS2.push({
                         dataType: 'M145 M2 F',
                         label: 'Fan Speed',
-                        origValue: match[6],
+                        origValue: ((restoreBackup) ? '' : match[6]),
                         value: match[6],
                         unit: '',
                         description: ''
@@ -909,7 +909,7 @@ $(function() {
                     self.eepromData1.push({
                         dataType: 'M205 S',
                         label: 'Min feedrate',
-                        origValue: match[2],
+                        origValue: ((restoreBackup) ? '' : match[2]),
                         value: match[2],
                         unit: 'mm/s',
                         description: ''
@@ -918,7 +918,7 @@ $(function() {
                     self.eepromData1.push({
                         dataType: 'M205 T',
                         label: 'Min travel',
-                        origValue: match[4],
+                        origValue: ((restoreBackup) ? '' : match[4]),
                         value: match[4],
                         unit: 'mm/s',
                         description: ''
@@ -927,7 +927,7 @@ $(function() {
                     self.eepromData1.push({
                         dataType: 'M205 B',
                         label: 'Min segment',
-                        origValue: match[6],
+                        origValue: ((restoreBackup) ? '' : match[6]),
                         value: match[6],
                         unit: 'mm/s',
                         description: ''
@@ -936,7 +936,7 @@ $(function() {
                     self.eepromData2.push({
                         dataType: 'M205 X',
                         label: 'Max X jerk',
-                        origValue: match[8],
+                        origValue: ((restoreBackup) ? '' : match[8]),
                         value: match[8],
                         unit: 'mm/s',
                         description: ''
@@ -945,7 +945,7 @@ $(function() {
                     self.eepromData2.push({
                         dataType: 'M205 Z',
                         label: 'Max Z jerk',
-                        origValue: match[10],
+                        origValue: ((restoreBackup) ? '' : match[10]),
                         value: match[10],
                         unit: 'mm/s',
                         description: ''
@@ -954,7 +954,7 @@ $(function() {
                     self.eepromData2.push({
                         dataType: 'M205 E',
                         label: 'Max E jerk',
-                        origValue: match[12],
+                        origValue: ((restoreBackup) ? '' : match[12]),
                         value: match[12],
                         unit: 'mm/s',
                         description: ''
@@ -967,7 +967,7 @@ $(function() {
                     self.eepromDataAccel.push({
                         dataType: 'M204 S',
                         label: 'Printing moves',
-                        origValue: match[2],
+                        origValue: ((restoreBackup) ? '' : match[2]),
                         value: match[2],
                         unit: 'mm/s2',
                         description: ''
@@ -976,7 +976,7 @@ $(function() {
                     self.eepromDataAccel.push({
                         dataType: 'M204 T',
                         label: 'Travel',
-                        origValue: match[4],
+                        origValue: ((restoreBackup) ? '' : match[4]),
                         value: match[4],
                         unit: 'mm/s2',
                         description: ''
@@ -989,7 +989,7 @@ $(function() {
                     self.eepromDataPID.push({
                         dataType: 'M301 P',
                         label: 'Hotend Kp',
-                        origValue: match[2],
+                        origValue: ((restoreBackup) ? '' : match[2]),
                         value: match[2],
                         unit: 'term',
                         description: ''
@@ -998,7 +998,7 @@ $(function() {
                     self.eepromDataPID.push({
                         dataType: 'M301 I',
                         label: 'Ki',
-                        origValue: match[4],
+                        origValue: ((restoreBackup) ? '' : match[4]),
                         value: match[4],
                         unit: 'term',
                         description: ''
@@ -1007,7 +1007,7 @@ $(function() {
                     self.eepromDataPID.push({
                         dataType: 'M301 D',
                         label: 'Kd',
-                        origValue: match[6],
+                        origValue: ((restoreBackup) ? '' : match[6]),
                         value: match[6],
                         unit: 'term',
                         description: ''
@@ -1020,7 +1020,7 @@ $(function() {
                     self.eepromData1.push({
                         dataType: 'M205 S',
                         label: 'Min feedrate',
-                        origValue: match[2],
+                        origValue: ((restoreBackup) ? '' : match[2]),
                         value: match[2],
                         unit: 'mm/s',
                         description: ''
@@ -1029,7 +1029,7 @@ $(function() {
                     self.eepromData1.push({
                         dataType: 'M205 T',
                         label: 'Min travel',
-                        origValue: match[4],
+                        origValue: ((restoreBackup) ? '' : match[4]),
                         value: match[4],
                         unit: 'mm/s',
                         description: ''
@@ -1038,7 +1038,7 @@ $(function() {
                     self.eepromData1.push({
                         dataType: 'M205 B',
                         label: 'Min segment',
-                        origValue: match[6],
+                        origValue: ((restoreBackup) ? '' : match[6]),
                         value: match[6],
                         unit: 'mm/s',
                         description: ''
@@ -1047,7 +1047,7 @@ $(function() {
                     self.eepromData2.push({
                         dataType: 'M205 X',
                         label: 'Max X jerk',
-                        origValue: match[8],
+                        origValue: ((restoreBackup) ? '' : match[8]),
                         value: match[8],
                         unit: 'mm/s',
                         description: ''
@@ -1056,7 +1056,7 @@ $(function() {
                     self.eepromData2.push({
                         dataType: 'M205 Y',
                         label: 'Max Y jerk',
-                        origValue: match[10],
+                        origValue: ((restoreBackup) ? '' : match[10]),
                         value: match[10],
                         unit: 'mm/s',
                         description: ''
@@ -1065,7 +1065,7 @@ $(function() {
                     self.eepromData2.push({
                         dataType: 'M205 Z',
                         label: 'Max Z jerk',
-                        origValue: match[12],
+                        origValue: ((restoreBackup) ? '' : match[12]),
                         value: match[12],
                         unit: 'mm/s',
                         description: ''
@@ -1074,7 +1074,7 @@ $(function() {
                     self.eepromData2.push({
                         dataType: 'M205 E',
                         label: 'Max E jerk',
-                        origValue: match[14],
+                        origValue: ((restoreBackup) ? '' : match[14]),
                         value: match[14],
                         unit: 'mm/s',
                         description: ''
@@ -1087,7 +1087,7 @@ $(function() {
                     self.eepromDataAccel.push({
                         dataType: 'M204 P',
                         label: 'Printing moves',
-                        origValue: match[2],
+                        origValue: ((restoreBackup) ? '' : match[2]),
                         value: match[2],
                         unit: 'mm/s2',
                         description: ''
@@ -1096,7 +1096,7 @@ $(function() {
                     self.eepromDataAccel.push({
                         dataType: 'M204 R',
                         label: 'Retract',
-                        origValue: match[4],
+                        origValue: ((restoreBackup) ? '' : match[4]),
                         value: match[4],
                         unit: 'mm/s2',
                         description: ''
@@ -1105,7 +1105,7 @@ $(function() {
                     self.eepromDataAccel.push({
                         dataType: 'M204 T',
                         label: 'Travel',
-                        origValue: match[6],
+                        origValue: ((restoreBackup) ? '' : match[6]),
                         value: match[6],
                         unit: 'mm/s2',
                         description: ''
@@ -1118,7 +1118,7 @@ $(function() {
                     self.eepromDataPID.push({
                         dataType: 'M301 P',
                         label: 'Hotend Kp',
-                        origValue: match[2],
+                        origValue: ((restoreBackup) ? '' : match[2]),
                         value: match[2],
                         unit: 'term',
                         description: ''
@@ -1127,7 +1127,7 @@ $(function() {
                     self.eepromDataPID.push({
                         dataType: 'M301 I',
                         label: 'Ki',
-                        origValue: match[4],
+                        origValue: ((restoreBackup) ? '' : match[4]),
                         value: match[4],
                         unit: 'term',
                         description: ''
@@ -1136,7 +1136,7 @@ $(function() {
                     self.eepromDataPID.push({
                         dataType: 'M301 D',
                         label: 'Kd',
-                        origValue: match[6],
+                        origValue: ((restoreBackup) ? '' : match[6]),
                         value: match[6],
                         unit: 'term',
                         description: ''
@@ -1149,7 +1149,7 @@ $(function() {
                     self.eepromDataMaterialHS0.push({
                         dataType: 'M145 S0 H',
                         label: 'S0 Hotend Temperature',
-                        origValue: match[2],
+                        origValue: ((restoreBackup) ? '' : match[2]),
                         value: match[2],
                         unit: '',
                         description: ''
@@ -1157,7 +1157,7 @@ $(function() {
                     self.eepromDataMaterialHS0.push({
                         dataType: 'M145 S0 B',
                         label: 'Bed Temperature',
-                        origValue: match[4],
+                        origValue: ((restoreBackup) ? '' : match[4]),
                         value: match[4],
                         unit: '',
                         description: ''
@@ -1165,7 +1165,7 @@ $(function() {
                     self.eepromDataMaterialHS0.push({
                         dataType: 'M145 S0 F',
                         label: 'Fan Speed',
-                        origValue: match[6],
+                        origValue: ((restoreBackup) ? '' : match[6]),
                         value: match[6],
                         unit: '',
                         description: ''
@@ -1177,7 +1177,7 @@ $(function() {
                     self.eepromDataMaterialHS1.push({
                         dataType: 'M145 S1 H',
                         label: 'S1 Hotend Temperature',
-                        origValue: match[2],
+                        origValue: ((restoreBackup) ? '' : match[2]),
                         value: match[2],
                         unit: '',
                         description: ''
@@ -1185,7 +1185,7 @@ $(function() {
                     self.eepromDataMaterialHS1.push({
                         dataType: 'M145 S1 B',
                         label: 'Bed Temperature',
-                        origValue: match[4],
+                        origValue: ((restoreBackup) ? '' : match[4]),
                         value: match[4],
                         unit: '',
                         description: ''
@@ -1193,7 +1193,7 @@ $(function() {
                     self.eepromDataMaterialHS1.push({
                         dataType: 'M145 S1 F',
                         label: 'Fan Speed',
-                        origValue: match[6],
+                        origValue: ((restoreBackup) ? '' : match[6]),
                         value: match[6],
                         unit: '',
                         description: ''
@@ -1205,7 +1205,7 @@ $(function() {
                     self.eepromDataMaterialHS2.push({
                         dataType: 'M145 S2 H',
                         label: 'S2 Hotend Temperature',
-                        origValue: match[2],
+                        origValue: ((restoreBackup) ? '' : match[2]),
                         value: match[2],
                         unit: '',
                         description: ''
@@ -1213,7 +1213,7 @@ $(function() {
                     self.eepromDataMaterialHS2.push({
                         dataType: 'M145 S2 B',
                         label: 'Bed Temperature',
-                        origValue: match[4],
+                        origValue: ((restoreBackup) ? '' : match[4]),
                         value: match[4],
                         unit: '',
                         description: ''
@@ -1221,7 +1221,7 @@ $(function() {
                     self.eepromDataMaterialHS2.push({
                         dataType: 'M145 S2 F',
                         label: 'Fan Speed',
-                        origValue: match[6],
+                        origValue: ((restoreBackup) ? '' : match[6]),
                         value: match[6],
                         unit: '',
                         description: ''
@@ -1234,7 +1234,7 @@ $(function() {
                     self.eepromDataLevel.push({
                         dataType: 'M420 S',
                         label: 'Auto Bed Leveling',
-                        origValue: match[2],
+                        origValue: ((restoreBackup) ? '' : match[2]),
                         value: match[2],
                         unit: '0/1',
                         description: ''
@@ -1244,7 +1244,7 @@ $(function() {
                         self.eepromDataLevel.push({
                             dataType: 'M420 Z',
                             label: 'Fade height',
-                            origValue: match[4],
+                            origValue: ((restoreBackup) ? '' : match[4]),
                             value: match[4],
                             unit: 'mm',
                             description: ''
@@ -1482,7 +1482,7 @@ $(function() {
                         self.eepromDataLinear([]);
 
                         _.each(self.backupConfig.split('\n'), function (line) {
-                            self.eepromFieldParse(line);
+                            self.eepromFieldParse(line, true);
                         });
                     };
                 })(f);
@@ -1670,6 +1670,7 @@ $(function() {
             hasChangedEepromForm = false;
 
             self.control.sendCustomCommand({ command: "M504" });
+            self.loadEeprom();
 
             new PNotify({
                 title: 'EEPROM Marlin',
