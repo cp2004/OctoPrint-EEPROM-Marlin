@@ -1268,7 +1268,7 @@ $(function() {
 
                 var match = self.firmwareCapRegEx.exec(line);
                 if (match !== null) {
-                    self.FIRMWARE_INFO(self.firmware_info() + '\n' + line.replace('Recv: Cap:', ''));
+                    self.FIRMWARE_INFO(self.firmware_info() + '\n<br>' + line.replace('Recv: Cap:', ''));
                 }
             });
         };
@@ -1438,6 +1438,7 @@ $(function() {
                 message: 'Do you really want to reset EEPROM settings?',
                 onproceed: function() {
                     self.control.sendCustomCommand({ command: "M502" });
+                    self.control.sendCustomCommand({ command: "M500" });
                     self.control.sendCustomCommand({ command: "M504" });
 
                     new PNotify({
