@@ -10,6 +10,7 @@ $(function() {
         self.execBackup = false;
         self.startBackup = false;
         self.backupConfig = "";
+        self.stateControls = true;
 
         self.setRegExVars = function(version) {
             // All versions
@@ -114,6 +115,11 @@ $(function() {
         };
 
         self.eepromFieldParse = function(line, restoreBackup = false) {
+            var matchOK = self.eepromOKRegEx.exec(line);
+            if (matchOK) {
+                setTimeout(function() {self.setControls(true); }, 2000);
+            }
+
             // M92 steps per unit
             var match = self.eepromM92RegEx.exec(line);
             if (match) {
@@ -1342,6 +1348,7 @@ $(function() {
                         element.click();
 
                         document.body.removeChild(element);
+                        setTimeout(function() {self.setControls(true); }, 2000);
                     }
                 }
 
@@ -1397,11 +1404,13 @@ $(function() {
 
         self.onEventConnected = function() {
             self._requestFirmwareInfo();
-            setTimeout(function() {self.loadEeprom(); }, 5000);
+            // removed for prevent dual Load
+            //setTimeout(function() {self.loadEeprom(); }, 5000);
         };
 
         self.onStartupComplete = function() {
-            setTimeout(function() {self.loadEeprom(); }, 5000);
+            // removed for prevent dual Load
+            //setTimeout(function() {self.loadEeprom(); }, 5000);
         };
 
         self.onEventDisconnected = function() {
@@ -1409,6 +1418,9 @@ $(function() {
         };
 
         self.backupEeprom = function() {
+            // prevent dual load
+            self.setControls(false);
+
             self.execBackup = true;
             self.backupConfig = "";
 
@@ -1449,6 +1461,9 @@ $(function() {
             showConfirmationDialog({
                 message: 'Do you really want to reset EEPROM settings?',
                 onproceed: function() {
+                    // prevent dual load
+                    self.setControls(false);
+
                     self.control.sendCustomCommand({ command: "M502" });
                     self.control.sendCustomCommand({ command: "M500" });
                     self.control.sendCustomCommand({ command: "M504" });
@@ -1473,6 +1488,9 @@ $(function() {
 
                 reader.onload = (function(cFile) {
                     return function(e) {
+                        // prevent dual load
+                        self.setControls(false);
+
                         self.backupConfig = e.target.result;
 
                         self.eepromData1([]);
@@ -1505,7 +1523,22 @@ $(function() {
             $('#eeprom_marlin_upload').addClass("btn-primary");
         };
 
+        self.setControls = function(state) {
+            if (self.stateControls != state) {
+                self.stateControls = state;
+
+                $('#eeprom_marlin_load').prop('disabled', !state);
+                $('#eeprom_marlin_upload').prop('disabled', !state);
+                $('#eeprom_marlin_backup').prop('disabled', !state);
+                $('#eeprom_marlin_restore').prop('disabled', !state);
+                $('#eeprom_marlin_reset').prop('disabled', !state);
+            }
+        };
+
         self.loadEeprom = function() {
+            // prevent dual load
+            self.setControls(false);
+
             self.eepromData1([]);
             self.eepromData2([]);
             self.eepromDataLevel([]);
@@ -1532,6 +1565,9 @@ $(function() {
         };
 
         self.saveEeprom = function()  {
+            // prevent dual load
+            self.setControls(false);
+
             var cmd = 'M500';
             var eepromData = self.eepromData1();
             _.each(eepromData, function(data) {
