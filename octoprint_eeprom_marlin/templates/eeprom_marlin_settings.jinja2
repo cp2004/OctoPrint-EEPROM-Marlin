@@ -2,8 +2,8 @@
 This plugin is designed to get, change and save the values in the EEPROM of your Marlin Firmware based Machine.<br><br>
 <span style="color: red" data-bind="visible: isConnected() && !isMarlinFirmware()">Sorry. This plugin does not work with your machine, only Marlin based firmware</span>
 <span style="color: red" data-bind="visible: !isConnected()">Printer not connected.</span>
-
-<div data-bind="visible: isConnected() && isMarlinFirmware()">
+<span style="color: red" data-bind="visible: isPrinting()">EEPROM settings are disabled if the printer is printing</span>
+<div data-bind="visible: isConnected() && isMarlinFirmware() && !isPrinting() ">
     <!--b>Firmware:</b> <span data-bind="text: firmware_name()"></span!-->
     <form class="form-horizontal">
         <button id="eeprom_marlin_load" data-bind="enabled: isMarlinFirmware, click: loadEeprom" class="btn icon-download-alt" aria-hidden="true">&nbsp;{{ _('Load') }}</button>

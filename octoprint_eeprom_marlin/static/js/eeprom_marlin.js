@@ -79,6 +79,10 @@ $(function() {
             self.connection.isReady() || self.connection.isPaused();
         });
 
+        self.isPrinting = ko.computed(function() {
+           return self.connection.isPrinting() || self.connection.isPaused();
+        });
+
         self.eepromData1 = ko.observableArray([]);
         self.eepromData2 = ko.observableArray([]);
         self.eepromDataLevel = ko.observableArray([]);
@@ -1730,12 +1734,16 @@ $(function() {
         };
 
         self._requestFirmwareInfo = function() {
-            self.control.sendCustomCommand({ command: "M115" });
+            if (!self.isPrinting()) {
+                self.control.sendCustomCommand({ command: "M115" });
+            }
         };
 
         self._requestEepromData = function() {
-            self.control.sendCustomCommand({ command: "M504" });
-            self.control.sendCustomCommand({ command: "M501" });
+            if (!self.isPrinting()) {
+                self.control.sendCustomCommand({ command: "M504" });
+                self.control.sendCustomCommand({ command: "M501" });
+            }
         };
 
         self._requestSaveDataToEeprom = function(data_type, value) {
