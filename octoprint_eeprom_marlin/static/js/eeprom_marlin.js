@@ -1755,7 +1755,7 @@ $(function() {
     OCTOPRINT_VIEWMODELS.push([
         EepromMarlinViewModel,
         ["controlViewModel", "connectionViewModel"],
-        "#settings_plugin_eeprom_marlin"
+        "#tab_plugin_eeprom_marlin"
     ]);
 });
 

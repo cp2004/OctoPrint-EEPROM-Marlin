@@ -27,7 +27,9 @@ readers do not read off random characters that represent icons */
 .fa-custom-bahai:before {  /* Star shape */
   content: "\f666";
 }
-
+.fa-custom-hand-point-right:before {
+  content: "\f0a4";
+}
 
 @font-face {
   font-family: 'Font Awesome 5 Brands';
