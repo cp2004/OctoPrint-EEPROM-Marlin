@@ -1,16 +1,15 @@
 <h4>EEPROM Marlin Editor</h4>
-This plugin is designed to get, change and save the values in the EEPROM of your Marlin Firmware based Machine.<br><br>
 <span style="color: red" data-bind="visible: isConnected() && !isMarlinFirmware()">Sorry. This plugin does not work with your machine, only Marlin based firmware</span>
 <span style="color: red" data-bind="visible: !isConnected()">Printer not connected.</span>
 <span style="color: red" data-bind="visible: isPrinting()">EEPROM settings are disabled if the printer is printing</span>
 <div data-bind="visible: isConnected() && isMarlinFirmware() && !isPrinting() ">
     <!--b>Firmware:</b> <span data-bind="text: firmware_name()"></span!-->
     <form class="form-horizontal">
-        <button id="eeprom_marlin_load" data-bind="enabled: isMarlinFirmware, click: loadEeprom" class="btn icon-download-alt" aria-hidden="true">&nbsp;{{ _('Load') }}</button>
-        <button id="eeprom_marlin_upload" data-bind="enabled: isMarlinFirmware, click: saveEeprom" class="btn icon-upload-alt" aria-hidden="true">&nbsp;{{ _('Upload') }}</button>
-        <button id="eeprom_marlin_backup" data-bind="enabled: isMarlinFirmware, click: backupEeprom" class="btn icon-cloud-download" aria-hidden="true">&nbsp;{{ _('Backup') }}</button>
-        <button id="eeprom_marlin_restore" data-bind="enabled: isMarlinFirmware, click: restoreEeprom" class="btn icon-cloud-upload" aria-hidden="true">&nbsp;{{ _('Restore') }}</button>
-        <button id="eeprom_marlin_reset" data-bind="enabled: isMarlinFirmware, click: resetEeprom" class="btn btn-danger icon-eraser pull-right" aria-hidden="true">&nbsp;{{ _('Reset') }}</button>
+        <button id="eeprom_marlin_load" data-bind="enabled: isMarlinFirmware, click: loadEeprom" class="btn" aria-hidden="true"><i class="fa fa-refresh" aria-hidden="true"></i> {{ _('Load') }}</button>
+        <button id="eeprom_marlin_upload" data-bind="enabled: isMarlinFirmware, click: saveEeprom" class="btn" aria-hidden="true"><i class="fa fa-upload" aria-hidden="true"></i> {{ _('Upload') }}</button>
+        <button id="eeprom_marlin_backup" data-bind="enabled: isMarlinFirmware, click: backupEeprom" class="btn" aria-hidden="true"><i class="fa fa-cloud-download" aria-hidden="true"></i> {{ _('Backup') }}</button>
+        <button id="eeprom_marlin_restore" data-bind="enabled: isMarlinFirmware, click: restoreEeprom" class="btn" aria-hidden="true"><i class="fa fa-upload" aria-hidden="true"></i> {{ _('Restore') }}</button>
+        <button id="eeprom_marlin_reset" data-bind="enabled: isMarlinFirmware, click: resetEeprom" class="btn btn-danger pull-right" aria-hidden="true"><i class="fa fa-eraser" aria-hidden="true"></i> {{ _('Reset') }}</button>
     </form>
     <div style="display: none;"><input type="file" id="fileBackup" name="fileBackup" /></div>
     <ul class="nav nav-pills">
