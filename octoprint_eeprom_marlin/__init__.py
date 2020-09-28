@@ -23,23 +23,23 @@ class EEPROMMarlinPlugin(octoprint.plugin.AssetPlugin,
 
     def get_update_information(self):
         return dict(
-            systemcommandeditor=dict(
-                displayName="EEPROM Marlin Editor Plugin",
+            eeprom_marlin=dict(
+                displayName="Marlin EEPROM Editor",
                 displayVersion=self._plugin_version,
 
                 # version check: github repository
                 type="github_release",
-                user="amsbr",
+                user="cp2004",
                 repo="OctoPrint-EEPROM-Marlin",
                 current=self._plugin_version,
 
                 # update method: pip
-                pip="https://github.com/amsbr/OctoPrint-EEPROM-Marlin/archive/{target_version}.zip"
+                pip="https://github.com/cp2004/OctoPrint-EEPROM-Marlin/archive/{target_version}.zip"
             )
         )
 
 
-__plugin_name__ = "EEPROM Marlin Editor Plugin"
+__plugin_name__ = "Marlin EEPROM Editor"
 __plugin_pythoncompat__ = ">=2.7,<4"
 
 
