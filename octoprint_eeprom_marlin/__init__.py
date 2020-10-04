@@ -1,6 +1,10 @@
 # coding=utf-8
 from __future__ import absolute_import
 
+__license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
+__copyright__ = "Copyright (C) 2020 Charlie Powell - Released under terms of the AGPLv3 License"
+# Originally by Anderson Silva, development taken over by Charlie Powell in September 2020
+
 import octoprint.plugin
 
 

@@ -2,6 +2,7 @@
 * Created by Salandora on 27.07.2015.
 * Modified by Anderson Silva on 20.08.2017.
 * Contribution of CyberDracula on 15.08.2017.
+* Maintenance of plugin taken over 09.2020 (September) by Charlie Powell.
 */
 var hasChangedEepromForm = false;
 $(function() {
