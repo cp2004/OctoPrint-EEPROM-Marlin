@@ -1464,7 +1464,7 @@ $(function() {
 
         self.resetEeprom = function() {
             showConfirmationDialog({
-                message: 'Do you really want to reset EEPROM settings?',
+                message: 'This will reset all EEPROM settings to firmware defaults.',
                 onproceed: function() {
                     // prevent dual load
                     self.setControls(false);
@@ -1475,7 +1475,7 @@ $(function() {
 
                     new PNotify({
                         title: 'EEPROM Marlin',
-                        text: 'Default settings was restored.',
+                        text: 'Default settings were restored.',
                         type: 'success',
                         hide: true
                     });
