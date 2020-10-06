@@ -1272,8 +1272,9 @@ $(function() {
             _.each(data.logs, function(line) {
                 var match = self.firmwareRegEx.exec(line);
                 if (match !== null) {
-                    self.FIRMWARE_NAME(match[1] + ' ' + match[2]);
-                    self.FIRMWARE_INFO(line.replace('Recv: ', ''));
+                    var fw_name = match[1] + ' ' + match[2]
+                    self.FIRMWARE_NAME(fw_name.trim());
+                    self.FIRMWARE_INFO(line.replace('Recv: ', '').trim());
                     self.setRegExVars(self.firmware_name());
                     console.debug('Firmware: ' + self.firmware_name());
                     if (self.marlinRegEx.exec(match[0]))
@@ -1282,7 +1283,7 @@ $(function() {
 
                 var match = self.firmwareCapRegEx.exec(line);
                 if (match !== null) {
-                    self.FIRMWARE_INFO('\n\n' + self.firmware_info() + '\n' + line.replace('Recv: Cap:', ''));
+                    self.FIRMWARE_INFO(self.firmware_info().trim() + '\n' + line.replace('Recv: Cap:', ''));
                 }
             });
         };
@@ -1293,8 +1294,9 @@ $(function() {
                 _.each(data.logs, function (line) {
                     var match = self.firmwareRegEx.exec(line);
                     if (match) {
-                        self.FIRMWARE_NAME(match[1] + ' ' + match[2]);
-                        self.FIRMWARE_INFO(line.replace('Recv: ', ''));
+                        var fw_name = match[1] + ' ' + match[2]
+                        self.FIRMWARE_NAME(fw_name.trim());
+                        self.FIRMWARE_INFO(line.replace('Recv: ', '').trim());
                         self.setRegExVars(self.firmware_name());
                         console.debug('Firmware: ' + self.firmware_name());
                         if (self.marlinRegEx.exec(match[0]))
@@ -1303,7 +1305,7 @@ $(function() {
 
                     var match = self.firmwareCapRegEx.exec(line);
                     if (match) {
-                        self.FIRMWARE_INFO(self.firmware_info() + '\n' + line.replace('Recv: Cap:', ''));
+                        self.FIRMWARE_INFO(self.firmware_info().trim() + '\n' + line.replace('Recv: Cap:', '').trim());
                         console.debug(line.replace('Recv: ', ''));
                     }
                 });
@@ -1464,7 +1466,7 @@ $(function() {
 
         self.resetEeprom = function() {
             showConfirmationDialog({
-                message: 'Do you really want to reset EEPROM settings?',
+                message: 'This will reset all EEPROM settings to firmware defaults.',
                 onproceed: function() {
                     // prevent dual load
                     self.setControls(false);
@@ -1475,7 +1477,7 @@ $(function() {
 
                     new PNotify({
                         title: 'EEPROM Marlin',
-                        text: 'Default settings was restored.',
+                        text: 'Default settings were restored.',
                         type: 'success',
                         hide: true
                     });
