@@ -25,8 +25,8 @@
         <li data-bind="visible: eepromDataAccelCount()">
             <a href="#eeprom_marlin_accel" data-toggle="tab">Acceleration</a>
         </li>
-        <li data-bind="visible: eepromDataHomingCount()">
-            <a href="#eeprom_marlin_homing" data-toggle="tab">Home offset</a>
+        <li data-bind="visible: eepromOffsetCount()">
+            <a href="#eeprom_marlin_offsets" data-toggle="tab">Offsets</a>
         </li>
         <li data-bind="visible: eepromDataPIDCount()">
             <a href="#eeprom_marlin_pid" data-toggle="tab">PID</a>
@@ -118,10 +118,23 @@
                 </div>
             </fieldset>
         </div>
-        <div id="eeprom_marlin_homing" class="tab-pane">
+        <div id="eeprom_marlin_offsets" class="tab-pane">
             <fieldset>
                 <legend data-bind="visible: eepromDataHomingCount()">Home offset</legend>
                 <div class="row=fluid" data-bind="foreach: eepromDataHoming">
+                    <div class="span3">
+                        <label class="control-label" data-bind="text: label"></label>
+                        <div class="controls">
+                            <div class="input-append">
+                                <input type="number" class="input-mini text-right" data-bind="value: value" onchange="changedEepromForm();">
+                                <span class="add-on" data-bind="text: unit"></span>
+                            </div>
+                            <span class="help-block" data-bind="text: description"></span>
+                        </div>
+                    </div>
+                </div>
+                <legend data-bind="visible: eepromDataProbeCount()">Probe offset</legend>
+                <div class="row=fluid" data-bind="foreach: eepromDataProbe">
                     <div class="span3">
                         <label class="control-label" data-bind="text: label"></label>
                         <div class="controls">
