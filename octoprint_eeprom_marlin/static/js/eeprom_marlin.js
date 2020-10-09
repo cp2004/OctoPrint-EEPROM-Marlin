@@ -21,7 +21,8 @@ $(function() {
             self.eepromM203RegEx = /M203 ([X])(.*)[^0-9]([Y])(.*)[^0-9]([Z])(.*)[^0-9]([E])(.*)/;
             self.eepromM201RegEx = /M201 ([X])(.*)[^0-9]([Y])(.*)[^0-9]([Z])(.*)[^0-9]([E])(.*)/;
             self.eepromM206RegEx = /M206 ([X])(.*)[^0-9]([Y])(.*)[^0-9]([Z])(.*)/;
-            self.eepromM851RegEx = /M851 ([Z])(.*)/;
+            self.eepromM851ZRegEx = /M851 ([Z])(.*)/;
+            self.eepromM851XYZRegEx = /M851 ([X])(.*)[^0-9]([Y])(.*)[^0-9]([Z])(.*)/;
             self.eepromM200RegEx = /M200 ([D])(.*)/;
             self.eepromM666RegEx = /M666 ([X])(.*)[^0-9]([Y])(.*)[^0-9]([Z])(.*)/;
             self.eepromM304RegEx = /M304 ([P])(.*)[^0-9]([I])(.*)[^0-9]([D])(.*)/;
@@ -102,6 +103,7 @@ $(function() {
         self.eepromDataDelta1 = ko.observableArray([]);
         self.eepromDataDelta2 = ko.observableArray([]);
         self.eepromDataLinear = ko.observableArray([]);
+        self.eepromDataProbe = ko.observableArray([]);
 
         self.onStartup = function() {
             $('#settings_plugin_eeprom_marlin_link a').on('show', function(e) {
@@ -245,14 +247,46 @@ $(function() {
                 });
             }
 
-            // M851 Z-Probe Offset
-            match = self.eepromM851RegEx.exec(line);
+            // M851 Probe Offset(s)
+            // Pre-2.0.0 marlin only had Z probe offset for M851
+            match = self.eepromM851ZRegEx.exec(line);
             if (match) {
                 self.eepromData1.push({
                     dataType: 'M851 Z',
                     label: 'Z-Probe Offset',
                     origValue: ((restoreBackup) ? '' : match[2]),
                     value: match[2],
+                    unit: 'mm',
+                    description: ''
+                });
+            }
+
+            // Marlin 2.0.0 and beyond have XY and Z probe offset capabilities
+            match = self.eepromM851XYZRegEx.exec(line);
+            if (match) {
+                self.eepromDataProbe.push({
+                    dataType: 'M851 X',
+                    label: 'X probe',
+                    origValue: ((restoreBackup) ? '' : match[2]),
+                    value: match[2],
+                    unit: 'mm',
+                    description: ''
+                });
+
+                self.eepromDataProbe.push({
+                    dataType: 'M851 Y',
+                    label: 'Y probe',
+                    origValue: ((restoreBackup) ? '' : match[4]),
+                    value: match[4],
+                    unit: 'mm',
+                    description: ''
+                });
+
+                self.eepromDataProbe.push({
+                    dataType: 'M851 Z',
+                    label: 'Z probe',
+                    origValue: ((restoreBackup) ? '' : match[6]),
+                    value: match[6],
                     unit: 'mm',
                     description: ''
                 });
@@ -1319,7 +1353,8 @@ $(function() {
                 if (self.execBackup && self.startBackup) {
                     self.backupConfig += data.logs + "\n";
 
-                    match = self.eepromM851RegEx.exec(self.backupConfig);
+                    match = self.eepromM851ZRegEx.exec(self.backupConfig);
+                    match = self.eepromM851XYZRegEx.exec(self.backupConfig);
                     matchOK = self.eepromOKRegEx.exec(self.backupConfig);
                     if (match || matchOK) {
                         self.execBackup = false;
@@ -1409,6 +1444,14 @@ $(function() {
             return (self.eepromDataDelta1().length + self.eepromDataDelta2().length) > 0;
         });
 
+        self.eepromDataProbeCount = ko.computed(function() {
+            return self.eepromDataProbe().length > 0;
+        });
+
+        self.eepromOffsetCount = ko.computed(function() {
+            return self.eepromDataHoming().length + self.eepromDataProbe().length > 0;
+        });
+
         self.onEventConnected = function() {
             self._requestFirmwareInfo();
             // removed for prevent dual Load
@@ -1449,6 +1492,7 @@ $(function() {
             self.eepromDataDelta1([]);
             self.eepromDataDelta2([]);
             self.eepromDataLinear([]);
+            self.eepromDataProbe([]);
 
             self._requestEepromData();
         };
@@ -1518,6 +1562,7 @@ $(function() {
                         self.eepromDataDelta1([]);
                         self.eepromDataDelta2([]);
                         self.eepromDataLinear([]);
+                        self.eepromDataProbe([]);
 
                         _.each(self.backupConfig.split('\n'), function (line) {
                             self.eepromFieldParse(line, true);
@@ -1564,6 +1609,7 @@ $(function() {
             self.eepromDataDelta1([]);
             self.eepromDataDelta2([]);
             self.eepromDataLinear([]);
+            self.eepromDataProbe([]);
 
             self._requestEepromData();
 
@@ -1713,6 +1759,14 @@ $(function() {
             });
 
             eepromData = self.eepromDataLinear();
+            _.each(eepromData, function(data) {
+                if (data.origValue != data.value) {
+                    self._requestSaveDataToEeprom(data.dataType, data.value);
+                    data.origValue = data.value;
+                }
+            });
+
+            eepromData = self.eepromDataProbe();
             _.each(eepromData, function(data) {
                 if (data.origValue != data.value) {
                     self._requestSaveDataToEeprom(data.dataType, data.value);
