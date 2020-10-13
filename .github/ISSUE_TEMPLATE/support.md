@@ -2,7 +2,7 @@
 name: Support
 about: Need help using the plugin? Ask here
 title: ''
-labels: 'type: question'
+labels: 'question'
 assignees: ''
 
 ---
