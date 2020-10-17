@@ -2,7 +2,7 @@
 name: Feature request
 about: Thought of a cool feature? Use this template.
 title: "[Request]"
-labels: 'type: request'
+labels: 'request'
 assignees: ''
 
 ---
