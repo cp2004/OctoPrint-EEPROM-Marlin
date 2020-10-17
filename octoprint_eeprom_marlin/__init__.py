@@ -25,6 +25,11 @@ class EEPROMMarlinPlugin(octoprint.plugin.AssetPlugin,
             dict(type="tab", template="eeprom_marlin_tab.jinja2", custom_bindings=True)
         ]
 
+    def get_template_vars(self):
+        return {
+            "version": self._plugin_version
+        }
+
     def get_update_information(self):
         return dict(
             eeprom_marlin=dict(
@@ -36,6 +41,20 @@ class EEPROMMarlinPlugin(octoprint.plugin.AssetPlugin,
                 user="cp2004",
                 repo="OctoPrint-EEPROM-Marlin",
                 current=self._plugin_version,
+
+                stable_branch=dict(
+                    name="Stable",
+                    branch="master",
+                    comittish=["master"]
+                ),
+
+                prerelease_branches=[
+                    dict(
+                        name="Release Candidate",
+                        branch="pre-release",
+                        comittish=["rc", "master"]
+                    )
+                ],
 
                 # update method: pip
                 pip="https://github.com/cp2004/OctoPrint-EEPROM-Marlin/archive/{target_version}.zip"
