@@ -8,8 +8,6 @@ Install manually using this URL:
 
     https://github.com/cp2004/OctoPrint-EEPROM-Marlin/archive/master.zip
 
-
-
 ## TODO list for docs:
 
 Setup/getting settings from printer

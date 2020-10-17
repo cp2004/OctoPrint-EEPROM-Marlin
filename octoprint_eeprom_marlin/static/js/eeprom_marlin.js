@@ -1,11 +1,11 @@
 /**
-* Created by Salandora on 27.07.2015.
-* Modified by Anderson Silva on 20.08.2017.
-* Contribution of CyberDracula on 15.08.2017.
-* Maintenance of plugin taken over 09.2020 (September) by Charlie Powell.
-*/
+ * Created by Salandora on 27.07.2015.
+ * Modified by Anderson Silva on 20.08.2017.
+ * Contribution of CyberDracula on 15.08.2017.
+ * Maintenance of plugin taken over 09.2020 (September) by Charlie Powell.
+ */
 var hasChangedEepromForm = false;
-$(function() {
+$(function () {
     function EepromMarlinViewModel(parameters) {
         var self = this;
         self.execBackup = false;
@@ -13,7 +13,7 @@ $(function() {
         self.backupConfig = "";
         self.stateControls = true;
 
-        self.setRegExVars = function(version) {
+        self.setRegExVars = function (version) {
             // All versions
             self.eepromM501RegEx = /M501/;
             self.eepromOKRegEx = /ok/;
@@ -30,23 +30,46 @@ $(function() {
             self.eepromM420RegEx = /M420 ([S])([0-1]*)[^0-9]*([Z]*)(.*)/;
             self.eepromM900RegEx = /M900 ([K])(.*)[^0-9]([R])(.*)/;
 
-
             // Specific versions
-            if (version == 'latest' || version == 'Marlin 1.1.0-RC8' || version == 'Marlin 1.1.1' || version == 'Marlin 1.1.2' || version == 'Marlin 1.1.3' || version == 'Marlin 1.1.4' || version == 'Marlin 1.1.5' || version == 'Marlin 1.1.6' || version == 'Marlin 1.1.7' || version == 'Marlin 1.1.8') {
+            if (
+                version == "latest" ||
+                version == "Marlin 1.1.0-RC8" ||
+                version == "Marlin 1.1.1" ||
+                version == "Marlin 1.1.2" ||
+                version == "Marlin 1.1.3" ||
+                version == "Marlin 1.1.4" ||
+                version == "Marlin 1.1.5" ||
+                version == "Marlin 1.1.6" ||
+                version == "Marlin 1.1.7" ||
+                version == "Marlin 1.1.8"
+            ) {
                 self.eepromM205RegEx = /M205 ([S])(.*)[^0-9]([T])(.*)[^0-9]([B])(.*)[^0-9]([X])(.*)[^0-9]([Y])(.*)[^0-9]([Z])(.*)[^0-9]([E])(.*)/;
                 self.eepromM145S0RegEx = /M145 S0 ([H])(.*)[^0-9]([B])(.*)[^0-9]([F])(.*)/;
                 self.eepromM145S1RegEx = /M145 S1 ([H])(.*)[^0-9]([B])(.*)[^0-9]([F])(.*)/;
                 self.eepromM145S2RegEx = /M145 S2 ([H])(.*)[^0-9]([B])(.*)[^0-9]([F])(.*)/;
                 self.eepromM301RegEx = /M301 ([P])(.*)[^0-9]([I])(.*)[^0-9]([D])(.*)/;
                 self.eepromM204RegEx = /M204 ([P])(.*)[^0-9]([R])(.*)[^0-9]([T])(.*)/;
-            } else if (version == 'Marlin 1.1.0-RC1' || version == 'Marlin 1.1.0-RC2' || version == 'Marlin 1.1.0-RC3' || version == 'Marlin 1.1.0-RC4' || version == 'Marlin 1.1.0-RC5' || version == 'Marlin 1.1.0-RC6' || version == 'Marlin 1.1.0-RC7') {
+            } else if (
+                version == "Marlin 1.1.0-RC1" ||
+                version == "Marlin 1.1.0-RC2" ||
+                version == "Marlin 1.1.0-RC3" ||
+                version == "Marlin 1.1.0-RC4" ||
+                version == "Marlin 1.1.0-RC5" ||
+                version == "Marlin 1.1.0-RC6" ||
+                version == "Marlin 1.1.0-RC7"
+            ) {
                 self.eepromM205RegEx = /M205 ([S])(.*)[^0-9]([T])(.*)[^0-9]([B])(.*)[^0-9]([X])(.*)[^0-9]([Z])(.*)[^0-9]([E])(.*)/;
                 self.eepromM145S0RegEx = /M145 M0 ([H])(.*)[^0-9]([B])(.*)[^0-9]([F])(.*)/;
                 self.eepromM145S1RegEx = /M145 M1 ([H])(.*)[^0-9]([B])(.*)[^0-9]([F])(.*)/;
                 self.eepromM145S2RegEx = /M145 M2 ([H])(.*)[^0-9]([B])(.*)[^0-9]([F])(.*)/;
                 self.eepromM301RegEx = /M301 ([P])(.*)[^0-9]([I])(.*)[^0-9]([D])(.*)[^0-9]([C])(.*)[^0-9]([L])(.*)/;
                 self.eepromM204RegEx = /M204 ([P])(.*)[^0-9]([R])(.*)[^0-9]([T])(.*)/;
-            } else if (version == 'Marlin 1.0.2+' || version == 'Marlin V1.0.2;' || version == 'Marlin 1.0.2' || version == 'Marlin V1;') {
+            } else if (
+                version == "Marlin 1.0.2+" ||
+                version == "Marlin V1.0.2;" ||
+                version == "Marlin 1.0.2" ||
+                version == "Marlin V1;"
+            ) {
                 self.eepromM204RegEx = /M204 ([S])(.*)[^0-9]([T])(.*)/;
                 self.eepromM205RegEx = /M205 ([S])(.*)[^0-9]([T])(.*)[^0-9]([B])(.*)[^0-9]([X])(.*)[^0-9]([Z])(.*)[^0-9]([E])(.*)/;
                 self.eepromM301RegEx = /M301 ([P])(.*)[^0-9]([I])(.*)[^0-9]([D])(.*)/;
@@ -69,20 +92,24 @@ $(function() {
         self.firmwareCapRegEx = /Cap:([^\s]*)/i;
         self.marlinRegEx = /Marlin[^\s]*/i;
 
-        self.setRegExVars('latest');
+        self.setRegExVars("latest");
 
         self.isMarlinFirmware = ko.observable(false);
         self.isMarlinFirmware.subscribe(function (newValue) {
             self.loadEeprom();
         });
 
-        self.isConnected = ko.computed(function() {
-            return self.connection.isOperational() || self.connection.isPrinting() ||
-            self.connection.isReady() || self.connection.isPaused();
+        self.isConnected = ko.computed(function () {
+            return (
+                self.connection.isOperational() ||
+                self.connection.isPrinting() ||
+                self.connection.isReady() ||
+                self.connection.isPaused()
+            );
         });
 
-        self.isPrinting = ko.computed(function() {
-           return self.connection.isPrinting() || self.connection.isPaused();
+        self.isPrinting = ko.computed(function () {
+            return self.connection.isPrinting() || self.connection.isPaused();
         });
 
         self.eepromData1 = ko.observableArray([]);
@@ -105,65 +132,67 @@ $(function() {
         self.eepromDataLinear = ko.observableArray([]);
         self.eepromDataProbe = ko.observableArray([]);
 
-        self.onStartup = function() {
-            $('#settings_plugin_eeprom_marlin_link a').on('show', function(e) {
+        self.onStartup = function () {
+            $("#settings_plugin_eeprom_marlin_link a").on("show", function (e) {
                 if (self.isConnected() && !self.isMarlinFirmware()) {
                     self._requestFirmwareInfo();
                 }
             });
         };
 
-        self.firmware_name = function() {
+        self.firmware_name = function () {
             return self.FIRMWARE_NAME();
         };
 
-        self.firmware_info = function() {
+        self.firmware_info = function () {
             return self.FIRMWARE_INFO();
         };
 
-        self.eepromFieldParse = function(line, restoreBackup = false) {
+        self.eepromFieldParse = function (line, restoreBackup = false) {
             var matchOK = self.eepromOKRegEx.exec(line);
             if (matchOK) {
-                setTimeout(function() {self.setControls(true); }, 2000);
+                setTimeout(function () {
+                    self.setControls(true);
+                }, 2000);
             }
 
             // M92 steps per unit
             var match = self.eepromM92RegEx.exec(line);
             if (match) {
                 self.eepromDataSteps.push({
-                    dataType: 'M92 X',
-                    label: 'X axis',
-                    origValue: ((restoreBackup) ? '' : match[2]),
+                    dataType: "M92 X",
+                    label: "X axis",
+                    origValue: restoreBackup ? "" : match[2],
                     value: match[2],
-                    unit: 'mm',
-                    description: 'steps per unit'
+                    unit: "mm",
+                    description: "steps per unit",
                 });
 
                 self.eepromDataSteps.push({
-                    dataType: 'M92 Y',
-                    label: 'Y axis',
-                    origValue: ((restoreBackup) ? '' : match[4]),
+                    dataType: "M92 Y",
+                    label: "Y axis",
+                    origValue: restoreBackup ? "" : match[4],
                     value: match[4],
-                    unit: 'mm',
-                    description: 'steps per unit'
+                    unit: "mm",
+                    description: "steps per unit",
                 });
 
                 self.eepromDataSteps.push({
-                    dataType: 'M92 Z',
-                    label: 'Z axis',
-                    origValue: ((restoreBackup) ? '' : match[6]),
+                    dataType: "M92 Z",
+                    label: "Z axis",
+                    origValue: restoreBackup ? "" : match[6],
                     value: match[6],
-                    unit: 'mm',
-                    description: 'steps per unit'
+                    unit: "mm",
+                    description: "steps per unit",
                 });
 
                 self.eepromDataSteps.push({
-                    dataType: 'M92 E',
-                    label: 'Extruder',
-                    origValue: ((restoreBackup) ? '' : match[8]),
+                    dataType: "M92 E",
+                    label: "Extruder",
+                    origValue: restoreBackup ? "" : match[8],
                     value: match[8],
-                    unit: 'mm',
-                    description: 'steps per unit'
+                    unit: "mm",
+                    description: "steps per unit",
                 });
             }
 
@@ -171,39 +200,39 @@ $(function() {
             match = self.eepromM203RegEx.exec(line);
             if (match) {
                 self.eepromDataFRates.push({
-                    dataType: 'M203 X',
-                    label: 'X axis',
-                    origValue: ((restoreBackup) ? '' : match[2]),
+                    dataType: "M203 X",
+                    label: "X axis",
+                    origValue: restoreBackup ? "" : match[2],
                     value: match[2],
-                    unit: 'mm',
-                    description: 'rate per unit'
+                    unit: "mm",
+                    description: "rate per unit",
                 });
 
                 self.eepromDataFRates.push({
-                    dataType: 'M203 Y',
-                    label: 'Y axis',
-                    origValue: ((restoreBackup) ? '' : match[4]),
+                    dataType: "M203 Y",
+                    label: "Y axis",
+                    origValue: restoreBackup ? "" : match[4],
                     value: match[4],
-                    unit: 'mm',
-                    description: 'rate per unit'
+                    unit: "mm",
+                    description: "rate per unit",
                 });
 
                 self.eepromDataFRates.push({
-                    dataType: 'M203 Z',
-                    label: 'Z axis',
-                    origValue: ((restoreBackup) ? '' : match[6]),
+                    dataType: "M203 Z",
+                    label: "Z axis",
+                    origValue: restoreBackup ? "" : match[6],
                     value: match[6],
-                    unit: 'mm',
-                    description: 'rate per unit'
+                    unit: "mm",
+                    description: "rate per unit",
                 });
 
                 self.eepromDataFRates.push({
-                    dataType: 'M203 E',
-                    label: 'Extruder',
-                    origValue: ((restoreBackup) ? '' : match[8]),
+                    dataType: "M203 E",
+                    label: "Extruder",
+                    origValue: restoreBackup ? "" : match[8],
                     value: match[8],
-                    unit: 'mm',
-                    description: 'rate per unit'
+                    unit: "mm",
+                    description: "rate per unit",
                 });
             }
 
@@ -211,39 +240,39 @@ $(function() {
             match = self.eepromM201RegEx.exec(line);
             if (match) {
                 self.eepromDataMaxAccel.push({
-                    dataType: 'M201 X',
-                    label: 'X axis',
-                    origValue: ((restoreBackup) ? '' : match[2]),
+                    dataType: "M201 X",
+                    label: "X axis",
+                    origValue: restoreBackup ? "" : match[2],
                     value: match[2],
-                    unit: 'mm/s2',
-                    description: ''
+                    unit: "mm/s2",
+                    description: "",
                 });
 
                 self.eepromDataMaxAccel.push({
-                    dataType: 'M201 Y',
-                    label: 'Y axis',
-                    origValue: ((restoreBackup) ? '' : match[4]),
+                    dataType: "M201 Y",
+                    label: "Y axis",
+                    origValue: restoreBackup ? "" : match[4],
                     value: match[4],
-                    unit: 'mm/s2',
-                    description: ''
+                    unit: "mm/s2",
+                    description: "",
                 });
 
                 self.eepromDataMaxAccel.push({
-                    dataType: 'M201 Z',
-                    label: 'Z axis',
-                    origValue: ((restoreBackup) ? '' : match[6]),
+                    dataType: "M201 Z",
+                    label: "Z axis",
+                    origValue: restoreBackup ? "" : match[6],
                     value: match[6],
-                    unit: 'mm/s2',
-                    description: ''
+                    unit: "mm/s2",
+                    description: "",
                 });
 
                 self.eepromDataMaxAccel.push({
-                    dataType: 'M201 E',
-                    label: 'Extruder',
-                    origValue: ((restoreBackup) ? '' : match[8]),
+                    dataType: "M201 E",
+                    label: "Extruder",
+                    origValue: restoreBackup ? "" : match[8],
                     value: match[8],
-                    unit: 'mm/s2',
-                    description: ''
+                    unit: "mm/s2",
+                    description: "",
                 });
             }
 
@@ -252,12 +281,12 @@ $(function() {
             match = self.eepromM851ZRegEx.exec(line);
             if (match) {
                 self.eepromData1.push({
-                    dataType: 'M851 Z',
-                    label: 'Z-Probe Offset',
-                    origValue: ((restoreBackup) ? '' : match[2]),
+                    dataType: "M851 Z",
+                    label: "Z-Probe Offset",
+                    origValue: restoreBackup ? "" : match[2],
                     value: match[2],
-                    unit: 'mm',
-                    description: ''
+                    unit: "mm",
+                    description: "",
                 });
             }
 
@@ -265,30 +294,30 @@ $(function() {
             match = self.eepromM851XYZRegEx.exec(line);
             if (match) {
                 self.eepromDataProbe.push({
-                    dataType: 'M851 X',
-                    label: 'X probe',
-                    origValue: ((restoreBackup) ? '' : match[2]),
+                    dataType: "M851 X",
+                    label: "X probe",
+                    origValue: restoreBackup ? "" : match[2],
                     value: match[2],
-                    unit: 'mm',
-                    description: ''
+                    unit: "mm",
+                    description: "",
                 });
 
                 self.eepromDataProbe.push({
-                    dataType: 'M851 Y',
-                    label: 'Y probe',
-                    origValue: ((restoreBackup) ? '' : match[4]),
+                    dataType: "M851 Y",
+                    label: "Y probe",
+                    origValue: restoreBackup ? "" : match[4],
                     value: match[4],
-                    unit: 'mm',
-                    description: ''
+                    unit: "mm",
+                    description: "",
                 });
 
                 self.eepromDataProbe.push({
-                    dataType: 'M851 Z',
-                    label: 'Z probe',
-                    origValue: ((restoreBackup) ? '' : match[6]),
+                    dataType: "M851 Z",
+                    label: "Z probe",
+                    origValue: restoreBackup ? "" : match[6],
                     value: match[6],
-                    unit: 'mm',
-                    description: ''
+                    unit: "mm",
+                    description: "",
                 });
             }
 
@@ -296,30 +325,30 @@ $(function() {
             match = self.eepromM206RegEx.exec(line);
             if (match) {
                 self.eepromDataHoming.push({
-                    dataType: 'M206 X',
-                    label: 'X axis',
-                    origValue: ((restoreBackup) ? '' : match[2]),
+                    dataType: "M206 X",
+                    label: "X axis",
+                    origValue: restoreBackup ? "" : match[2],
                     value: match[2],
-                    unit: 'mm',
-                    description: ''
+                    unit: "mm",
+                    description: "",
                 });
 
                 self.eepromDataHoming.push({
-                    dataType: 'M206 Y',
-                    label: 'Y axis',
-                    origValue: ((restoreBackup) ? '' : match[4]),
+                    dataType: "M206 Y",
+                    label: "Y axis",
+                    origValue: restoreBackup ? "" : match[4],
                     value: match[4],
-                    unit: 'mm',
-                    description: ''
+                    unit: "mm",
+                    description: "",
                 });
 
                 self.eepromDataHoming.push({
-                    dataType: 'M206 Z',
-                    label: 'Z axis',
-                    origValue: ((restoreBackup) ? '' : match[6]),
+                    dataType: "M206 Z",
+                    label: "Z axis",
+                    origValue: restoreBackup ? "" : match[6],
                     value: match[6],
-                    unit: 'mm',
-                    description: ''
+                    unit: "mm",
+                    description: "",
                 });
             }
 
@@ -327,30 +356,30 @@ $(function() {
             match = self.eepromM666RegEx.exec(line);
             if (match) {
                 self.eepromDataEndstop.push({
-                    dataType: 'M666 X',
-                    label: 'X axis',
-                    origValue: ((restoreBackup) ? '' : match[2]),
+                    dataType: "M666 X",
+                    label: "X axis",
+                    origValue: restoreBackup ? "" : match[2],
                     value: match[2],
-                    unit: 'mm',
-                    description: ''
+                    unit: "mm",
+                    description: "",
                 });
 
                 self.eepromDataEndstop.push({
-                    dataType: 'M666 Y',
-                    label: 'Y axis',
-                    origValue: ((restoreBackup) ? '' : match[4]),
+                    dataType: "M666 Y",
+                    label: "Y axis",
+                    origValue: restoreBackup ? "" : match[4],
                     value: match[4],
-                    unit: 'mm',
-                    description: ''
+                    unit: "mm",
+                    description: "",
                 });
 
                 self.eepromDataEndstop.push({
-                    dataType: 'M666 Z',
-                    label: 'Z axis',
-                    origValue: ((restoreBackup) ? '' : match[6]),
+                    dataType: "M666 Z",
+                    label: "Z axis",
+                    origValue: restoreBackup ? "" : match[6],
                     value: match[6],
-                    unit: 'mm',
-                    description: ''
+                    unit: "mm",
+                    description: "",
                 });
             }
 
@@ -358,57 +387,57 @@ $(function() {
             match = self.eepromM665RegEx.exec(line);
             if (match) {
                 self.eepromDataDelta1.push({
-                    dataType: 'M665 L',
-                    label: 'Diag Rod',
-                    origValue: ((restoreBackup) ? '' : match[2]),
+                    dataType: "M665 L",
+                    label: "Diag Rod",
+                    origValue: restoreBackup ? "" : match[2],
                     value: match[2],
-                    unit: 'mm',
-                    description: ''
+                    unit: "mm",
+                    description: "",
                 });
 
                 self.eepromDataDelta1.push({
-                    dataType: 'M665 R',
-                    label: 'Radius',
-                    origValue: ((restoreBackup) ? '' : match[4]),
+                    dataType: "M665 R",
+                    label: "Radius",
+                    origValue: restoreBackup ? "" : match[4],
                     value: match[4],
-                    unit: 'mm',
-                    description: ''
+                    unit: "mm",
+                    description: "",
                 });
 
                 self.eepromDataDelta1.push({
-                    dataType: 'M665 S',
-                    label: 'Segments',
-                    origValue: ((restoreBackup) ? '' : match[6]),
+                    dataType: "M665 S",
+                    label: "Segments",
+                    origValue: restoreBackup ? "" : match[6],
                     value: match[6],
-                    unit: 's',
-                    description: ''
+                    unit: "s",
+                    description: "",
                 });
 
                 self.eepromDataDelta2.push({
-                    dataType: 'M665 A',
-                    label: 'Diag A',
-                    origValue: ((restoreBackup) ? '' : match[8]),
+                    dataType: "M665 A",
+                    label: "Diag A",
+                    origValue: restoreBackup ? "" : match[8],
                     value: match[8],
-                    unit: 'mm',
-                    description: ''
+                    unit: "mm",
+                    description: "",
                 });
 
                 self.eepromDataDelta2.push({
-                    dataType: 'M665 B',
-                    label: 'Diag B',
-                    origValue: ((restoreBackup) ? '' : match[10]),
+                    dataType: "M665 B",
+                    label: "Diag B",
+                    origValue: restoreBackup ? "" : match[10],
                     value: match[10],
-                    unit: 'mm',
-                    description: ''
+                    unit: "mm",
+                    description: "",
                 });
 
                 self.eepromDataDelta2.push({
-                    dataType: 'M665 C',
-                    label: 'Diag C',
-                    origValue: ((restoreBackup) ? '' : match[12]),
+                    dataType: "M665 C",
+                    label: "Diag C",
+                    origValue: restoreBackup ? "" : match[12],
                     value: match[12],
-                    unit: 'mm',
-                    description: ''
+                    unit: "mm",
+                    description: "",
                 });
             }
 
@@ -416,21 +445,21 @@ $(function() {
             match = self.eepromM900RegEx.exec(line);
             if (match) {
                 self.eepromDataLinear.push({
-                    dataType: 'M900 K',
-                    label: 'Linear Advance K',
-                    origValue: ((restoreBackup) ? '' : match[2]),
+                    dataType: "M900 K",
+                    label: "Linear Advance K",
+                    origValue: restoreBackup ? "" : match[2],
                     value: match[2],
-                    unit: 'mm',
-                    description: ''
+                    unit: "mm",
+                    description: "",
                 });
 
                 self.eepromDataLinear.push({
-                    dataType: 'M900 R',
-                    label: 'Linear Ratio',
-                    origValue: ((restoreBackup) ? '' : match[4]),
+                    dataType: "M900 R",
+                    label: "Linear Ratio",
+                    origValue: restoreBackup ? "" : match[4],
                     value: match[4],
-                    unit: 'mm',
-                    description: ''
+                    unit: "mm",
+                    description: "",
                 });
             }
 
@@ -439,12 +468,12 @@ $(function() {
             if (match) {
                 if (self.eepromDataFilament().length === 0) {
                     self.eepromDataFilament.push({
-                        dataType: 'M200 D',
-                        label: 'Diameter',
-                        origValue: ((restoreBackup) ? '' : match[2]),
+                        dataType: "M200 D",
+                        label: "Diameter",
+                        origValue: restoreBackup ? "" : match[2],
                         value: match[2],
-                        unit: 'mm',
-                        description: ''
+                        unit: "mm",
+                        description: "",
                     });
                 }
             }
@@ -453,98 +482,108 @@ $(function() {
             match = self.eepromM304RegEx.exec(line);
             if (match) {
                 self.eepromDataPIDB.push({
-                    dataType: 'M304 P',
-                    label: 'Bed Kp',
-                    origValue: ((restoreBackup) ? '' : match[2]),
+                    dataType: "M304 P",
+                    label: "Bed Kp",
+                    origValue: restoreBackup ? "" : match[2],
                     value: match[2],
-                    unit: 'term',
-                    description: ''
+                    unit: "term",
+                    description: "",
                 });
 
                 self.eepromDataPIDB.push({
-                    dataType: 'M304 I',
-                    label: 'Ki',
-                    origValue: ((restoreBackup) ? '' : match[4]),
+                    dataType: "M304 I",
+                    label: "Ki",
+                    origValue: restoreBackup ? "" : match[4],
                     value: match[4],
-                    unit: 'term',
-                    description: ''
+                    unit: "term",
+                    description: "",
                 });
 
                 self.eepromDataPIDB.push({
-                    dataType: 'M304 D',
-                    label: 'Kd',
-                    origValue: ((restoreBackup) ? '' : match[6]),
+                    dataType: "M304 D",
+                    label: "Kd",
+                    origValue: restoreBackup ? "" : match[6],
                     value: match[6],
-                    unit: 'term',
-                    description: ''
+                    unit: "term",
+                    description: "",
                 });
             }
 
-            if (self.firmware_name() == 'Marlin 1.1.0-RC8' || self.firmware_name() == 'Marlin 1.1.1' || self.firmware_name() == 'Marlin 1.1.2' || self.firmware_name() == 'Marlin 1.1.3' || self.firmware_name() == 'Marlin 1.1.4' || self.firmware_name() == 'Marlin 1.1.5' || self.firmware_name() == 'Marlin 1.1.6' || self.firmware_name() == 'Marlin 1.1.7' || self.firmware_name() == 'Marlin 1.1.8') {
+            if (
+                self.firmware_name() == "Marlin 1.1.0-RC8" ||
+                self.firmware_name() == "Marlin 1.1.1" ||
+                self.firmware_name() == "Marlin 1.1.2" ||
+                self.firmware_name() == "Marlin 1.1.3" ||
+                self.firmware_name() == "Marlin 1.1.4" ||
+                self.firmware_name() == "Marlin 1.1.5" ||
+                self.firmware_name() == "Marlin 1.1.6" ||
+                self.firmware_name() == "Marlin 1.1.7" ||
+                self.firmware_name() == "Marlin 1.1.8"
+            ) {
                 // M205 Advanced variables
                 match = self.eepromM205RegEx.exec(line);
                 if (match) {
                     self.eepromData1.push({
-                        dataType: 'M205 S',
-                        label: 'Min feedrate',
-                        origValue: ((restoreBackup) ? '' : match[2]),
+                        dataType: "M205 S",
+                        label: "Min feedrate",
+                        origValue: restoreBackup ? "" : match[2],
                         value: match[2],
-                        unit: 'mm/s',
-                        description: ''
+                        unit: "mm/s",
+                        description: "",
                     });
 
                     self.eepromData1.push({
-                        dataType: 'M205 T',
-                        label: 'Min travel',
-                        origValue: ((restoreBackup) ? '' : match[4]),
+                        dataType: "M205 T",
+                        label: "Min travel",
+                        origValue: restoreBackup ? "" : match[4],
                         value: match[4],
-                        unit: 'mm/s',
-                        description: ''
+                        unit: "mm/s",
+                        description: "",
                     });
 
                     self.eepromData1.push({
-                        dataType: 'M205 B',
-                        label: 'Min segment',
-                        origValue: ((restoreBackup) ? '' : match[6]),
+                        dataType: "M205 B",
+                        label: "Min segment",
+                        origValue: restoreBackup ? "" : match[6],
                         value: match[6],
-                        unit: 'mm/s',
-                        description: ''
+                        unit: "mm/s",
+                        description: "",
                     });
 
                     self.eepromData2.push({
-                        dataType: 'M205 X',
-                        label: 'Max X jerk',
-                        origValue: ((restoreBackup) ? '' : match[8]),
+                        dataType: "M205 X",
+                        label: "Max X jerk",
+                        origValue: restoreBackup ? "" : match[8],
                         value: match[8],
-                        unit: 'mm/s',
-                        description: ''
+                        unit: "mm/s",
+                        description: "",
                     });
 
                     self.eepromData2.push({
-                        dataType: 'M205 Y',
-                        label: 'Max Y jerk',
-                        origValue: ((restoreBackup) ? '' : match[10]),
+                        dataType: "M205 Y",
+                        label: "Max Y jerk",
+                        origValue: restoreBackup ? "" : match[10],
                         value: match[10],
-                        unit: 'mm/s',
-                        description: ''
+                        unit: "mm/s",
+                        description: "",
                     });
 
                     self.eepromData2.push({
-                        dataType: 'M205 Z',
-                        label: 'Max Z jerk',
-                        origValue: ((restoreBackup) ? '' : match[12]),
+                        dataType: "M205 Z",
+                        label: "Max Z jerk",
+                        origValue: restoreBackup ? "" : match[12],
                         value: match[12],
-                        unit: 'mm/s',
-                        description: ''
+                        unit: "mm/s",
+                        description: "",
                     });
 
                     self.eepromData2.push({
-                        dataType: 'M205 E',
-                        label: 'Max E jerk',
-                        origValue: ((restoreBackup) ? '' : match[14]),
+                        dataType: "M205 E",
+                        label: "Max E jerk",
+                        origValue: restoreBackup ? "" : match[14],
                         value: match[14],
-                        unit: 'mm/s',
-                        description: ''
+                        unit: "mm/s",
+                        description: "",
                     });
                 }
 
@@ -552,30 +591,30 @@ $(function() {
                 match = self.eepromM204RegEx.exec(line);
                 if (match) {
                     self.eepromDataAccel.push({
-                        dataType: 'M204 P',
-                        label: 'Printing moves',
-                        origValue: ((restoreBackup) ? '' : match[2]),
+                        dataType: "M204 P",
+                        label: "Printing moves",
+                        origValue: restoreBackup ? "" : match[2],
                         value: match[2],
-                        unit: 'mm/s2',
-                        description: ''
+                        unit: "mm/s2",
+                        description: "",
                     });
 
                     self.eepromDataAccel.push({
-                        dataType: 'M204 R',
-                        label: 'Retract',
-                        origValue: ((restoreBackup) ? '' : match[4]),
+                        dataType: "M204 R",
+                        label: "Retract",
+                        origValue: restoreBackup ? "" : match[4],
                         value: match[4],
-                        unit: 'mm/s2',
-                        description: ''
+                        unit: "mm/s2",
+                        description: "",
                     });
 
                     self.eepromDataAccel.push({
-                        dataType: 'M204 T',
-                        label: 'Travel',
-                        origValue: ((restoreBackup) ? '' : match[6]),
+                        dataType: "M204 T",
+                        label: "Travel",
+                        origValue: restoreBackup ? "" : match[6],
                         value: match[6],
-                        unit: 'mm/s2',
-                        description: ''
+                        unit: "mm/s2",
+                        description: "",
                     });
                 }
 
@@ -583,30 +622,30 @@ $(function() {
                 match = self.eepromM301RegEx.exec(line);
                 if (match) {
                     self.eepromDataPID.push({
-                        dataType: 'M301 P',
-                        label: 'Hotend Kp',
-                        origValue: ((restoreBackup) ? '' : match[2]),
+                        dataType: "M301 P",
+                        label: "Hotend Kp",
+                        origValue: restoreBackup ? "" : match[2],
                         value: match[2],
-                        unit: 'term',
-                        description: ''
+                        unit: "term",
+                        description: "",
                     });
 
                     self.eepromDataPID.push({
-                        dataType: 'M301 I',
-                        label: 'Ki',
-                        origValue: ((restoreBackup) ? '' : match[4]),
+                        dataType: "M301 I",
+                        label: "Ki",
+                        origValue: restoreBackup ? "" : match[4],
                         value: match[4],
-                        unit: 'term',
-                        description: ''
+                        unit: "term",
+                        description: "",
                     });
 
                     self.eepromDataPID.push({
-                        dataType: 'M301 D',
-                        label: 'Kd',
-                        origValue: ((restoreBackup) ? '' : match[6]),
+                        dataType: "M301 D",
+                        label: "Kd",
+                        origValue: restoreBackup ? "" : match[6],
                         value: match[6],
-                        unit: 'term',
-                        description: ''
+                        unit: "term",
+                        description: "",
                     });
                 }
 
@@ -614,84 +653,84 @@ $(function() {
                 match = self.eepromM145S0RegEx.exec(line);
                 if (match) {
                     self.eepromDataMaterialHS0.push({
-                        dataType: 'M145 S0 H',
-                        label: 'S0 Hotend Temperature',
-                        origValue: ((restoreBackup) ? '' : match[2]),
+                        dataType: "M145 S0 H",
+                        label: "S0 Hotend Temperature",
+                        origValue: restoreBackup ? "" : match[2],
                         value: match[2],
-                        unit: '',
-                        description: ''
+                        unit: "",
+                        description: "",
                     });
                     self.eepromDataMaterialHS0.push({
-                        dataType: 'M145 S0 B',
-                        label: 'Bed Temperature',
-                        origValue: ((restoreBackup) ? '' : match[4]),
+                        dataType: "M145 S0 B",
+                        label: "Bed Temperature",
+                        origValue: restoreBackup ? "" : match[4],
                         value: match[4],
-                        unit: '',
-                        description: ''
+                        unit: "",
+                        description: "",
                     });
                     self.eepromDataMaterialHS0.push({
-                        dataType: 'M145 S0 F',
-                        label: 'Fan Speed',
-                        origValue: ((restoreBackup) ? '' : match[6]),
+                        dataType: "M145 S0 F",
+                        label: "Fan Speed",
+                        origValue: restoreBackup ? "" : match[6],
                         value: match[6],
-                        unit: '',
-                        description: ''
+                        unit: "",
+                        description: "",
                     });
                 }
 
                 match = self.eepromM145S1RegEx.exec(line);
                 if (match) {
                     self.eepromDataMaterialHS1.push({
-                        dataType: 'M145 S1 H',
-                        label: 'S1 Hotend Temperature',
-                        origValue: ((restoreBackup) ? '' : match[2]),
+                        dataType: "M145 S1 H",
+                        label: "S1 Hotend Temperature",
+                        origValue: restoreBackup ? "" : match[2],
                         value: match[2],
-                        unit: '',
-                        description: ''
+                        unit: "",
+                        description: "",
                     });
                     self.eepromDataMaterialHS1.push({
-                        dataType: 'M145 S1 B',
-                        label: 'Bed Temperature',
-                        origValue: ((restoreBackup) ? '' : match[4]),
+                        dataType: "M145 S1 B",
+                        label: "Bed Temperature",
+                        origValue: restoreBackup ? "" : match[4],
                         value: match[4],
-                        unit: '',
-                        description: ''
+                        unit: "",
+                        description: "",
                     });
                     self.eepromDataMaterialHS1.push({
-                        dataType: 'M145 S1 F',
-                        label: 'Fan Speed',
-                        origValue: ((restoreBackup) ? '' : match[6]),
+                        dataType: "M145 S1 F",
+                        label: "Fan Speed",
+                        origValue: restoreBackup ? "" : match[6],
                         value: match[6],
-                        unit: '',
-                        description: ''
+                        unit: "",
+                        description: "",
                     });
                 }
 
                 match = self.eepromM145S2RegEx.exec(line);
                 if (match) {
                     self.eepromDataMaterialHS2.push({
-                        dataType: 'M145 S2 H',
-                        label: 'S2 Hotend Temperature',
-                        origValue: ((restoreBackup) ? '' : match[2]),
+                        dataType: "M145 S2 H",
+                        label: "S2 Hotend Temperature",
+                        origValue: restoreBackup ? "" : match[2],
                         value: match[2],
-                        unit: '',
-                        description: ''
+                        unit: "",
+                        description: "",
                     });
                     self.eepromDataMaterialHS2.push({
-                        dataType: 'M145 S2 B',
-                        label: 'Bed Temperature',
-                        origValue: ((restoreBackup) ? '' : match[4]),
+                        dataType: "M145 S2 B",
+                        label: "Bed Temperature",
+                        origValue: restoreBackup ? "" : match[4],
                         value: match[4],
-                        unit: '',
-                        description: ''
+                        unit: "",
+                        description: "",
                     });
                     self.eepromDataMaterialHS2.push({
-                        dataType: 'M145 S2 F',
-                        label: 'Fan Speed',
-                        origValue: ((restoreBackup) ? '' : match[6]),
+                        dataType: "M145 S2 F",
+                        label: "Fan Speed",
+                        origValue: restoreBackup ? "" : match[6],
                         value: match[6],
-                        unit: '',
-                        description: ''
+                        unit: "",
+                        description: "",
                     });
                 }
 
@@ -699,90 +738,98 @@ $(function() {
                 match = self.eepromM420RegEx.exec(line);
                 if (match) {
                     self.eepromDataLevel.push({
-                        dataType: 'M420 S',
-                        label: 'Auto Bed Leveling',
-                        origValue: ((restoreBackup) ? '' : match[2]),
+                        dataType: "M420 S",
+                        label: "Auto Bed Leveling",
+                        origValue: restoreBackup ? "" : match[2],
                         value: match[2],
-                        unit: '0/1',
-                        description: ''
+                        unit: "0/1",
+                        description: "",
                     });
 
                     if (match.length >= 3) {
                         self.eepromDataLevel.push({
-                            dataType: 'M420 Z',
-                            label: 'Fade height',
-                            origValue: ((restoreBackup) ? '' : match[4]),
+                            dataType: "M420 Z",
+                            label: "Fade height",
+                            origValue: restoreBackup ? "" : match[4],
                             value: match[4],
-                            unit: 'mm',
-                            description: ''
+                            unit: "mm",
+                            description: "",
                         });
                     }
                 }
-            } else if (self.firmware_name() == 'Marlin 1.1.0-RC1' || self.firmware_name() == 'Marlin 1.1.0-RC2' || self.firmware_name() == 'Marlin 1.1.0-RC3' || self.firmware_name() == 'Marlin 1.1.0-RC4' || self.firmware_name() == 'Marlin 1.1.0-RC5' || self.firmware_name() == 'Marlin 1.1.0-RC6' || self.firmware_name() == 'Marlin 1.1.0-RC7') {
+            } else if (
+                self.firmware_name() == "Marlin 1.1.0-RC1" ||
+                self.firmware_name() == "Marlin 1.1.0-RC2" ||
+                self.firmware_name() == "Marlin 1.1.0-RC3" ||
+                self.firmware_name() == "Marlin 1.1.0-RC4" ||
+                self.firmware_name() == "Marlin 1.1.0-RC5" ||
+                self.firmware_name() == "Marlin 1.1.0-RC6" ||
+                self.firmware_name() == "Marlin 1.1.0-RC7"
+            ) {
                 // M205 Advanced variables
                 match = self.eepromM205RegEx.exec(line);
                 if (match) {
                     self.eepromData1.push({
-                        dataType: 'M205 S',
-                        label: 'Min feedrate',
-                        origValue: ((restoreBackup) ? '' : match[2]),
+                        dataType: "M205 S",
+                        label: "Min feedrate",
+                        origValue: restoreBackup ? "" : match[2],
                         value: match[2],
-                        unit: 'mm/s',
-                        description: ''
+                        unit: "mm/s",
+                        description: "",
                     });
 
                     self.eepromData1.push({
-                        dataType: 'M205 T',
-                        label: 'Min travel',
-                        origValue: ((restoreBackup) ? '' : match[4]),
+                        dataType: "M205 T",
+                        label: "Min travel",
+                        origValue: restoreBackup ? "" : match[4],
                         value: match[4],
-                        unit: 'mm/s',
-                        description: ''
+                        unit: "mm/s",
+                        description: "",
                     });
 
                     self.eepromData1.push({
-                        dataType: 'M205 B',
-                        label: 'Min segment',
-                        origValue: ((restoreBackup) ? '' : match[6]),
+                        dataType: "M205 B",
+                        label: "Min segment",
+                        origValue: restoreBackup ? "" : match[6],
                         value: match[6],
-                        unit: 'mm/s',
-                        description: ''
+                        unit: "mm/s",
+                        description: "",
                     });
 
                     self.eepromData2.push({
-                        dataType: 'M205 X',
-                        label: 'Max X jerk',
-                        origValue: ((restoreBackup) ? '' : match[8]),
+                        dataType: "M205 X",
+                        label: "Max X jerk",
+                        origValue: restoreBackup ? "" : match[8],
                         value: match[8],
-                        unit: 'mm/s',
-                        description: ''
+                        unit: "mm/s",
+                        description: "",
                     });
 
                     self.eepromData2.push({
-                        dataType: 'M205 Y',
-                        label: 'Max Y jerk',
-                        origValue: ((restoreBackup) ? '' : match[10]),
+                        dataType: "M205 Y",
+                        label: "Max Y jerk",
+                        origValue: restoreBackup ? "" : match[10],
                         value: match[10],
-                        unit: 'mm/s',
-                        description: ''
+                        unit: "mm/s",
+                        description: "",
                     });
 
                     self.eepromData2.push({
-                        dataType: 'M205 Z',
-                        label: 'Max Z jerk',
-                        origValue: ((restoreBackup) ? '' : match[12]),
+                        dataType: "M205 Z",
+                        label: "Max Z jerk",
+                        origValue: restoreBackup ? "" : match[12],
                         value: match[12],
-                        unit: 'mm/s',
-                        description: ''
+                        unit: "mm/s",
+                        description: "",
                     });
 
                     self.eepromData2.push({
-                        dataType: 'M205 E',
-                        label: 'Max E jerk',
-                        origValue: ((restoreBackup) ? '' : match[14]),
+                        dataType: "M205 E",
+                        label: "Max E jerk",
+                        origValue: restoreBackup ? "" : match[14],
                         value: match[14],
-                        unit: 'mm/s',
-                        description: ''
+                        unit: "mm/s",
+                        description: "",
                     });
                 }
 
@@ -790,30 +837,30 @@ $(function() {
                 match = self.eepromM204RegEx.exec(line);
                 if (match) {
                     self.eepromDataAccel.push({
-                        dataType: 'M204 P',
-                        label: 'Printing moves',
-                        origValue: ((restoreBackup) ? '' : match[2]),
+                        dataType: "M204 P",
+                        label: "Printing moves",
+                        origValue: restoreBackup ? "" : match[2],
                         value: match[2],
-                        unit: 'mm/s2',
-                        description: ''
+                        unit: "mm/s2",
+                        description: "",
                     });
 
                     self.eepromDataAccel.push({
-                        dataType: 'M204 R',
-                        label: 'Retract',
-                        origValue: ((restoreBackup) ? '' : match[4]),
+                        dataType: "M204 R",
+                        label: "Retract",
+                        origValue: restoreBackup ? "" : match[4],
                         value: match[4],
-                        unit: 'mm/s2',
-                        description: ''
+                        unit: "mm/s2",
+                        description: "",
                     });
 
                     self.eepromDataAccel.push({
-                        dataType: 'M204 T',
-                        label: 'Travel',
-                        origValue: ((restoreBackup) ? '' : match[6]),
+                        dataType: "M204 T",
+                        label: "Travel",
+                        origValue: restoreBackup ? "" : match[6],
                         value: match[6],
-                        unit: 'mm/s2',
-                        description: ''
+                        unit: "mm/s2",
+                        description: "",
                     });
                 }
 
@@ -821,48 +868,48 @@ $(function() {
                 match = self.eepromM301RegEx.exec(line);
                 if (match) {
                     self.eepromDataPID.push({
-                        dataType: 'M301 P',
-                        label: 'Hotend Kp',
-                        origValue: ((restoreBackup) ? '' : match[2]),
+                        dataType: "M301 P",
+                        label: "Hotend Kp",
+                        origValue: restoreBackup ? "" : match[2],
                         value: match[2],
-                        unit: 'term',
-                        description: ''
+                        unit: "term",
+                        description: "",
                     });
 
                     self.eepromDataPID.push({
-                        dataType: 'M301 I',
-                        label: 'Ki',
-                        origValue: ((restoreBackup) ? '' : match[4]),
+                        dataType: "M301 I",
+                        label: "Ki",
+                        origValue: restoreBackup ? "" : match[4],
                         value: match[4],
-                        unit: 'term',
-                        description: ''
+                        unit: "term",
+                        description: "",
                     });
 
                     self.eepromDataPID.push({
-                        dataType: 'M301 D',
-                        label: 'Kd',
-                        origValue: ((restoreBackup) ? '' : match[6]),
+                        dataType: "M301 D",
+                        label: "Kd",
+                        origValue: restoreBackup ? "" : match[6],
                         value: match[6],
-                        unit: 'term',
-                        description: ''
+                        unit: "term",
+                        description: "",
                     });
 
                     self.eepromDataPID.push({
-                        dataType: 'M301 C',
-                        label: 'Kc',
-                        origValue: ((restoreBackup) ? '' : match[8]),
+                        dataType: "M301 C",
+                        label: "Kc",
+                        origValue: restoreBackup ? "" : match[8],
                         value: match[8],
-                        unit: 'term',
-                        description: ''
+                        unit: "term",
+                        description: "",
                     });
 
                     self.eepromDataPID.push({
-                        dataType: 'M301 L',
-                        label: 'LPQ',
-                        origValue: ((restoreBackup) ? '' : match[10]),
+                        dataType: "M301 L",
+                        label: "LPQ",
+                        origValue: restoreBackup ? "" : match[10],
                         value: match[10],
-                        unit: 'len',
-                        description: ''
+                        unit: "len",
+                        description: "",
                     });
                 }
 
@@ -870,142 +917,147 @@ $(function() {
                 match = self.eepromM145S0RegEx.exec(line);
                 if (match) {
                     self.eepromDataMaterialHS0.push({
-                        dataType: 'M145 M0 H',
-                        label: 'M0 Hotend Temperature',
-                        origValue: ((restoreBackup) ? '' : match[2]),
+                        dataType: "M145 M0 H",
+                        label: "M0 Hotend Temperature",
+                        origValue: restoreBackup ? "" : match[2],
                         value: match[2],
-                        unit: '',
-                        description: ''
+                        unit: "",
+                        description: "",
                     });
                     self.eepromDataMaterialHS0.push({
-                        dataType: 'M145 M0 B',
-                        label: 'Bed Temperature',
-                        origValue: ((restoreBackup) ? '' : match[4]),
+                        dataType: "M145 M0 B",
+                        label: "Bed Temperature",
+                        origValue: restoreBackup ? "" : match[4],
                         value: match[4],
-                        unit: '',
-                        description: ''
+                        unit: "",
+                        description: "",
                     });
                     self.eepromDataMaterialHS0.push({
-                        dataType: 'M145 M0 F',
-                        label: 'Fan Speed',
-                        origValue: ((restoreBackup) ? '' : match[6]),
+                        dataType: "M145 M0 F",
+                        label: "Fan Speed",
+                        origValue: restoreBackup ? "" : match[6],
                         value: match[6],
-                        unit: '',
-                        description: ''
+                        unit: "",
+                        description: "",
                     });
                 }
 
                 match = self.eepromM145S1RegEx.exec(line);
                 if (match) {
                     self.eepromDataMaterialHS1.push({
-                        dataType: 'M145 M1 H',
-                        label: 'M1 Hotend Temperature',
-                        origValue: ((restoreBackup) ? '' : match[2]),
+                        dataType: "M145 M1 H",
+                        label: "M1 Hotend Temperature",
+                        origValue: restoreBackup ? "" : match[2],
                         value: match[2],
-                        unit: '',
-                        description: ''
+                        unit: "",
+                        description: "",
                     });
                     self.eepromDataMaterialHS1.push({
-                        dataType: 'M145 M1 B',
-                        label: 'Bed Temperature',
-                        origValue: ((restoreBackup) ? '' : match[4]),
+                        dataType: "M145 M1 B",
+                        label: "Bed Temperature",
+                        origValue: restoreBackup ? "" : match[4],
                         value: match[4],
-                        unit: '',
-                        description: ''
+                        unit: "",
+                        description: "",
                     });
                     self.eepromDataMaterialHS1.push({
-                        dataType: 'M145 M1 F',
-                        label: 'Fan Speed',
-                        origValue: ((restoreBackup) ? '' : match[6]),
+                        dataType: "M145 M1 F",
+                        label: "Fan Speed",
+                        origValue: restoreBackup ? "" : match[6],
                         value: match[6],
-                        unit: '',
-                        description: ''
+                        unit: "",
+                        description: "",
                     });
                 }
 
                 match = self.eepromM145S2RegEx.exec(line);
                 if (match) {
                     self.eepromDataMaterialHS2.push({
-                        dataType: 'M145 M2 H',
-                        label: 'M2 Hotend Temperature',
-                        origValue: ((restoreBackup) ? '' : match[2]),
+                        dataType: "M145 M2 H",
+                        label: "M2 Hotend Temperature",
+                        origValue: restoreBackup ? "" : match[2],
                         value: match[2],
-                        unit: '',
-                        description: ''
+                        unit: "",
+                        description: "",
                     });
                     self.eepromDataMaterialHS2.push({
-                        dataType: 'M145 M2 B',
-                        label: 'Bed Temperature',
-                        origValue: ((restoreBackup) ? '' : match[4]),
+                        dataType: "M145 M2 B",
+                        label: "Bed Temperature",
+                        origValue: restoreBackup ? "" : match[4],
                         value: match[4],
-                        unit: '',
-                        description: ''
+                        unit: "",
+                        description: "",
                     });
                     self.eepromDataMaterialHS2.push({
-                        dataType: 'M145 M2 F',
-                        label: 'Fan Speed',
-                        origValue: ((restoreBackup) ? '' : match[6]),
+                        dataType: "M145 M2 F",
+                        label: "Fan Speed",
+                        origValue: restoreBackup ? "" : match[6],
                         value: match[6],
-                        unit: '',
-                        description: ''
+                        unit: "",
+                        description: "",
                     });
                 }
-            } else if (self.firmware_name() == 'Marlin 1.0.2+' || self.firmware_name() == 'Marlin V1.0.2;' || self.firmware_name() == 'Marlin 1.0.2' || self.firmware_name() == 'Marlin V1;') {
+            } else if (
+                self.firmware_name() == "Marlin 1.0.2+" ||
+                self.firmware_name() == "Marlin V1.0.2;" ||
+                self.firmware_name() == "Marlin 1.0.2" ||
+                self.firmware_name() == "Marlin V1;"
+            ) {
                 // M205 Advanced variables
                 match = self.eepromM205RegEx.exec(line);
                 if (match) {
                     self.eepromData1.push({
-                        dataType: 'M205 S',
-                        label: 'Min feedrate',
-                        origValue: ((restoreBackup) ? '' : match[2]),
+                        dataType: "M205 S",
+                        label: "Min feedrate",
+                        origValue: restoreBackup ? "" : match[2],
                         value: match[2],
-                        unit: 'mm/s',
-                        description: ''
+                        unit: "mm/s",
+                        description: "",
                     });
 
                     self.eepromData1.push({
-                        dataType: 'M205 T',
-                        label: 'Min travel',
-                        origValue: ((restoreBackup) ? '' : match[4]),
+                        dataType: "M205 T",
+                        label: "Min travel",
+                        origValue: restoreBackup ? "" : match[4],
                         value: match[4],
-                        unit: 'mm/s',
-                        description: ''
+                        unit: "mm/s",
+                        description: "",
                     });
 
                     self.eepromData1.push({
-                        dataType: 'M205 B',
-                        label: 'Min segment',
-                        origValue: ((restoreBackup) ? '' : match[6]),
+                        dataType: "M205 B",
+                        label: "Min segment",
+                        origValue: restoreBackup ? "" : match[6],
                         value: match[6],
-                        unit: 'mm/s',
-                        description: ''
+                        unit: "mm/s",
+                        description: "",
                     });
 
                     self.eepromData2.push({
-                        dataType: 'M205 X',
-                        label: 'Max X jerk',
-                        origValue: ((restoreBackup) ? '' : match[8]),
+                        dataType: "M205 X",
+                        label: "Max X jerk",
+                        origValue: restoreBackup ? "" : match[8],
                         value: match[8],
-                        unit: 'mm/s',
-                        description: ''
+                        unit: "mm/s",
+                        description: "",
                     });
 
                     self.eepromData2.push({
-                        dataType: 'M205 Z',
-                        label: 'Max Z jerk',
-                        origValue: ((restoreBackup) ? '' : match[10]),
+                        dataType: "M205 Z",
+                        label: "Max Z jerk",
+                        origValue: restoreBackup ? "" : match[10],
                         value: match[10],
-                        unit: 'mm/s',
-                        description: ''
+                        unit: "mm/s",
+                        description: "",
                     });
 
                     self.eepromData2.push({
-                        dataType: 'M205 E',
-                        label: 'Max E jerk',
-                        origValue: ((restoreBackup) ? '' : match[12]),
+                        dataType: "M205 E",
+                        label: "Max E jerk",
+                        origValue: restoreBackup ? "" : match[12],
                         value: match[12],
-                        unit: 'mm/s',
-                        description: ''
+                        unit: "mm/s",
+                        description: "",
                     });
                 }
 
@@ -1013,21 +1065,21 @@ $(function() {
                 match = self.eepromM204RegEx.exec(line);
                 if (match) {
                     self.eepromDataAccel.push({
-                        dataType: 'M204 S',
-                        label: 'Printing moves',
-                        origValue: ((restoreBackup) ? '' : match[2]),
+                        dataType: "M204 S",
+                        label: "Printing moves",
+                        origValue: restoreBackup ? "" : match[2],
                         value: match[2],
-                        unit: 'mm/s2',
-                        description: ''
+                        unit: "mm/s2",
+                        description: "",
                     });
 
                     self.eepromDataAccel.push({
-                        dataType: 'M204 T',
-                        label: 'Travel',
-                        origValue: ((restoreBackup) ? '' : match[4]),
+                        dataType: "M204 T",
+                        label: "Travel",
+                        origValue: restoreBackup ? "" : match[4],
                         value: match[4],
-                        unit: 'mm/s2',
-                        description: ''
+                        unit: "mm/s2",
+                        description: "",
                     });
                 }
 
@@ -1035,30 +1087,30 @@ $(function() {
                 match = self.eepromM301RegEx.exec(line);
                 if (match) {
                     self.eepromDataPID.push({
-                        dataType: 'M301 P',
-                        label: 'Hotend Kp',
-                        origValue: ((restoreBackup) ? '' : match[2]),
+                        dataType: "M301 P",
+                        label: "Hotend Kp",
+                        origValue: restoreBackup ? "" : match[2],
                         value: match[2],
-                        unit: 'term',
-                        description: ''
+                        unit: "term",
+                        description: "",
                     });
 
                     self.eepromDataPID.push({
-                        dataType: 'M301 I',
-                        label: 'Ki',
-                        origValue: ((restoreBackup) ? '' : match[4]),
+                        dataType: "M301 I",
+                        label: "Ki",
+                        origValue: restoreBackup ? "" : match[4],
                         value: match[4],
-                        unit: 'term',
-                        description: ''
+                        unit: "term",
+                        description: "",
                     });
 
                     self.eepromDataPID.push({
-                        dataType: 'M301 D',
-                        label: 'Kd',
-                        origValue: ((restoreBackup) ? '' : match[6]),
+                        dataType: "M301 D",
+                        label: "Kd",
+                        origValue: restoreBackup ? "" : match[6],
                         value: match[6],
-                        unit: 'term',
-                        description: ''
+                        unit: "term",
+                        description: "",
                     });
                 }
             } else {
@@ -1066,66 +1118,66 @@ $(function() {
                 match = self.eepromM205RegEx.exec(line);
                 if (match) {
                     self.eepromData1.push({
-                        dataType: 'M205 S',
-                        label: 'Min feedrate',
-                        origValue: ((restoreBackup) ? '' : match[2]),
+                        dataType: "M205 S",
+                        label: "Min feedrate",
+                        origValue: restoreBackup ? "" : match[2],
                         value: match[2],
-                        unit: 'mm/s',
-                        description: ''
+                        unit: "mm/s",
+                        description: "",
                     });
 
                     self.eepromData1.push({
-                        dataType: 'M205 T',
-                        label: 'Min travel',
-                        origValue: ((restoreBackup) ? '' : match[4]),
+                        dataType: "M205 T",
+                        label: "Min travel",
+                        origValue: restoreBackup ? "" : match[4],
                         value: match[4],
-                        unit: 'mm/s',
-                        description: ''
+                        unit: "mm/s",
+                        description: "",
                     });
 
                     self.eepromData1.push({
-                        dataType: 'M205 B',
-                        label: 'Min segment',
-                        origValue: ((restoreBackup) ? '' : match[6]),
+                        dataType: "M205 B",
+                        label: "Min segment",
+                        origValue: restoreBackup ? "" : match[6],
                         value: match[6],
-                        unit: 'mm/s',
-                        description: ''
+                        unit: "mm/s",
+                        description: "",
                     });
 
                     self.eepromData2.push({
-                        dataType: 'M205 X',
-                        label: 'Max X jerk',
-                        origValue: ((restoreBackup) ? '' : match[8]),
+                        dataType: "M205 X",
+                        label: "Max X jerk",
+                        origValue: restoreBackup ? "" : match[8],
                         value: match[8],
-                        unit: 'mm/s',
-                        description: ''
+                        unit: "mm/s",
+                        description: "",
                     });
 
                     self.eepromData2.push({
-                        dataType: 'M205 Y',
-                        label: 'Max Y jerk',
-                        origValue: ((restoreBackup) ? '' : match[10]),
+                        dataType: "M205 Y",
+                        label: "Max Y jerk",
+                        origValue: restoreBackup ? "" : match[10],
                         value: match[10],
-                        unit: 'mm/s',
-                        description: ''
+                        unit: "mm/s",
+                        description: "",
                     });
 
                     self.eepromData2.push({
-                        dataType: 'M205 Z',
-                        label: 'Max Z jerk',
-                        origValue: ((restoreBackup) ? '' : match[12]),
+                        dataType: "M205 Z",
+                        label: "Max Z jerk",
+                        origValue: restoreBackup ? "" : match[12],
                         value: match[12],
-                        unit: 'mm/s',
-                        description: ''
+                        unit: "mm/s",
+                        description: "",
                     });
 
                     self.eepromData2.push({
-                        dataType: 'M205 E',
-                        label: 'Max E jerk',
-                        origValue: ((restoreBackup) ? '' : match[14]),
+                        dataType: "M205 E",
+                        label: "Max E jerk",
+                        origValue: restoreBackup ? "" : match[14],
                         value: match[14],
-                        unit: 'mm/s',
-                        description: ''
+                        unit: "mm/s",
+                        description: "",
                     });
                 }
 
@@ -1133,30 +1185,30 @@ $(function() {
                 match = self.eepromM204RegEx.exec(line);
                 if (match) {
                     self.eepromDataAccel.push({
-                        dataType: 'M204 P',
-                        label: 'Printing moves',
-                        origValue: ((restoreBackup) ? '' : match[2]),
+                        dataType: "M204 P",
+                        label: "Printing moves",
+                        origValue: restoreBackup ? "" : match[2],
                         value: match[2],
-                        unit: 'mm/s2',
-                        description: ''
+                        unit: "mm/s2",
+                        description: "",
                     });
 
                     self.eepromDataAccel.push({
-                        dataType: 'M204 R',
-                        label: 'Retract',
-                        origValue: ((restoreBackup) ? '' : match[4]),
+                        dataType: "M204 R",
+                        label: "Retract",
+                        origValue: restoreBackup ? "" : match[4],
                         value: match[4],
-                        unit: 'mm/s2',
-                        description: ''
+                        unit: "mm/s2",
+                        description: "",
                     });
 
                     self.eepromDataAccel.push({
-                        dataType: 'M204 T',
-                        label: 'Travel',
-                        origValue: ((restoreBackup) ? '' : match[6]),
+                        dataType: "M204 T",
+                        label: "Travel",
+                        origValue: restoreBackup ? "" : match[6],
                         value: match[6],
-                        unit: 'mm/s2',
-                        description: ''
+                        unit: "mm/s2",
+                        description: "",
                     });
                 }
 
@@ -1164,30 +1216,30 @@ $(function() {
                 match = self.eepromM301RegEx.exec(line);
                 if (match) {
                     self.eepromDataPID.push({
-                        dataType: 'M301 P',
-                        label: 'Hotend Kp',
-                        origValue: ((restoreBackup) ? '' : match[2]),
+                        dataType: "M301 P",
+                        label: "Hotend Kp",
+                        origValue: restoreBackup ? "" : match[2],
                         value: match[2],
-                        unit: 'term',
-                        description: ''
+                        unit: "term",
+                        description: "",
                     });
 
                     self.eepromDataPID.push({
-                        dataType: 'M301 I',
-                        label: 'Ki',
-                        origValue: ((restoreBackup) ? '' : match[4]),
+                        dataType: "M301 I",
+                        label: "Ki",
+                        origValue: restoreBackup ? "" : match[4],
                         value: match[4],
-                        unit: 'term',
-                        description: ''
+                        unit: "term",
+                        description: "",
                     });
 
                     self.eepromDataPID.push({
-                        dataType: 'M301 D',
-                        label: 'Kd',
-                        origValue: ((restoreBackup) ? '' : match[6]),
+                        dataType: "M301 D",
+                        label: "Kd",
+                        origValue: restoreBackup ? "" : match[6],
                         value: match[6],
-                        unit: 'term',
-                        description: ''
+                        unit: "term",
+                        description: "",
                     });
                 }
 
@@ -1195,84 +1247,84 @@ $(function() {
                 match = self.eepromM145S0RegEx.exec(line);
                 if (match) {
                     self.eepromDataMaterialHS0.push({
-                        dataType: 'M145 S0 H',
-                        label: 'S0 Hotend Temperature',
-                        origValue: ((restoreBackup) ? '' : match[2]),
+                        dataType: "M145 S0 H",
+                        label: "S0 Hotend Temperature",
+                        origValue: restoreBackup ? "" : match[2],
                         value: match[2],
-                        unit: '',
-                        description: ''
+                        unit: "",
+                        description: "",
                     });
                     self.eepromDataMaterialHS0.push({
-                        dataType: 'M145 S0 B',
-                        label: 'Bed Temperature',
-                        origValue: ((restoreBackup) ? '' : match[4]),
+                        dataType: "M145 S0 B",
+                        label: "Bed Temperature",
+                        origValue: restoreBackup ? "" : match[4],
                         value: match[4],
-                        unit: '',
-                        description: ''
+                        unit: "",
+                        description: "",
                     });
                     self.eepromDataMaterialHS0.push({
-                        dataType: 'M145 S0 F',
-                        label: 'Fan Speed',
-                        origValue: ((restoreBackup) ? '' : match[6]),
+                        dataType: "M145 S0 F",
+                        label: "Fan Speed",
+                        origValue: restoreBackup ? "" : match[6],
                         value: match[6],
-                        unit: '',
-                        description: ''
+                        unit: "",
+                        description: "",
                     });
                 }
 
                 match = self.eepromM145S1RegEx.exec(line);
                 if (match) {
                     self.eepromDataMaterialHS1.push({
-                        dataType: 'M145 S1 H',
-                        label: 'S1 Hotend Temperature',
-                        origValue: ((restoreBackup) ? '' : match[2]),
+                        dataType: "M145 S1 H",
+                        label: "S1 Hotend Temperature",
+                        origValue: restoreBackup ? "" : match[2],
                         value: match[2],
-                        unit: '',
-                        description: ''
+                        unit: "",
+                        description: "",
                     });
                     self.eepromDataMaterialHS1.push({
-                        dataType: 'M145 S1 B',
-                        label: 'Bed Temperature',
-                        origValue: ((restoreBackup) ? '' : match[4]),
+                        dataType: "M145 S1 B",
+                        label: "Bed Temperature",
+                        origValue: restoreBackup ? "" : match[4],
                         value: match[4],
-                        unit: '',
-                        description: ''
+                        unit: "",
+                        description: "",
                     });
                     self.eepromDataMaterialHS1.push({
-                        dataType: 'M145 S1 F',
-                        label: 'Fan Speed',
-                        origValue: ((restoreBackup) ? '' : match[6]),
+                        dataType: "M145 S1 F",
+                        label: "Fan Speed",
+                        origValue: restoreBackup ? "" : match[6],
                         value: match[6],
-                        unit: '',
-                        description: ''
+                        unit: "",
+                        description: "",
                     });
                 }
 
                 match = self.eepromM145S2RegEx.exec(line);
                 if (match) {
                     self.eepromDataMaterialHS2.push({
-                        dataType: 'M145 S2 H',
-                        label: 'S2 Hotend Temperature',
-                        origValue: ((restoreBackup) ? '' : match[2]),
+                        dataType: "M145 S2 H",
+                        label: "S2 Hotend Temperature",
+                        origValue: restoreBackup ? "" : match[2],
                         value: match[2],
-                        unit: '',
-                        description: ''
+                        unit: "",
+                        description: "",
                     });
                     self.eepromDataMaterialHS2.push({
-                        dataType: 'M145 S2 B',
-                        label: 'Bed Temperature',
-                        origValue: ((restoreBackup) ? '' : match[4]),
+                        dataType: "M145 S2 B",
+                        label: "Bed Temperature",
+                        origValue: restoreBackup ? "" : match[4],
                         value: match[4],
-                        unit: '',
-                        description: ''
+                        unit: "",
+                        description: "",
                     });
                     self.eepromDataMaterialHS2.push({
-                        dataType: 'M145 S2 F',
-                        label: 'Fan Speed',
-                        origValue: ((restoreBackup) ? '' : match[6]),
+                        dataType: "M145 S2 F",
+                        label: "Fan Speed",
+                        origValue: restoreBackup ? "" : match[6],
                         value: match[6],
-                        unit: '',
-                        description: ''
+                        unit: "",
+                        description: "",
                     });
                 }
 
@@ -1280,72 +1332,78 @@ $(function() {
                 match = self.eepromM420RegEx.exec(line);
                 if (match) {
                     self.eepromDataLevel.push({
-                        dataType: 'M420 S',
-                        label: 'Auto Bed Leveling',
-                        origValue: ((restoreBackup) ? '' : match[2]),
+                        dataType: "M420 S",
+                        label: "Auto Bed Leveling",
+                        origValue: restoreBackup ? "" : match[2],
                         value: match[2],
-                        unit: '0/1',
-                        description: ''
+                        unit: "0/1",
+                        description: "",
                     });
 
                     if (match.length >= 3) {
                         self.eepromDataLevel.push({
-                            dataType: 'M420 Z',
-                            label: 'Fade height',
-                            origValue: ((restoreBackup) ? '' : match[4]),
+                            dataType: "M420 Z",
+                            label: "Fade height",
+                            origValue: restoreBackup ? "" : match[4],
                             value: match[4],
-                            unit: 'mm',
-                            description: ''
+                            unit: "mm",
+                            description: "",
                         });
                     }
                 }
             }
         };
 
-        self.fromHistoryData = function(data) {
-            _.each(data.logs, function(line) {
+        self.fromHistoryData = function (data) {
+            _.each(data.logs, function (line) {
                 var match = self.firmwareRegEx.exec(line);
                 if (match !== null) {
-                    var fw_name = match[1] + ' ' + match[2]
+                    var fw_name = match[1] + " " + match[2];
                     self.FIRMWARE_NAME(fw_name.trim());
-                    self.FIRMWARE_INFO(line.replace('Recv: ', '').trim());
+                    self.FIRMWARE_INFO(line.replace("Recv: ", "").trim());
                     self.setRegExVars(self.firmware_name());
-                    console.debug('Firmware: ' + self.firmware_name());
+                    console.debug("Firmware: " + self.firmware_name());
                     if (self.marlinRegEx.exec(match[0]))
-                    self.isMarlinFirmware(true);
+                        self.isMarlinFirmware(true);
                 }
 
                 var match = self.firmwareCapRegEx.exec(line);
                 if (match !== null) {
-                    self.FIRMWARE_INFO(self.firmware_info().trim() + '\n' + line.replace('Recv: Cap:', ''));
+                    self.FIRMWARE_INFO(
+                        self.firmware_info().trim() +
+                            "\n" +
+                            line.replace("Recv: Cap:", "")
+                    );
                 }
             });
         };
 
-        self.fromCurrentData = function(data) {
+        self.fromCurrentData = function (data) {
             hasChangedEepromForm = true;
             if (!self.isMarlinFirmware()) {
                 _.each(data.logs, function (line) {
                     var match = self.firmwareRegEx.exec(line);
                     if (match) {
-                        var fw_name = match[1] + ' ' + match[2]
+                        var fw_name = match[1] + " " + match[2];
                         self.FIRMWARE_NAME(fw_name.trim());
-                        self.FIRMWARE_INFO(line.replace('Recv: ', '').trim());
+                        self.FIRMWARE_INFO(line.replace("Recv: ", "").trim());
                         self.setRegExVars(self.firmware_name());
-                        console.debug('Firmware: ' + self.firmware_name());
+                        console.debug("Firmware: " + self.firmware_name());
                         if (self.marlinRegEx.exec(match[0]))
-                        self.isMarlinFirmware(true);
+                            self.isMarlinFirmware(true);
                     }
 
                     var match = self.firmwareCapRegEx.exec(line);
                     if (match) {
-                        self.FIRMWARE_INFO(self.firmware_info().trim() + '\n' + line.replace('Recv: Cap:', '').trim());
-                        console.debug(line.replace('Recv: ', ''));
+                        self.FIRMWARE_INFO(
+                            self.firmware_info().trim() +
+                                "\n" +
+                                line.replace("Recv: Cap:", "").trim()
+                        );
+                        console.debug(line.replace("Recv: ", ""));
                     }
                 });
-            }
-            else
-            {
+            } else {
                 match = self.eepromM501RegEx.exec(data.logs);
                 if (match) {
                     self.startBackup = true;
@@ -1358,39 +1416,60 @@ $(function() {
                     matchOK = self.eepromOKRegEx.exec(self.backupConfig);
                     if (match || matchOK) {
                         self.execBackup = false;
-                        self.backupConfig = self.backupConfig.replace(/Recv/gi, "\nRecv");
-                        self.backupConfig = self.backupConfig.replace(/,\n/gi, "\n");
+                        self.backupConfig = self.backupConfig.replace(
+                            /Recv/gi,
+                            "\nRecv"
+                        );
+                        self.backupConfig = self.backupConfig.replace(
+                            /,\n/gi,
+                            "\n"
+                        );
 
                         console.debug("EEPROM Config: " + self.backupConfig);
                         var currentBackupDate = new Date();
                         var backupYear = currentBackupDate.getFullYear();
                         var backupMonth = currentBackupDate.getMonth() + 1;
-                        if (backupMonth < 10)
-                        backupMonth = '0' + backupMonth;
+                        if (backupMonth < 10) backupMonth = "0" + backupMonth;
                         var backupDay = currentBackupDate.getDate();
-                        if (backupDay < 10)
-                        backupDay = '0' + backupDay;
+                        if (backupDay < 10) backupDay = "0" + backupDay;
                         var backupHours = currentBackupDate.getHours();
-                        if (backupHours < 10)
-                        backupHours = '0' + backupHours;
+                        if (backupHours < 10) backupHours = "0" + backupHours;
                         var backupMinutes = currentBackupDate.getMinutes();
                         if (backupMinutes < 10)
-                        backupMinutes = '0' + backupMinutes;
+                            backupMinutes = "0" + backupMinutes;
                         var backupSeconds = currentBackupDate.getSeconds();
                         if (backupSeconds < 10)
-                        backupSeconds = '0' + backupSeconds;
-                        var backupDate = backupYear + '-' + backupMonth + '-' + backupDay + '_' + backupHours + backupMinutes + backupSeconds;
+                            backupSeconds = "0" + backupSeconds;
+                        var backupDate =
+                            backupYear +
+                            "-" +
+                            backupMonth +
+                            "-" +
+                            backupDay +
+                            "_" +
+                            backupHours +
+                            backupMinutes +
+                            backupSeconds;
 
-                        var element = document.createElement('a');
-                        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(self.backupConfig));
-                        element.setAttribute('download', 'eeprom_marlin_' + backupDate + '.cfg');
-                        element.style.display = 'none';
+                        var element = document.createElement("a");
+                        element.setAttribute(
+                            "href",
+                            "data:text/plain;charset=utf-8," +
+                                encodeURIComponent(self.backupConfig)
+                        );
+                        element.setAttribute(
+                            "download",
+                            "eeprom_marlin_" + backupDate + ".cfg"
+                        );
+                        element.style.display = "none";
                         document.body.appendChild(element);
 
                         element.click();
 
                         document.body.removeChild(element);
-                        setTimeout(function() {self.setControls(true); }, 2000);
+                        setTimeout(function () {
+                            self.setControls(true);
+                        }, 2000);
                     }
                 }
 
@@ -1401,73 +1480,87 @@ $(function() {
             hasChangedEepromForm = false;
         };
 
-        self.eepromDataCount = ko.computed(function() {
-            return (self.eepromData1().length + self.eepromData2().length) > 0;
+        self.eepromDataCount = ko.computed(function () {
+            return self.eepromData1().length + self.eepromData2().length > 0;
         });
 
-        self.eepromDataStepsCount = ko.computed(function() {
+        self.eepromDataStepsCount = ko.computed(function () {
             return self.eepromDataSteps().length > 0;
         });
 
-        self.eepromDataFRatesCount = ko.computed(function() {
+        self.eepromDataFRatesCount = ko.computed(function () {
             return self.eepromDataFRates().length > 0;
         });
 
-        self.eepromDataMaxAccelCount = ko.computed(function() {
+        self.eepromDataMaxAccelCount = ko.computed(function () {
             return self.eepromDataMaxAccel().length > 0;
         });
 
-        self.eepromDataAccelCount = ko.computed(function() {
+        self.eepromDataAccelCount = ko.computed(function () {
             return self.eepromDataAccel().length > 0;
         });
 
-        self.eepromDataPIDCount = ko.computed(function() {
-            return (self.eepromDataPID().length + self.eepromDataPIDB().length) > 0;
+        self.eepromDataPIDCount = ko.computed(function () {
+            return (
+                self.eepromDataPID().length + self.eepromDataPIDB().length > 0
+            );
         });
 
-        self.eepromDataHomingCount = ko.computed(function() {
+        self.eepromDataHomingCount = ko.computed(function () {
             return self.eepromDataHoming().length > 0;
         });
 
-        self.eepromDataMaterialCount = ko.computed(function() {
-            return (self.eepromDataMaterialHS0().length + self.eepromDataMaterialHS1().length + self.eepromDataMaterialHS2().length) > 0;
+        self.eepromDataMaterialCount = ko.computed(function () {
+            return (
+                self.eepromDataMaterialHS0().length +
+                    self.eepromDataMaterialHS1().length +
+                    self.eepromDataMaterialHS2().length >
+                0
+            );
         });
 
-        self.eepromDataFilamentCount = ko.computed(function() {
+        self.eepromDataFilamentCount = ko.computed(function () {
             return self.eepromDataFilament().length > 0;
         });
 
-        self.eepromDataEndstopCount = ko.computed(function() {
+        self.eepromDataEndstopCount = ko.computed(function () {
             return self.eepromDataEndstop().length > 0;
         });
-        self.eepromDataDeltaCount = ko.computed(function() {
-            return (self.eepromDataDelta1().length + self.eepromDataDelta2().length) > 0;
+        self.eepromDataDeltaCount = ko.computed(function () {
+            return (
+                self.eepromDataDelta1().length +
+                    self.eepromDataDelta2().length >
+                0
+            );
         });
 
-        self.eepromDataProbeCount = ko.computed(function() {
+        self.eepromDataProbeCount = ko.computed(function () {
             return self.eepromDataProbe().length > 0;
         });
 
-        self.eepromOffsetCount = ko.computed(function() {
-            return self.eepromDataHoming().length + self.eepromDataProbe().length > 0;
+        self.eepromOffsetCount = ko.computed(function () {
+            return (
+                self.eepromDataHoming().length + self.eepromDataProbe().length >
+                0
+            );
         });
 
-        self.onEventConnected = function() {
+        self.onEventConnected = function () {
             self._requestFirmwareInfo();
             // removed for prevent dual Load
             //setTimeout(function() {self.loadEeprom(); }, 5000);
         };
 
-        self.onStartupComplete = function() {
+        self.onStartupComplete = function () {
             // removed for prevent dual Load
             //setTimeout(function() {self.loadEeprom(); }, 5000);
         };
 
-        self.onEventDisconnected = function() {
+        self.onEventDisconnected = function () {
             self.isMarlinFirmware(false);
         };
 
-        self.backupEeprom = function() {
+        self.backupEeprom = function () {
             // prevent dual load
             self.setControls(false);
 
@@ -1497,21 +1590,29 @@ $(function() {
             self._requestEepromData();
         };
 
-        self.restoreEeprom = function() {
-            if (window.File && window.FileReader && window.FileList && window.Blob) {
+        self.restoreEeprom = function () {
+            if (
+                window.File &&
+                window.FileReader &&
+                window.FileList &&
+                window.Blob
+            ) {
                 // Great success! All the File APIs are supported.
             } else {
-                alert('The File APIs are not fully supported in this browser.');
+                alert("The File APIs are not fully supported in this browser.");
             }
 
-            document.getElementById('fileBackup').addEventListener('change', self.handleFileSelect, false);
-            document.getElementById('fileBackup').click();
+            document
+                .getElementById("fileBackup")
+                .addEventListener("change", self.handleFileSelect, false);
+            document.getElementById("fileBackup").click();
         };
 
-        self.resetEeprom = function() {
+        self.resetEeprom = function () {
             showConfirmationDialog({
-                message: 'This will reset all EEPROM settings to firmware defaults.',
-                onproceed: function() {
+                message:
+                    "This will reset all EEPROM settings to firmware defaults.",
+                onproceed: function () {
                     // prevent dual load
                     self.setControls(false);
 
@@ -1520,10 +1621,10 @@ $(function() {
                     self.control.sendCustomCommand({ command: "M504" });
 
                     new PNotify({
-                        title: 'EEPROM Marlin',
-                        text: 'Default settings were restored.',
-                        type: 'success',
-                        hide: true
+                        title: "EEPROM Marlin",
+                        text: "Default settings were restored.",
+                        type: "success",
+                        hide: true,
                     });
 
                     self.loadEeprom();
@@ -1531,14 +1632,14 @@ $(function() {
             });
         };
 
-        self.handleFileSelect = function(evt) {
+        self.handleFileSelect = function (evt) {
             var files = evt.target.files;
 
-            for (var i = 0, f; f = files[i]; i++) {
+            for (var i = 0, f; (f = files[i]); i++) {
                 var reader = new FileReader();
 
-                reader.onload = (function(cFile) {
-                    return function(e) {
+                reader.onload = (function (cFile) {
+                    return function (e) {
                         // prevent dual load
                         self.setControls(false);
 
@@ -1564,7 +1665,7 @@ $(function() {
                         self.eepromDataLinear([]);
                         self.eepromDataProbe([]);
 
-                        _.each(self.backupConfig.split('\n'), function (line) {
+                        _.each(self.backupConfig.split("\n"), function (line) {
                             self.eepromFieldParse(line, true);
                         });
                     };
@@ -1572,22 +1673,22 @@ $(function() {
 
                 reader.readAsText(f);
             }
-            $('#eeprom_marlin_upload').addClass("btn-primary");
+            $("#eeprom_marlin_upload").addClass("btn-primary");
         };
 
-        self.setControls = function(state) {
+        self.setControls = function (state) {
             if (self.stateControls != state) {
                 self.stateControls = state;
 
-                $('#eeprom_marlin_load').prop('disabled', !state);
-                $('#eeprom_marlin_upload').prop('disabled', !state);
-                $('#eeprom_marlin_backup').prop('disabled', !state);
-                $('#eeprom_marlin_restore').prop('disabled', !state);
-                $('#eeprom_marlin_reset').prop('disabled', !state);
+                $("#eeprom_marlin_load").prop("disabled", !state);
+                $("#eeprom_marlin_upload").prop("disabled", !state);
+                $("#eeprom_marlin_backup").prop("disabled", !state);
+                $("#eeprom_marlin_restore").prop("disabled", !state);
+                $("#eeprom_marlin_reset").prop("disabled", !state);
             }
         };
 
-        self.loadEeprom = function() {
+        self.loadEeprom = function () {
             // prevent dual load
             self.setControls(false);
 
@@ -1613,17 +1714,17 @@ $(function() {
 
             self._requestEepromData();
 
-            $('#eeprom_marlin_upload').removeClass("btn-primary");
+            $("#eeprom_marlin_upload").removeClass("btn-primary");
             hasChangedEepromForm = false;
         };
 
-        self.saveEeprom = function()  {
+        self.saveEeprom = function () {
             // prevent dual load
             self.setControls(false);
 
-            var cmd = 'M500';
+            var cmd = "M500";
             var eepromData = self.eepromData1();
-            _.each(eepromData, function(data) {
+            _.each(eepromData, function (data) {
                 if (data.origValue != data.value) {
                     self._requestSaveDataToEeprom(data.dataType, data.value);
                     data.origValue = data.value;
@@ -1631,7 +1732,7 @@ $(function() {
             });
 
             eepromData = self.eepromData2();
-            _.each(eepromData, function(data) {
+            _.each(eepromData, function (data) {
                 if (data.origValue != data.value) {
                     self._requestSaveDataToEeprom(data.dataType, data.value);
                     data.origValue = data.value;
@@ -1639,7 +1740,7 @@ $(function() {
             });
 
             eepromData = self.eepromDataLevel();
-            _.each(eepromData, function(data) {
+            _.each(eepromData, function (data) {
                 if (data.origValue != data.value) {
                     self._requestSaveDataToEeprom(data.dataType, data.value);
                     data.origValue = data.value;
@@ -1647,7 +1748,7 @@ $(function() {
             });
 
             eepromData = self.eepromDataSteps();
-            _.each(eepromData, function(data) {
+            _.each(eepromData, function (data) {
                 if (data.origValue != data.value) {
                     self._requestSaveDataToEeprom(data.dataType, data.value);
                     data.origValue = data.value;
@@ -1655,7 +1756,7 @@ $(function() {
             });
 
             eepromData = self.eepromDataFRates();
-            _.each(eepromData, function(data) {
+            _.each(eepromData, function (data) {
                 if (data.origValue != data.value) {
                     self._requestSaveDataToEeprom(data.dataType, data.value);
                     data.origValue = data.value;
@@ -1663,7 +1764,7 @@ $(function() {
             });
 
             eepromData = self.eepromDataMaxAccel();
-            _.each(eepromData, function(data) {
+            _.each(eepromData, function (data) {
                 if (data.origValue != data.value) {
                     self._requestSaveDataToEeprom(data.dataType, data.value);
                     data.origValue = data.value;
@@ -1671,7 +1772,7 @@ $(function() {
             });
 
             eepromData = self.eepromDataAccel();
-            _.each(eepromData, function(data) {
+            _.each(eepromData, function (data) {
                 if (data.origValue != data.value) {
                     self._requestSaveDataToEeprom(data.dataType, data.value);
                     data.origValue = data.value;
@@ -1679,7 +1780,7 @@ $(function() {
             });
 
             eepromData = self.eepromDataPID();
-            _.each(eepromData, function(data) {
+            _.each(eepromData, function (data) {
                 if (data.origValue != data.value) {
                     self._requestSaveDataToEeprom(data.dataType, data.value);
                     data.origValue = data.value;
@@ -1687,7 +1788,7 @@ $(function() {
             });
 
             eepromData = self.eepromDataPIDB();
-            _.each(eepromData, function(data) {
+            _.each(eepromData, function (data) {
                 if (data.origValue != data.value) {
                     self._requestSaveDataToEeprom(data.dataType, data.value);
                     data.origValue = data.value;
@@ -1695,7 +1796,7 @@ $(function() {
             });
 
             eepromData = self.eepromDataHoming();
-            _.each(eepromData, function(data) {
+            _.each(eepromData, function (data) {
                 if (data.origValue != data.value) {
                     self._requestSaveDataToEeprom(data.dataType, data.value);
                     data.origValue = data.value;
@@ -1703,7 +1804,7 @@ $(function() {
             });
 
             eepromData = self.eepromDataMaterialHS0();
-            _.each(eepromData, function(data) {
+            _.each(eepromData, function (data) {
                 if (data.origValue != data.value) {
                     self._requestSaveDataToEeprom(data.dataType, data.value);
                     data.origValue = data.value;
@@ -1711,7 +1812,7 @@ $(function() {
             });
 
             eepromData = self.eepromDataMaterialHS1();
-            _.each(eepromData, function(data) {
+            _.each(eepromData, function (data) {
                 if (data.origValue != data.value) {
                     self._requestSaveDataToEeprom(data.dataType, data.value);
                     data.origValue = data.value;
@@ -1719,7 +1820,7 @@ $(function() {
             });
 
             eepromData = self.eepromDataMaterialHS2();
-            _.each(eepromData, function(data) {
+            _.each(eepromData, function (data) {
                 if (data.origValue != data.value) {
                     self._requestSaveDataToEeprom(data.dataType, data.value);
                     data.origValue = data.value;
@@ -1727,7 +1828,7 @@ $(function() {
             });
 
             eepromData = self.eepromDataFilament();
-            _.each(eepromData, function(data) {
+            _.each(eepromData, function (data) {
                 if (data.origValue != data.value) {
                     self._requestSaveDataToEeprom(data.dataType, data.value);
                     data.origValue = data.value;
@@ -1735,7 +1836,7 @@ $(function() {
             });
 
             eepromData = self.eepromDataEndstop();
-            _.each(eepromData, function(data) {
+            _.each(eepromData, function (data) {
                 if (data.origValue != data.value) {
                     self._requestSaveDataToEeprom(data.dataType, data.value);
                     data.origValue = data.value;
@@ -1743,7 +1844,7 @@ $(function() {
             });
 
             eepromData = self.eepromDataDelta1();
-            _.each(eepromData, function(data) {
+            _.each(eepromData, function (data) {
                 if (data.origValue != data.value) {
                     self._requestSaveDataToEeprom(data.dataType, data.value);
                     data.origValue = data.value;
@@ -1751,7 +1852,7 @@ $(function() {
             });
 
             eepromData = self.eepromDataDelta2();
-            _.each(eepromData, function(data) {
+            _.each(eepromData, function (data) {
                 if (data.origValue != data.value) {
                     self._requestSaveDataToEeprom(data.dataType, data.value);
                     data.origValue = data.value;
@@ -1759,7 +1860,7 @@ $(function() {
             });
 
             eepromData = self.eepromDataLinear();
-            _.each(eepromData, function(data) {
+            _.each(eepromData, function (data) {
                 if (data.origValue != data.value) {
                     self._requestSaveDataToEeprom(data.dataType, data.value);
                     data.origValue = data.value;
@@ -1767,7 +1868,7 @@ $(function() {
             });
 
             eepromData = self.eepromDataProbe();
-            _.each(eepromData, function(data) {
+            _.each(eepromData, function (data) {
                 if (data.origValue != data.value) {
                     self._requestSaveDataToEeprom(data.dataType, data.value);
                     data.origValue = data.value;
@@ -1776,34 +1877,34 @@ $(function() {
 
             self.control.sendCustomCommand({ command: cmd });
 
-            $('#eeprom_marlin_upload').removeClass("btn-primary");
+            $("#eeprom_marlin_upload").removeClass("btn-primary");
             hasChangedEepromForm = false;
 
             self.control.sendCustomCommand({ command: "M504" });
             self.loadEeprom();
 
             new PNotify({
-                title: 'EEPROM Marlin',
-                text: 'EEPROM data stored.',
-                type: 'success',
-                hide: true
+                title: "EEPROM Marlin",
+                text: "EEPROM data stored.",
+                type: "success",
+                hide: true,
             });
         };
 
-        self._requestFirmwareInfo = function() {
+        self._requestFirmwareInfo = function () {
             if (!self.isPrinting()) {
                 self.control.sendCustomCommand({ command: "M115" });
             }
         };
 
-        self._requestEepromData = function() {
+        self._requestEepromData = function () {
             if (!self.isPrinting()) {
                 self.control.sendCustomCommand({ command: "M504" });
                 self.control.sendCustomCommand({ command: "M501" });
             }
         };
 
-        self._requestSaveDataToEeprom = function(data_type, value) {
+        self._requestSaveDataToEeprom = function (data_type, value) {
             var cmd = data_type + value;
             self.control.sendCustomCommand({ command: cmd });
         };
@@ -1812,13 +1913,13 @@ $(function() {
     OCTOPRINT_VIEWMODELS.push([
         EepromMarlinViewModel,
         ["controlViewModel", "connectionViewModel"],
-        "#tab_plugin_eeprom_marlin"
+        "#tab_plugin_eeprom_marlin",
     ]);
 });
 
-changedEepromForm = function() {
+changedEepromForm = function () {
     if (!hasChangedEepromForm) {
-        $('#eeprom_marlin_upload').addClass("btn-primary");
+        $("#eeprom_marlin_upload").addClass("btn-primary");
         hasChangedEepromForm = true;
     }
 };
