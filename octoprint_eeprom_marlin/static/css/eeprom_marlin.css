@@ -1,0 +1,6 @@
+#touch body #tabs #tab_plugin_eeprom_marlin_link a:before,
+#touch body #navbar #all_touchui_settings #tab_plugin_eeprom_marlin_link a:before,
+#touch body #tabs #tab_plugin_eeprom_marlin_link2 a:before,
+#touch body #navbar #all_touchui_settings #tab_plugin_eeprom_marlin_link2 a:before {
+    content: "\f14b";
+}

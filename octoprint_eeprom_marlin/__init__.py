@@ -16,7 +16,10 @@ class EEPROMMarlinPlugin(
     octoprint.plugin.WizardPlugin,
 ):
     def get_assets(self):
-        return {"js": ["js/eeprom_marlin.js"], "css": ["css/fontawesome5_stripped.css"]}
+        return {
+            "js": ["js/eeprom_marlin.js"],
+            "css": ["css/fontawesome5_stripped.css", "css/eeprom_marlin.css"],
+        }
 
     def is_wizard_required(self):
         return True
