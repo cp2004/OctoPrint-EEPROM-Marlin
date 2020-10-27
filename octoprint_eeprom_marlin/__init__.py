@@ -9,6 +9,11 @@ __copyright__ = (
 
 import octoprint.plugin
 
+from ._version import get_versions
+
+__version__ = get_versions()["version"]
+del get_versions
+
 
 class EEPROMMarlinPlugin(
     octoprint.plugin.AssetPlugin,
@@ -66,6 +71,7 @@ class EEPROMMarlinPlugin(
 
 __plugin_name__ = "Marlin EEPROM Editor"
 __plugin_pythoncompat__ = ">=2.7,<4"
+__plugin_version__ = __version__
 
 
 def __plugin_load__():

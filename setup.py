@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import versioneer
+
 ########################################################################################################################
 
 # The plugin's identifier, has to be unique
@@ -13,7 +15,9 @@ plugin_package = "octoprint_eeprom_marlin"
 plugin_name = "Marlin EEPROM editor"
 
 # The plugin's version. Can be overwritten within OctoPrint's internal data via __plugin_version__ in the plugin module
-plugin_version = "2.0.0"
+plugin_version = versioneer.get_version()
+
+plugin_cmdclass = versioneer.get_cmdclass()
 
 # The plugin's description. Can be overwritten within OctoPrint's internal data via __plugin_description__ in the plugin
 # module
@@ -92,6 +96,7 @@ setup_parameters = octoprint_setuptools.create_plugin_setup_parameters(
     additional_packages=plugin_addtional_packages,
     ignored_packages=plugin_ignored_packages,
     additional_data=plugin_additional_data,
+    cmdclass=plugin_cmdclass,
 )
 
 if len(additional_setup_parameters):
