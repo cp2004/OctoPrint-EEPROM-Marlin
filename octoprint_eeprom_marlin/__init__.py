@@ -9,16 +9,17 @@ __copyright__ = (
 
 import octoprint.plugin
 
-from ._version import get_versions
+from octoprint_eeprom_marlin import _version, settings
 
-__version__ = get_versions()["version"]
-del get_versions
+__version__ = _version.get_versions()["version"]
+del _version
 
 
 class EEPROMMarlinPlugin(
     octoprint.plugin.AssetPlugin,
     octoprint.plugin.TemplatePlugin,
     octoprint.plugin.WizardPlugin,
+    octoprint.plugin.SettingsPlugin,
 ):
     def get_assets(self):
         return {
@@ -37,6 +38,9 @@ class EEPROMMarlinPlugin(
                 "custom_bindings": True,
             }
         ]
+
+    def get_settings_defaults(self):
+        return settings.defaults
 
     def get_template_vars(self):
         return {"version": self._plugin_version}
