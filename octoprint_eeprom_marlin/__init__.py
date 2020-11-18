@@ -27,7 +27,7 @@ class EEPROMMarlinPlugin(
         }
 
     def is_wizard_required(self):
-        return True
+        return False
 
     def get_template_configs(self):
         return [
