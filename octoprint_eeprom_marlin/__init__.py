@@ -64,7 +64,7 @@ class EEPROMMarlinPlugin(
                     {
                         "name": "Release Candidate",
                         "branch": "pre-release",
-                        "comittish": ["rc", "master"],
+                        "comittish": ["pre-release", "master"],
                     }
                 ],
                 # update method: pip
