@@ -9,18 +9,31 @@ __copyright__ = (
 
 import octoprint.plugin
 
-from octoprint_eeprom_marlin import _version, settings
+from octoprint_eeprom_marlin import _version, data, parser, settings
 
 __version__ = _version.get_versions()["version"]
 del _version
 
 
 class EEPROMMarlinPlugin(
+    octoprint.plugin.StartupPlugin,
     octoprint.plugin.AssetPlugin,
     octoprint.plugin.TemplatePlugin,
     octoprint.plugin.WizardPlugin,
     octoprint.plugin.SettingsPlugin,
 ):
+    # Data models
+    _firmware_info = data.FirmwareInfo()
+    _eeprom_data = data.EEPROMData()
+    _changed_data = data.ChangedData()
+
+    # Useful classes
+    _parser = parser.Parser()
+
+    # Flags
+    collecting_eeprom = False
+
+    # Registering UI components
     def get_assets(self):
         return {
             "js": ["js/eeprom_marlin.js"],
@@ -39,13 +52,58 @@ class EEPROMMarlinPlugin(
             }
         ]
 
-    def get_settings_defaults(self):
-        return settings.defaults
-
     def get_template_vars(self):
         return {"version": self._plugin_version}
 
+    # Settings handling - see settings submodule
+    def get_settings_defaults(self):
+        return settings.defaults
+
+    # Hook handlers
+    def comm_protocol_firmware_info(self, comm, name, fw_data, *args, **kwargs):
+        # https://docs.octoprint.org/en/master/plugins/hooks.html#octoprint-comm-protocol-firmware-info
+        self._firmware_info.is_marlin = self._parser.is_marlin(name)
+        self._firmware_info.additional_info_from_dict(fw_data)
+
+    def comm_protocol_firmware_cap(
+        self, comm, cap, enabled, already_defined, *args, **kwargs
+    ):
+        # https://docs.octoprint.org/en/master/plugins/hooks.html#firmware_capability_hook
+        self._firmware_info.add_capabilities(already_defined)
+
+    def comm_protocol_gcode_sent(
+        self,
+        comm,
+        phase,
+        cmd,
+        cmd_type,
+        gcode,
+        subcode=None,
+        tags=None,
+        *args,
+        **kwargs
+    ):
+        # https://docs.octoprint.org/en/master/plugins/hooks.html#protocol_gcodephase_hook
+        self._logger.debug(cmd)
+        if cmd == "M501":
+            self._logger.info("M501 detected")
+            self.collecting_eeprom = True
+
+    def comm_protocol_gcode_received(self, comm, line, *args, **kwargs):
+        # https://docs.octoprint.org/en/master/plugins/hooks.html#octoprint-comm-protocol-gcode-received
+        if "ok" in line.lower():
+            self.collecting_eeprom = False
+
+        if self.collecting_eeprom:
+            parsed = self._parser.parse_eeprom_data(self._logger, line)
+            if parsed:
+                self._eeprom_data.data_from_dict(parsed)
+
+        return line
+
+    # Update hook
     def get_update_information(self):
+        # https://docs.octoprint.org/en/master/bundledplugins/softwareupdate.html#sec-bundledplugins-softwareupdate-hooks-check-config
         return {
             "eeprom_marlin": {
                 "displayName": "Marlin EEPROM Editor",
@@ -81,8 +139,13 @@ __plugin_version__ = __version__
 def __plugin_load__():
     global __plugin_implementation__
     __plugin_implementation__ = EEPROMMarlinPlugin()
+    plugin = __plugin_implementation__
 
     global __plugin_hooks__
     __plugin_hooks__ = {
-        "octoprint.plugin.softwareupdate.check_config": __plugin_implementation__.get_update_information
+        "octoprint.plugin.softwareupdate.check_config": plugin.get_update_information,
+        "octoprint.comm.protocol.firmware.info": plugin.comm_protocol_firmware_info,
+        "octoprint.comm.protocol.firmware.capabilities": plugin.comm_protocol_firmware_cap,
+        "octoprint.comm.protocol.gcode.received": plugin.comm_protocol_gcode_received,
+        "octoprint.comm.protocol.gcode.sent": plugin.comm_protocol_gcode_sent,
     }
