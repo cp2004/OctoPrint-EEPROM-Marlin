@@ -6,6 +6,7 @@ __copyright__ = (
     "Copyright (C) 2020 Charlie Powell - Released under terms of the AGPLv3 License"
 )
 # Originally by Anderson Silva, development taken over by Charlie Powell in September 2020
+# Majority of the work here is by Charlie Powell, for full details see the git history.
 
 import octoprint.plugin
 
@@ -36,7 +37,7 @@ class EEPROMMarlinPlugin(
     # Registering UI components
     def get_assets(self):
         return {
-            "js": ["js/eeprom_marlin.js"],
+            "js": ["js/eeprom_marlin.js", "js/eeprom_marlin_old.js"],
             "css": ["css/fontawesome5_stripped.css", "css/eeprom_marlin.css"],
         }
 
@@ -47,9 +48,16 @@ class EEPROMMarlinPlugin(
         return [
             {
                 "type": "tab",
+                "template": "eeprom_marlin_tab_old.jinja2",
+                "div": "tab_plugin_eeprom_marlin_old",
+                "custom_bindings": True,
+            },
+            {
+                "type": "tab",
+                "name": "EEPROM Editor",
                 "template": "eeprom_marlin_tab.jinja2",
                 "custom_bindings": True,
-            }
+            },
         ]
 
     def get_template_vars(self):
