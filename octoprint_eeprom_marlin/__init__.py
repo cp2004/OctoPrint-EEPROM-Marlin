@@ -85,12 +85,15 @@ class EEPROMMarlinPlugin(
     def get_settings_defaults(self):
         return settings.defaults
 
-    # API
+    # API handling
     def get_api_commands(self):
         return self._api.get_api_commands()
 
     def on_api_command(self, command, data):
         self._api.on_api_command(command, data)
+
+    def on_api_get(self, request):
+        self._api.on_api_get(request)
 
     # Websocket communication
     def send_message(self, type, data):

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, unicode_literals
 
+import flask
 import octoprint.util
 
 CMD_LOAD = "load"
@@ -47,6 +48,9 @@ class API:
         elif command == CMD_RESTORE:
             # Restore the backup
             raise NotImplementedError
+
+    def on_api_get(self, request):
+        return flask.jsonify(self._eeprom_data.to_dict())
 
     def save_eeprom_data(self, old, new):
         commands = []
