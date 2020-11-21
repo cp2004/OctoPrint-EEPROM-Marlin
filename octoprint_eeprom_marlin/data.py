@@ -55,6 +55,14 @@ class FirmwareInfo:
         for capability, value in caps.items():
             self.capabilities[capability] = value
 
+    def to_dict(self):
+        # For sending to UI
+        return {
+            "is_marlin": self.is_marlin,
+            "additional": self.additional_info,
+            "capabilities": self.capabilities,
+        }
+
 
 class IndividualData:
     """

@@ -50,7 +50,12 @@ class API:
             raise NotImplementedError
 
     def on_api_get(self, request):
-        return flask.jsonify(self._eeprom_data.to_dict())
+        return flask.jsonify(
+            {
+                "info": self._firmware_info.to_dict(),
+                "eeprom": self._eeprom_data.to_dict(),
+            }
+        )
 
     def save_eeprom_data(self, old, new):
         commands = []
