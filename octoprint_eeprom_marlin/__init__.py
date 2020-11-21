@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import
+from __future__ import absolute_import, division, unicode_literals
 
 __license__ = "GNU Affero General Public License http://www.gnu.org/licenses/agpl.html"
 __copyright__ = (
     "Copyright (C) 2020 Charlie Powell - Released under terms of the AGPLv3 License"
 )
 # Originally by Anderson Silva, development taken over by Charlie Powell in September 2020
-# Majority of the work here is by Charlie Powell, for full details see the git history.
+# Vast majority of the work here is by Charlie Powell, for full details see the git history.
 
 import octoprint.plugin
 
-from octoprint_eeprom_marlin import _version, data, parser, settings
+from octoprint_eeprom_marlin import _version, api, data, parser, settings
 
 __version__ = _version.get_versions()["version"]
 del _version
@@ -22,17 +22,35 @@ class EEPROMMarlinPlugin(
     octoprint.plugin.TemplatePlugin,
     octoprint.plugin.WizardPlugin,
     octoprint.plugin.SettingsPlugin,
+    octoprint.plugin.SimpleApiPlugin,
 ):
     # Data models
-    _firmware_info = data.FirmwareInfo()
-    _eeprom_data = data.EEPROMData()
-    _changed_data = data.ChangedData()
+    _firmware_info = None
+    _eeprom_data = None
+    _changed_data = None
 
     # Useful classes
-    _parser = parser.Parser()
+    _parser = None
+    _api = None
 
     # Flags
     collecting_eeprom = False
+
+    def initialize(self):
+        # Initialise is called when all injections are complete
+        # Means we can add our own things that depend on previous injected properties
+
+        # Data models
+        self._firmware_info = data.FirmwareInfo()
+        self._eeprom_data = data.EEPROMData()
+        self._changed_data = data.ChangedData()
+
+        # Useful classes
+        self._parser = parser.Parser(self._logger)
+        self._api = api.API(self)
+
+        # Flags
+        self.collecting_eeprom = False
 
     # Registering UI components
     def get_assets(self):
@@ -67,6 +85,18 @@ class EEPROMMarlinPlugin(
     def get_settings_defaults(self):
         return settings.defaults
 
+    # API
+    def get_api_commands(self):
+        return self._api.get_api_commands()
+
+    def on_api_command(self, command, data):
+        self._api.on_api_command(command, data)
+
+    # Websocket communication
+    def send_message(self, type, data):
+        payload = {"type": type, "data": data}
+        self._plugin_manager.send_plugin_message("eeprom_marlin", payload)
+
     # Hook handlers
     def comm_protocol_firmware_info(self, comm, name, fw_data, *args, **kwargs):
         # https://docs.octoprint.org/en/master/plugins/hooks.html#octoprint-comm-protocol-firmware-info
@@ -99,13 +129,15 @@ class EEPROMMarlinPlugin(
 
     def comm_protocol_gcode_received(self, comm, line, *args, **kwargs):
         # https://docs.octoprint.org/en/master/plugins/hooks.html#octoprint-comm-protocol-gcode-received
-        if "ok" in line.lower():
-            self.collecting_eeprom = False
-
         if self.collecting_eeprom:
-            parsed = self._parser.parse_eeprom_data(self._logger, line)
-            if parsed:
-                self._eeprom_data.data_from_dict(parsed)
+            if "ok" in line.lower():
+                # Send the new data to the UI to be reloaded
+                self.send_message("load", self._eeprom_data.to_dict())
+                self.collecting_eeprom = False
+            else:
+                parsed = self._parser.parse_eeprom_data(line)
+                if parsed:
+                    self._eeprom_data.from_dict(parsed)
 
         return line
 

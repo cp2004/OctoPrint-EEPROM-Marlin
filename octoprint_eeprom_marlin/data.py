@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+from __future__ import absolute_import, division, unicode_literals
 
 COMMAND_PARAMS = {
     "M92": ["X", "Y", "Z", "E"],
@@ -103,7 +103,7 @@ class EEPROMData:
         )
         self.autolevel = IndividualData("autolevel", "M420", ["S", "Z"])
 
-    def data_from_list(self, data):
+    def from_list(self, data):
         """
         Parse data from list into class
         :param data: list of dictionaries to parse
@@ -113,7 +113,7 @@ class EEPROMData:
             data_class = getattr(self, item["name"])
             data_class.params_from_dict(item["params"])
 
-    def data_from_dict(self, data):
+    def from_dict(self, data):
         """
         Parse data from dict into class
         :param data: dict of a type of data
@@ -122,25 +122,17 @@ class EEPROMData:
         data_class = getattr(self, data["name"])
         data_class.params_from_dict(data["params"])
 
+    def to_dict(self):
+        # Wraps all the data up to send it to the UI
+        data = {}
+        for command, name in COMMAND_NAMES.items():
+            cls = getattr(self, name)
+            data[name] = {"command": command, "params": cls.params}
 
-class ChangedData:
-    """
-    Tracks changed data, to send to the printer
-    TODO This might be better off client side.
-    """
+        return data
 
-    eeprom = None  # type: EEPROMData
-    _is_changed = False  # type: bool
-    changed_entries = []  # type: list
-    # Dict of the IndividualData that need to be saved.
-
-    def is_any_changed(self):
-        return self._is_changed
-
-    def add_changed(self, data_class):
-        self._is_changed = True
-        self.changed_entries.append(data_class)
-
-    def saved(self):
-        self._is_changed = False
-        self.changed_entries = []
+    def to_list(self):
+        data = []
+        for command, name in COMMAND_NAMES.items():
+            params = getattr(self, name).params
+            data.append({"name": name, "command": command, "params": params})

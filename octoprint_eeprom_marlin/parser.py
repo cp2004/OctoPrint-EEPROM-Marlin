@@ -2,6 +2,8 @@
 """
 Provide methods for parsing printer communication, specific to this plugin
 """
+from __future__ import absolute_import, division, unicode_literals
+
 import re
 
 from octoprint_eeprom_marlin import data
@@ -41,7 +43,10 @@ regex_command = re.compile(r"echo:\s(?P<gcode>M(?P<value>\d{1,3}))")
 
 
 class Parser:
-    def parse_eeprom_data(self, logger, line):
+    def __init__(self, logger):
+        self._logger = logger
+
+    def parse_eeprom_data(self, line):
         """
         Parse a received line from the printer into a dictionary of name, command, params
         Eg: `echo: M92 X80.0 Y80.0 Z800.0 E90.0`
@@ -67,8 +72,8 @@ class Parser:
         try:
             params = data.COMMAND_PARAMS[command]
         except KeyError:
-            logger.error("Unrecognised EEPROM output line, could not parse")
-            logger.error("Line: {}".format(line))
+            self._logger.error("Unrecognised EEPROM output line, could not parse")
+            self._logger.error("Line: {}".format(line))
             return
 
         # work out what values we have
@@ -77,8 +82,10 @@ class Parser:
             try:
                 param_match = regexes_parameters["float{}".format(param)].search(line)
             except KeyError:
-                logger.error("Unrecognised EEPROM command parameter, could not parse")
-                logger.error("Parameter: {}".format(param))
+                self._logger.error(
+                    "Unrecognised EEPROM command parameter, could not parse"
+                )
+                self._logger.error("Parameter: {}".format(param))
                 return
             if param_match:
                 parameters[param] = float(param_match.group("value"))
