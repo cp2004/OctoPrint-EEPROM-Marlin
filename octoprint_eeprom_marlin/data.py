@@ -69,13 +69,10 @@ class IndividualData:
     Holding individual data entries
     """
 
-    name = ""  # type: str
-    command = ""  # type: str
-    params = {}  # type: dict
-
     def __init__(self, name, command, params):
         self.name = name
         self.command = command
+        self.params = {}
         for param in params:
             self.params[param] = None
 

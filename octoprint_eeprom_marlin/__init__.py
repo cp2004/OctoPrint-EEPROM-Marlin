@@ -43,7 +43,6 @@ class EEPROMMarlinPlugin(
         # Data models
         self._firmware_info = data.FirmwareInfo()
         self._eeprom_data = data.EEPROMData()
-        self._changed_data = data.ChangedData()
 
         # Useful classes
         self._parser = parser.Parser(self._logger)
@@ -90,10 +89,10 @@ class EEPROMMarlinPlugin(
         return self._api.get_api_commands()
 
     def on_api_command(self, command, data):
-        self._api.on_api_command(command, data)
+        return self._api.on_api_command(command, data)
 
     def on_api_get(self, request):
-        self._api.on_api_get(request)
+        return self._api.on_api_get(request)
 
     # Websocket communication
     def send_message(self, type, data):
