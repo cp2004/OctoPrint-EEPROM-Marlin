@@ -58,6 +58,7 @@ class FirmwareInfo:
     def to_dict(self):
         # For sending to UI
         return {
+            "name": self.name,
             "is_marlin": self.is_marlin,
             "additional": self.additional_info,
             "capabilities": self.capabilities,

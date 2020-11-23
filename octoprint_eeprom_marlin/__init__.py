@@ -103,6 +103,7 @@ class EEPROMMarlinPlugin(
     def comm_protocol_firmware_info(self, comm, name, fw_data, *args, **kwargs):
         # https://docs.octoprint.org/en/master/plugins/hooks.html#octoprint-comm-protocol-firmware-info
         self._firmware_info.is_marlin = self._parser.is_marlin(name)
+        self._firmware_info.name = name
         self._firmware_info.additional_info_from_dict(fw_data)
 
     def comm_protocol_firmware_cap(
