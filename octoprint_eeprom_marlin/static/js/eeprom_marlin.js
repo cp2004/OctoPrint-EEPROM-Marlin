@@ -161,142 +161,26 @@ $(function () {
             return eeprom;
         })();
 
-        function eeprom_from_dict(data) {
-            // advanced
-            self.eeprom.advanced.B(data.eeprom.advanced.params.B);
-            self.eeprom.advanced.E(data.eeprom.advanced.params.E);
-            self.eeprom.advanced.S(data.eeprom.advanced.params.S);
-            self.eeprom.advanced.T(data.eeprom.advanced.params.T);
-            self.eeprom.advanced.X(data.eeprom.advanced.params.X);
-            self.eeprom.advanced.Y(data.eeprom.advanced.params.Y);
-            self.eeprom.advanced.Z(data.eeprom.advanced.params.Z);
-            // autolevel
-            self.eeprom.autolevel.S(data.eeprom.autolevel.params.S);
-            self.eeprom.autolevel.Z(data.eeprom.autolevel.params.Z);
-            // bed_pid
-            self.eeprom.bed_pid.D(data.eeprom.bed_pid.params.D);
-            self.eeprom.bed_pid.I(data.eeprom.bed_pid.params.I);
-            self.eeprom.bed_pid.P(data.eeprom.bed_pid.params.P);
-            // delta
-            self.eeprom.delta.A(data.eeprom.delta.params.A);
-            self.eeprom.delta.B(data.eeprom.delta.params.B);
-            self.eeprom.delta.C(data.eeprom.delta.params.C);
-            self.eeprom.delta.L(data.eeprom.delta.params.L);
-            self.eeprom.delta.R(data.eeprom.delta.params.R);
-            self.eeprom.delta.S(data.eeprom.delta.params.S);
-            // endstop
-            self.eeprom.endstop.X(data.eeprom.endstop.params.X);
-            self.eeprom.endstop.Y(data.eeprom.endstop.params.Y);
-            self.eeprom.endstop.Z(data.eeprom.endstop.params.Z);
-            // feedrate
-            self.eeprom.feedrate.E(data.eeprom.feedrate.params.E);
-            self.eeprom.feedrate.X(data.eeprom.feedrate.params.X);
-            self.eeprom.feedrate.Y(data.eeprom.feedrate.params.Y);
-            self.eeprom.feedrate.Z(data.eeprom.feedrate.params.Z);
-            // filament
-            self.eeprom.filament.D(data.eeprom.filament.params.D);
-            // hotend_pid
-            self.eeprom.hotend_pid.D(data.eeprom.hotend_pid.params.D);
-            self.eeprom.hotend_pid.I(data.eeprom.hotend_pid.params.I);
-            self.eeprom.hotend_pid.P(data.eeprom.hotend_pid.params.P);
-            // linear
-            self.eeprom.linear.K(data.eeprom.linear.params.K);
-            self.eeprom.linear.R(data.eeprom.linear.params.R);
-            // max_acceleration
-            self.eeprom.max_acceleration.E(
-                data.eeprom.max_acceleration.params.E
-            );
-            self.eeprom.max_acceleration.X(
-                data.eeprom.max_acceleration.params.X
-            );
-            self.eeprom.max_acceleration.Y(
-                data.eeprom.max_acceleration.params.Y
-            );
-            self.eeprom.max_acceleration.Z(
-                data.eeprom.max_acceleration.params.Z
-            );
-            // print_acceleration
-            self.eeprom.print_acceleration.P(
-                data.eeprom.print_acceleration.params.P
-            );
-            self.eeprom.print_acceleration.R(
-                data.eeprom.print_acceleration.params.R
-            );
-            self.eeprom.print_acceleration.T(
-                data.eeprom.print_acceleration.params.T
-            );
-            // probe_offset
-            self.eeprom.probe_offset.X(data.eeprom.probe_offset.params.X);
-            self.eeprom.probe_offset.Y(data.eeprom.probe_offset.params.Y);
-            self.eeprom.probe_offset.Z(data.eeprom.probe_offset.params.Z);
-            // steps
-            self.eeprom.steps.X(data.eeprom.steps.params.X);
-            self.eeprom.steps.Y(data.eeprom.steps.params.Y);
-            self.eeprom.steps.Z(data.eeprom.steps.params.Z);
-            self.eeprom.steps.E(data.eeprom.steps.params.E);
+        function eeprom_from_json(data) {
+            // loops through response and assigns values to observables
+            for (let key in data.eeprom) {
+                let value = data.eeprom[key];
+                for (let param in value.params) {
+                    self.eeprom[key][param](value.params[param]);
+                }
+            }
         }
 
-        function eeprom_to_dict() {
+        function eeprom_to_json(data) {
+            // loops through eeprom data, to create a JSON object to POST
             var eeprom = {};
-            // advanced
-            eeprom.advanced.B = self.eeprom.advanced.B();
-            eeprom.advanced.E = self.eeprom.advanced.E();
-            eeprom.advanced.S = self.eeprom.advanced.S();
-            eeprom.advanced.T = self.eeprom.advanced.T();
-            eeprom.advanced.X = self.eeprom.advanced.X();
-            eeprom.advanced.Y = self.eeprom.advanced.Y();
-            eeprom.advanced.Z = self.eeprom.advanced.Z();
-            // autolevel
-            eeprom.autolevel.S = self.eeprom.autolevel.S();
-            eeprom.autolevel.Z = self.eeprom.autolevel.Z();
-            // bed_pid
-            eeprom.bed_pid.D = self.eeprom.bed_pid.D();
-            eeprom.bed_pid.I = self.eeprom.bed_pid.I();
-            eeprom.bed_pid.P = self.eeprom.bed_pid.P();
-            // delta
-            eeprom.delta.A = self.eeprom.delta.A();
-            eeprom.delta.B = self.eeprom.delta.B();
-            eeprom.delta.C = self.eeprom.delta.C();
-            eeprom.delta.L = self.eeprom.delta.L();
-            eeprom.delta.R = self.eeprom.delta.R();
-            eeprom.delta.S = self.eeprom.delta.S();
-            // endstop
-            eeprom.endstop.X = self.eeprom.endstop.X();
-            eeprom.endstop.Y = self.eeprom.endstop.Y();
-            eeprom.endstop.Z = self.eeprom.endstop.Z();
-            // feedrate
-            eeprom.feedrate.E = self.eeprom.feedrate.E();
-            eeprom.feedrate.X = self.eeprom.feedrate.X();
-            eeprom.feedrate.Y = self.eeprom.feedrate.Y();
-            eeprom.feedrate.Z = self.eeprom.feedrate.Z();
-            // filament
-            eeprom.filament.D = self.eeprom.filament.D();
-            // hotend_pid
-            eeprom.hotend_pid.D = self.eeprom.hotend_pid.D();
-            eeprom.hotend_pid.I = self.eeprom.hotend_pid.I();
-            eeprom.hotend_pid.P = self.eeprom.hotend_pid.P();
-            // linear
-            eeprom.linear.K = self.eeprom.linear.K();
-            eeprom.linear.R = self.eeprom.linear.R();
-            // max_acceleration
-            eeprom.max_acceleration.E = self.eeprom.max_acceleration.E();
-            eeprom.max_acceleration.X = self.eeprom.max_acceleration.X();
-            eeprom.max_acceleration.Y = self.eeprom.max_acceleration.Y();
-            eeprom.max_acceleration.Z = self.eeprom.max_acceleration.Z();
-            // print_acceleration
-            eeprom.print_acceleration.P = self.eeprom.print_acceleration.P();
-            eeprom.print_acceleration.R = self.eeprom.print_acceleration.R();
-            eeprom.print_acceleration.T = self.eeprom.print_acceleration.T();
-            // probe_offset
-            eeprom.probe_offset.X = self.eeprom.probe_offset.X();
-            eeprom.probe_offset.Y = self.eeprom.probe_offset.Y();
-            eeprom.probe_offset.Z = self.eeprom.probe_offset.Z();
-            // steps
-            eeprom.steps.X = self.eeprom.steps.X();
-            eeprom.steps.Y = self.eeprom.steps.Y();
-            eeprom.steps.Z = self.eeprom.steps.Z();
-            eeprom.steps.E = self.eeprom.steps.E();
-
+            for (let key in self.eeprom) {
+                let value = self.eeprom[key];
+                eeprom[key] = {};
+                for (let param in value) {
+                    eeprom[key][param] = value[param]();
+                }
+            }
             return eeprom;
         }
 
@@ -310,7 +194,7 @@ $(function () {
             return info;
         })();
 
-        function info_from_dict(data) {
+        function info_from_json(data) {
             self.info.additional(data.info.additional);
             self.info.capabilities(data.info.capabilities);
             self.info.is_marlin(data.info.is_marlin);
@@ -319,8 +203,9 @@ $(function () {
 
         self.onAllBound = function () {
             OctoPrint.simpleApiGet("eeprom_marlin").done(function (response) {
-                eeprom_from_dict(response);
-                info_from_dict(response);
+                eeprom_from_json(response);
+                info_from_json(response);
+                console.log(eeprom_to_json());
             });
         };
     }
