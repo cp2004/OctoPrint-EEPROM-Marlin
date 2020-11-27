@@ -1,6 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, unicode_literals
 
+try:
+    from typing import Dict, Optional
+except ImportError:
+    # we don't need these, just for typed comments
+    # TODO PY3: Type annotations!
+    pass
+
 COMMAND_PARAMS = {
     "M92": ["X", "Y", "Z", "E"],
     "M203": ["X", "Y", "Z", "E"],
@@ -73,13 +80,14 @@ class IndividualData:
     def __init__(self, name, command, params):
         self.name = name
         self.command = command
-        self.params = {}
+        self.params = {}  # type: Dict[str, Optional[float]]
         for param in params:
             self.params[param] = None
 
     def params_from_dict(self, data):
         for key, value in data.items():
-            self.params[key] = value
+            if value:
+                self.params[key] = float(value)
 
 
 class EEPROMData:

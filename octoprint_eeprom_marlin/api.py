@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, unicode_literals
 
+from copy import deepcopy
+
 import flask
 import octoprint.util
 
@@ -37,7 +39,7 @@ class API:
             )
         elif command == CMD_SAVE:
             # Send changed data to printer
-            old_eeprom = self._eeprom_data.to_dict()
+            old_eeprom = deepcopy(self._eeprom_data.to_dict())
             self._eeprom_data.from_list(data.get("eeprom_data"))
             new_eeprom = self._eeprom_data.to_dict()
             self.save_eeprom_data(old_eeprom, new_eeprom)
@@ -65,12 +67,13 @@ class API:
             if diff:
                 commands.append(self.construct_command(new_data))
 
-        self._printer.commands(commands)
-        self._printer.commands("M500")
+        if commands:
+            self._printer.commands(commands)
+            self._printer.commands("M500")
 
     @staticmethod
     def construct_command(data):
         command = data["command"]
         for param, value in data["params"].items():
-            command = " " + command + param + value
+            command = command + " " + param + str(value)
         return command
