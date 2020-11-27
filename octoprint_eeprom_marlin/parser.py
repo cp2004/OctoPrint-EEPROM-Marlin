@@ -16,27 +16,35 @@ regex_float_pattern = r"[-+]?[0-9]*\.?[0-9]+"
 regex_positive_float_pattern = r"[+]?[0-9]*\.?[0-9]+"
 regex_int_pattern = r"\d+"
 
+
+def regex_creator(value_type, param_letter):
+    value_pattern = regex_float_pattern if value_type == "float" else regex_int_pattern
+    letter = param_letter.upper() + param_letter.lower()
+    return re.compile(r"(^|[^A-Za-z])[%s](?P<value>%s)" % (letter, value_pattern))
+
+
 regexes_parameters = {
-    "floatX": re.compile(r"(^|[^A-Za-z])[Xx](?P<value>[-+]?[0-9]*\.?[0-9]+)"),
-    "floatY": re.compile(r"(^|[^A-Za-z])[Yy](?P<value>%s)" % regex_float_pattern),
-    "floatZ": re.compile(r"(^|[^A-Za-z])[Zz](?P<value>%s)" % regex_float_pattern),
-    "floatE": re.compile(r"(^|[^A-Za-z])[Ee](?P<value>%s)" % regex_float_pattern),
-    "floatF": re.compile(r"(^|[^A-Za-z])[Ff](?P<value>%s)" % regex_float_pattern),
-    "floatP": re.compile(r"(^|[^A-Za-z])[Pp](?P<value>%s)" % regex_float_pattern),
-    "floatR": re.compile(r"(^|[^A-Za-z])[Rr](?P<value>%s)" % regex_float_pattern),
-    "floatT": re.compile(r"(^|[^A-Za-z])[Tt](?P<value>%s)" % regex_float_pattern),
-    "floatL": re.compile(r"(^|[^A-Za-z])[Ll](?P<value>%s)" % regex_float_pattern),
-    "floatS": re.compile(r"(^|[^A-Za-z])[Ss](?P<value>%s)" % regex_float_pattern),
-    "floatA": re.compile(r"(^|[^A-Za-z])[Aa](?P<value>%s)" % regex_float_pattern),
-    "floatB": re.compile(r"(^|[^A-Za-z])[Bb](?P<value>%s)" % regex_float_pattern),
-    "floatC": re.compile(r"(^|[^A-Za-z])[Cc](?P<value>%s)" % regex_float_pattern),
-    "floatK": re.compile(r"(^|[^A-Za-z])[Kk](?P<value>%s)" % regex_float_pattern),
-    "floatI": re.compile(r"(^|[^A-Za-z])[Ii](?P<value>%s)" % regex_float_pattern),
-    "floatD": re.compile(r"(^|[^A-Za-z])[Dd](?P<value>%s)" % regex_float_pattern),
-    "intN": re.compile(r"(^|[^A-Za-z])[Nn](?P<value>%s)" % regex_int_pattern),
-    "intS": re.compile(r"(^|[^A-Za-z])[Ss](?P<value>%s)" % regex_int_pattern),
-    "intT": re.compile(r"(^|[^A-Za-z])[Tt](?P<value>%s)" % regex_int_pattern),
-    "intD": re.compile(r"(^|[^A-Za-z])[Dd](?P<value>%s)" % regex_int_pattern),
+    "floatX": regex_creator("float", "X"),
+    "floatY": regex_creator("float", "Y"),
+    "floatZ": regex_creator("float", "Z"),
+    "floatE": regex_creator("float", "E"),
+    "floatF": regex_creator("float", "F"),
+    "floatP": regex_creator("float", "P"),
+    "floatR": regex_creator("float", "R"),
+    "floatT": regex_creator("float", "T"),
+    "floatL": regex_creator("float", "L"),
+    "floatS": regex_creator("float", "S"),
+    "floatA": regex_creator("float", "A"),
+    "floatB": regex_creator("float", "B"),
+    "floatC": regex_creator("float", "C"),
+    "floatK": regex_creator("float", "K"),
+    "floatI": regex_creator("float", "I"),
+    "floatD": regex_creator("float", "D"),
+    "floatJ": regex_creator("float", "J"),
+    "intN": regex_creator("int", "N"),
+    "intS": regex_creator("int", "S"),
+    "intT": regex_creator("int", "T"),
+    "intD": regex_creator("int", "D"),
 }
 
 regex_command = re.compile(r"echo:\s(?P<gcode>M(?P<value>\d{1,3}))")
