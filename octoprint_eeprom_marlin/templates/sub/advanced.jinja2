@@ -1,3 +1,6 @@
-<div data-bind="visible: visible_advanced">
-    ADVANCE
+<strong>{{ _("Advanced") }}</strong>
+<hr>
+
+<div data-bind="visible: visible_advanced, foreach: UI.advanced">
+    {% include 'snippets/single_field.jinja2' %}
 </div>

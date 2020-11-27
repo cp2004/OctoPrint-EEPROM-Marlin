@@ -172,6 +172,48 @@ $(function () {
          * units: if applicable, otherwise null
          */
         self.UI = {
+            advanced: [
+                {
+                    label: "Minimum segment time",
+                    value: self.eeprom.advanced.B,
+                    units: "µs",
+                },
+                {
+                    label: "E max jerk",
+                    value: self.eeprom.advanced.E,
+                    units: "mm/s",
+                },
+                {
+                    label: "Junction deviation",
+                    value: self.eeprom.advanced.J,
+                    units: null,
+                },
+                {
+                    label: "Minimum feedrate for print moves",
+                    value: self.eeprom.advanced.S,
+                    units: "mm/s",
+                },
+                {
+                    label: "Minimum feedrate for travel moves",
+                    value: self.eeprom.advanced.T,
+                    units: "mms/s",
+                },
+                {
+                    label: "X max jerk",
+                    value: self.eeprom.advanced.X,
+                    units: "mm/s",
+                },
+                {
+                    label: "Y max jerk",
+                    value: self.eeprom.advanced.Y,
+                    units: "mm/s",
+                },
+                {
+                    label: "Z max jerk",
+                    value: self.eeprom.advanced.Z,
+                    units: "mm/s",
+                },
+            ],
             hotend_pid: [
                 {
                     label: "Hotend kP",
