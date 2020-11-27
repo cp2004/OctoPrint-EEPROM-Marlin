@@ -30,6 +30,12 @@ readers do not read off random characters that represent icons */
 .fa-custom-hand-point-right:before {
   content: "\f0a4";
 }
+.fa-custom-save:before {
+  content: "\f0c7"
+}
+.fa-custom-cloud-download-alt:before {
+  content: "\f381";
+}
 
 @font-face {
   font-family: 'Font Awesome 5 Brands';

@@ -1,0 +1,44 @@
+#tab_plugin_eeprom_marlin_2 {
+  div.eeprom-nav {
+    margin-bottom: 12.5px;
+  }
+  ul.sidenav {
+    border-radius: 4px;
+    li:first-child > a {
+      border-radius: 4px 4px 0 0;
+      border-top: 1px solid #ddd !important;
+    }
+    li:last-child > a {
+      border-radius: 0 0 4px 4px;
+    }
+    li > a {
+      border: 1px solid #ddd;
+      border-top: 0;
+      background-clip: border-box;
+    }
+  }
+  div.eeprom-content {
+    border-top: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+    border-radius: 4px 0 0 0;
+    padding: 5px 5px 5px 0;
+    .tab-content {
+      padding: 5px 10px;
+    }
+  }
+  .eeprom-brand {
+    text-align: center;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-radius: 0 0 4px 0;
+    padding: 2px;
+    p {
+      margin-bottom: 0;
+    }
+  }
+  .tab-content {
+    border: 0;
+    padding: 0;
+  }
+}

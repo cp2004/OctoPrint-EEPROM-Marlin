@@ -7,6 +7,7 @@
 $(function () {
     function EEPROMMarlinViewModel(parameters) {
         var self = this;
+
         self.settingsViewModel = parameters[0];
 
         self.eeprom = (function () {
@@ -161,28 +162,99 @@ $(function () {
             return eeprom;
         })();
 
-        function eeprom_from_json(data) {
+        /* Construct the UI here, in text form to save on markup
+         * parameters (all are required):
+         * label: Concise & descriptive
+         * value: observable
+         * units: if applicable, otherwise null
+         */
+        self.UI = {
+            hotend_pid: [
+                {
+                    label: "Hotend kP",
+                    value: self.eeprom.hotend_pid.P,
+                    units: null,
+                },
+                {
+                    label: "Hotend kI",
+                    value: self.eeprom.hotend_pid.I,
+                    units: null,
+                },
+                {
+                    label: "Hotend kD",
+                    value: self.eeprom.hotend_pid.D,
+                    units: null,
+                },
+            ],
+            bed_pid: [
+                {
+                    label: "Bed kP",
+                    value: self.eeprom.hotend_pid.P,
+                    units: null,
+                },
+                {
+                    label: "Bed kI",
+                    value: self.eeprom.hotend_pid.I,
+                    units: null,
+                },
+                {
+                    label: "Bed kD",
+                    value: self.eeprom.hotend_pid.D,
+                    units: null,
+                },
+            ],
+        };
+
+        // Computed observables for tab visibility
+        self.visible_advanced = ko.pureComputed(function () {
+            for (let param in self.eeprom.advanced) {
+                if (self.eeprom.advanced[param]()) {
+                    return true;
+                }
+            }
+            return false;
+        });
+        self.visible_hotend_pid = ko.pureComputed(function () {
+            for (let param in self.eeprom.hotend_pid) {
+                if (self.eeprom.hotend_pid[param]()) {
+                    return true;
+                }
+            }
+            return false;
+        });
+        self.visible_bed_pid = ko.pureComputed(function () {
+            for (let param in self.eeprom.bed_pid) {
+                if (self.eeprom.bed_pid[param]()) {
+                    return true;
+                }
+            }
+            return false;
+        });
+
+        self.eeprom_from_json = function (data) {
             // loops through response and assigns values to observables
+            console.log(data);
             for (let key in data.eeprom) {
                 let value = data.eeprom[key];
                 for (let param in value.params) {
                     self.eeprom[key][param](value.params[param]);
                 }
             }
-        }
+        };
 
-        function eeprom_to_json(data) {
+        self.eeprom_to_json = function () {
             // loops through eeprom data, to create a JSON object to POST
-            var eeprom = {};
+            var eeprom = [];
             for (let key in self.eeprom) {
+                let data = { name: key, params: {} };
                 let value = self.eeprom[key];
-                eeprom[key] = {};
                 for (let param in value) {
-                    eeprom[key][param] = value[param]();
+                    data.params[param] = value[param]();
                 }
+                eeprom.push(data);
             }
             return eeprom;
-        }
+        };
 
         self.info = (function () {
             var info = {};
@@ -201,11 +273,41 @@ $(function () {
             self.info.name(data.info.name);
         }
 
+        // State bindings
+        self.loading = ko.observable(false);
+        self.saving = ko.observable(false);
+        self.controls_enabled = ko.observable(true);
+
+        // Button bindings
+        self.load_eeprom = function () {
+            self.loading(true);
+            OctoPrint.simpleApiCommand("eeprom_marlin", "load");
+        };
+
+        self.save_eeprom = function () {
+            self.saving(true);
+            OctoPrint.simpleApiCommand("eeprom_marlin", "save", {
+                eeprom_data: self.eeprom_to_json(),
+            });
+        };
+
+        // DataUpdater
+        self.onDataUpdaterPluginMessage = function (plugin, data) {
+            if (plugin !== "eeprom_marlin") {
+                return;
+            }
+            if (data.type === "load") {
+                console.log(data);
+                self.eeprom_from_json(data.data);
+                self.loading(false);
+            }
+        };
+
         self.onAllBound = function () {
             OctoPrint.simpleApiGet("eeprom_marlin").done(function (response) {
-                eeprom_from_json(response);
+                self.eeprom_from_json(response);
                 info_from_json(response);
-                console.log(eeprom_to_json());
+                console.log(self.eeprom_to_json());
             });
         };
     }

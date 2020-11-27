@@ -1,0 +1,16 @@
+<div class="row-fluid">
+    <div class="span4">
+        <label class="pull-right" data-bind="text: label"></label>
+    </div>
+    <div class="span8">
+        <!-- ko if: units -->
+        <div class="input-append">
+            <input type="number" class="input-small" step="0.01" data-bind="value: value">
+            <span class="add-on" data-bind="text: units"></span>
+        </div>
+        <!-- /ko -->
+        <!-- ko ifnot: units -->
+        <input type="number" class="input-small" step="0.01" data-bind="value: value">
+        <!-- /ko -->
+    </div>
+</div>

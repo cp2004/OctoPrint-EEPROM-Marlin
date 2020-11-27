@@ -1,0 +1,14 @@
+<strong>{{ _("Hotend PID") }}</strong>
+<hr>
+
+<div data-bind="visible: visible_hotend_pid, foreach: UI.hotend_pid">
+    {% include 'snippets/single_field.jinja2' %}
+</div>
+
+<hr>
+<strong>{{ _("Bed PID") }}</strong>
+<hr>
+
+<div data-bind="visible: visible_bed_pid, foreach: UI.bed_pid">
+    {% include 'snippets/single_field.jinja2' %}
+</div>

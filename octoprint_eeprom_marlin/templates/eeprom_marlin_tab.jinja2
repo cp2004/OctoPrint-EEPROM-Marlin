@@ -1,1 +1,51 @@
-<h1>EEPROM MARLIN</h1>
+<div class="row-fluid eeprom-nav">
+    <div class="span3">
+        <div class="eeprom-brand">
+            <i class="fa fa-2x fa-pencil-square-o text-success pull-right"></i>
+            <p class="small">EEPROM <br>Editor</p>
+        </div>
+    </div>
+    <div class="span9">
+        <div class="btn-group">
+            <button class="btn" data-bind="click: load_eeprom"><i class="fa fa-refresh"></i> Load</button>
+            <button class="btn" data-bind="click: save_eeprom"><i class="fas-custom fa-custom-save"></i> Save</button>
+            <button class="btn btn-danger"><i class="fa fa-eraser"></i> Reset</button>
+        </div>
+        <div class="btn-group pull-right">
+            <a class="btn" data-toggle="tab" href="#eeprom_tab_backup"><i class="fas-custom fa-custom-cloud-download-alt"></i> Backup</a>
+        </div>
+    </div>
+</div>
+<div class="tab-content">
+    <div id="eeprom_tab_data" class="tab-pane active">
+        <div class="row-fluid">
+            <div class="span3">
+                <ul class="nav nav-list sidenav">
+                    <li class="active"><a data-toggle="tab" href="#eeprom_advanced">Advanced</a></li>
+                    <li><a data-toggle="tab" href="#eeprom_auto_level">Autolevel</a></li>
+                    <li><a data-toggle="tab" href="#eeprom_pid">PID</a></li>
+                    <li><a data-toggle="tab" href="#eeprom_delta">Delta</a></li>
+                </ul>
+            </div>
+            <div class="span9 eeprom-content">
+                <div class="tab-content">
+                    <div id="eeprom_advanced" class="tab-pane active">
+                        {% include 'sub/advanced.jinja2' %}
+                    </div>
+                    <div id="eeprom_auto_level" class="tab-pane">
+                        {% include 'sub/autolevel.jinja2' %}
+                    </div>
+                    <div id="eeprom_pid" class="tab-pane">
+                        {% include 'sub/pid.jinja2' %}
+                    </div>
+                    <div id="eeprom_delta" class="tab-pane">
+                        {% include 'sub/delta.jinja2' %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="eeprom_tab_backup" class="tab-pane">
+        backup
+    </div>
+</div>

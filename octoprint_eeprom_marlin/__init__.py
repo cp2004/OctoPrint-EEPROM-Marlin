@@ -54,7 +54,7 @@ class EEPROMMarlinPlugin(
     # Registering UI components
     def get_assets(self):
         return {
-            "js": ["js/eeprom_marlin.js", "js/eeprom_marlin_old.js"],
+            "js": ["js/eeprom_marlin.js"],
             "css": ["css/fontawesome5_stripped.css", "css/eeprom_marlin.css"],
         }
 
@@ -126,8 +126,8 @@ class EEPROMMarlinPlugin(
     ):
         # https://docs.octoprint.org/en/master/plugins/hooks.html#protocol_gcodephase_hook
         self._logger.debug(cmd)
-        if cmd == "M501":
-            self._logger.info("M501 detected")
+        if cmd == "M501" or cmd == "M503":
+            self._logger.info("M501/3 detected")
             self.collecting_eeprom = True
 
     def comm_protocol_gcode_received(self, comm, line, *args, **kwargs):
@@ -135,7 +135,7 @@ class EEPROMMarlinPlugin(
         if self.collecting_eeprom:
             if "ok" in line.lower():
                 # Send the new data to the UI to be reloaded
-                self.send_message("load", self._eeprom_data.to_dict())
+                self.send_message("load", {"eeprom": self._eeprom_data.to_dict()})
                 self.collecting_eeprom = False
             else:
                 parsed = self._parser.parse_eeprom_data(line)
