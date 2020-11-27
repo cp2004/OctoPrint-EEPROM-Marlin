@@ -16,12 +16,12 @@ COMMAND_PARAMS = {
     "M851": ["X", "Y", "Z"],
     "M206": ["X", "Y", "Z"],
     "M666": ["X", "Y", "Z"],
-    "M665": ["L", "R", "S", "A", "B", "C"],
+    "M665": ["B", "H", "L", "R", "S", "X", "Y", "Z"],
     "M900": ["K", "R"],
     "M200": ["D"],
     "M301": ["P", "I", "D"],
     "M304": ["P", "I", "D"],
-    "M205": ["S", "T", "B", "X", "Y", "Z", "E"],
+    "M205": ["S", "T", "B", "X", "Y", "Z", "E", "J"],
     "M420": ["S", "Z"],
 }
 
@@ -107,13 +107,15 @@ class EEPROMData:
         self.probe_offset = IndividualData("probe_offset", "M851", ["X", "Y", "Z"])
         self.home_offset = IndividualData("home_offset", "M206", ["X", "Y", "Z"])
         self.endstop = IndividualData("endstop", "M666", ["X", "Y", "Z"])
-        self.delta = IndividualData("delta", "M665", ["L", "R", "S", "A", "B", "C"])
+        self.delta = IndividualData(
+            "delta", "M665", ["B", "H", "L", "R", "S", "X", "Y", "Z"]
+        )
         self.linear = IndividualData("linear", "M900", ["K", "R"])
         self.filament = IndividualData("filament", "M200", ["D"])
         self.hotend_pid = IndividualData("hotend_pid", "M301", ["P", "I", "D"])
         self.bed_pid = IndividualData("bed_pid", "M304", ["P", "I", "D"])
         self.advanced = IndividualData(
-            "advanced", "M205", ["S", "T", "B", "X", "Y", "Z", "E"]
+            "advanced", "M205", ["S", "T", "B", "X", "Y", "Z", "E", "J"]
         )
         self.autolevel = IndividualData("autolevel", "M420", ["S", "Z"])
 

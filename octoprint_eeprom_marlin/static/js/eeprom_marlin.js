@@ -18,6 +18,7 @@ $(function () {
 
                 advanced.B = ko.observable();
                 advanced.E = ko.observable();
+                advanced.J = ko.observable();
                 advanced.S = ko.observable();
                 advanced.T = ko.observable();
                 advanced.X = ko.observable();
@@ -49,12 +50,14 @@ $(function () {
             eeprom.delta = (function () {
                 var delta = {};
 
-                delta.A = ko.observable();
                 delta.B = ko.observable();
-                delta.C = ko.observable();
+                delta.H = ko.observable();
                 delta.L = ko.observable();
                 delta.R = ko.observable();
                 delta.S = ko.observable();
+                delta.X = ko.observable();
+                delta.Y = ko.observable();
+                delta.Z = ko.observable();
 
                 return delta;
             })();
