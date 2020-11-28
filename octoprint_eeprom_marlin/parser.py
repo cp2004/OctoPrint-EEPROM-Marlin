@@ -24,27 +24,24 @@ def regex_creator(value_type, param_letter):
 
 
 regexes_parameters = {
-    "floatX": regex_creator("float", "X"),
-    "floatY": regex_creator("float", "Y"),
-    "floatZ": regex_creator("float", "Z"),
-    "floatE": regex_creator("float", "E"),
-    "floatF": regex_creator("float", "F"),
-    "floatP": regex_creator("float", "P"),
-    "floatR": regex_creator("float", "R"),
-    "floatT": regex_creator("float", "T"),
-    "floatL": regex_creator("float", "L"),
-    "floatS": regex_creator("float", "S"),
     "floatA": regex_creator("float", "A"),
     "floatB": regex_creator("float", "B"),
     "floatC": regex_creator("float", "C"),
-    "floatK": regex_creator("float", "K"),
-    "floatI": regex_creator("float", "I"),
     "floatD": regex_creator("float", "D"),
+    "floatE": regex_creator("float", "E"),
+    "floatF": regex_creator("float", "F"),
+    "floatH": regex_creator("float", "H"),
+    "floatI": regex_creator("float", "I"),
     "floatJ": regex_creator("float", "J"),
-    "intN": regex_creator("int", "N"),
-    "intS": regex_creator("int", "S"),
-    "intT": regex_creator("int", "T"),
-    "intD": regex_creator("int", "D"),
+    "floatK": regex_creator("float", "K"),
+    "floatL": regex_creator("float", "L"),
+    "floatP": regex_creator("float", "P"),
+    "floatR": regex_creator("float", "R"),
+    "floatS": regex_creator("float", "S"),
+    "floatT": regex_creator("float", "T"),
+    "floatX": regex_creator("float", "X"),
+    "floatY": regex_creator("float", "Y"),
+    "floatZ": regex_creator("float", "Z"),
 }
 
 regex_command = re.compile(r"echo:\s(?P<gcode>M(?P<value>\d{1,3}))")
@@ -94,7 +91,7 @@ class Parser:
                     "Unrecognised EEPROM command parameter, could not parse"
                 )
                 self._logger.error("Parameter: {}".format(param))
-                return
+                continue
             if param_match:
                 parameters[param] = float(param_match.group("value"))
 
