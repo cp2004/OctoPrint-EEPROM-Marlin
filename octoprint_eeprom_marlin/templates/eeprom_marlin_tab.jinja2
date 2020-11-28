@@ -1,7 +1,7 @@
 <div class="row-fluid eeprom-nav">
     <div class="span3">
         <div class="eeprom-brand">
-            <i class="fa fa-2x fa-pencil-square-o text-success pull-right"></i>
+            <i class="fas-custom fa-2x fa-custom-edit text-success pull-right"></i>
             <p class="small">EEPROM <br>Editor</p>
         </div>
     </div>
@@ -12,12 +12,15 @@
             <button class="btn btn-danger"><i class="fa fa-eraser"></i> Reset</button>
         </div>
         <div class="btn-group pull-right">
-            <a class="btn" data-toggle="tab" href="#eeprom_tab_backup"><i class="fas-custom fa-custom-cloud-download-alt"></i> Backup</a>
+            <button class="btn" data-bind="click: toggle_backup">
+                <i class="fas-custom" data-bind="css: {'fa-custom-cloud-download-alt': !backup_open(), 'fa-custom-edit': backup_open()}"></i>
+                <span data-bind="text: backup_open() ? 'EEPROM' : 'Backup'"></span>
+            </button>
         </div>
     </div>
 </div>
 <div class="tab-content">
-    <div id="eeprom_tab_data" class="tab-pane active">
+    <div id="eeprom_tab_data" class="collapse in">
         <div class="row-fluid">
             <div class="span3">
                 {% include "snippets/sidebar.jinja2" %}
@@ -61,7 +64,7 @@
             </div>
         </div>
     </div>
-    <div id="eeprom_tab_backup" class="tab-pane">
+    <div id="eeprom_tab_backup" class="collapse">
         backup
     </div>
 </div>

@@ -662,6 +662,8 @@ $(function () {
         self.saving = ko.observable(false);
         self.controls_enabled = ko.observable(true);
 
+        self.backup_open = ko.observable(false);
+
         // Button bindings
         self.load_eeprom = function () {
             self.loading(true);
@@ -673,6 +675,24 @@ $(function () {
             OctoPrint.simpleApiCommand("eeprom_marlin", "save", {
                 eeprom_data: self.eeprom_to_json(),
             });
+        };
+
+        self.reset_eeprom = function () {
+            console.log("not implemented");
+        };
+
+        self.toggle_backup = function () {
+            if ($("#eeprom_tab_backup").hasClass("in")) {
+                // backup open, close it
+                $("#eeprom_tab_data").collapse("show");
+                $("#eeprom_tab_backup").collapse("hide");
+                self.backup_open(false);
+            } else {
+                // backup closed, open it
+                $("#eeprom_tab_data").collapse("hide");
+                $("#eeprom_tab_backup").collapse("show");
+                self.backup_open(true);
+            }
         };
 
         // DataUpdater
