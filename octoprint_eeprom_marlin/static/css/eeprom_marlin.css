@@ -1,3 +1,10 @@
+@charset "UTF-8";
+#touch body #tabs #tab_plugin_eeprom_marlin_link a:before,
+#touch body #tabs #tab_plugin_eeprom_marlin_link2 a:before,
+#touch body #navbar #all_touchui_settings #tab_plugin_eeprom_marlin_link a:before,
+#touch body #navbar #all_touchui_settings #tab_plugin_eeprom_marlin_link2 a:before {
+  content: ""; }
+
 #tab_plugin_eeprom_marlin_2 div.eeprom-nav {
   margin-bottom: 12.5px; }
 #tab_plugin_eeprom_marlin_2 ul.sidenav {
