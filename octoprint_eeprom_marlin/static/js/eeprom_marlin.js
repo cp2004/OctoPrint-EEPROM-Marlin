@@ -622,6 +622,7 @@ $(function () {
                     self.eeprom[key][param](value.params[param]);
                 }
             }
+            self.unsaved(false);
         };
 
         self.eeprom_to_json = function () {
@@ -658,9 +659,18 @@ $(function () {
         }
 
         // State bindings
-        self.loading = ko.observable(false);
+        self.loading = ko.observable(true);
         self.saving = ko.observable(false);
-        self.controls_enabled = ko.observable(true);
+        self.controls_enabled = ko.pureComputed(function () {
+            return self.loading() || self.saving();
+        });
+        self.unsaved = ko.observable(false);
+
+        self.edited = function () {
+            if (!self.loading()) {
+                self.unsaved(true);
+            }
+        };
 
         self.backup_open = ko.observable(false);
 
@@ -674,6 +684,9 @@ $(function () {
             self.saving(true);
             OctoPrint.simpleApiCommand("eeprom_marlin", "save", {
                 eeprom_data: self.eeprom_to_json(),
+            }).done(function (response) {
+                self.saving(false);
+                self.unsaved(false);
             });
         };
 
@@ -708,10 +721,11 @@ $(function () {
         };
 
         self.onAllBound = function () {
+            self.loading(true);
             OctoPrint.simpleApiGet("eeprom_marlin").done(function (response) {
                 self.eeprom_from_json(response);
                 info_from_json(response);
-                console.log(self.eeprom_to_json());
+                self.loading(false);
             });
         };
     }

@@ -2,69 +2,76 @@
     <div class="span3">
         <div class="eeprom-brand">
             <i class="fas-custom fa-2x fa-custom-edit text-success pull-right"></i>
-            <p class="small">EEPROM <br>Editor</p>
+            <p>EEPROM <br>Editor</p>
         </div>
     </div>
     <div class="span9">
         <div class="btn-group">
-            <button class="btn" data-bind="click: load_eeprom"><i class="fa fa-refresh"></i> Load</button>
-            <button class="btn" data-bind="click: save_eeprom"><i class="fas-custom fa-custom-save"></i> Save</button>
-            <button class="btn btn-danger"><i class="fa fa-eraser"></i> Reset</button>
+            <button class="btn" data-bind="click: load_eeprom">
+                <i class="fa fa-refresh" data-bind="css: {'fa-spin': loading()}"></i>
+                {{ _(" Load") }}
+            </button>
+            <button class="btn" data-bind="click: save_eeprom, css: {'btn-primary': unsaved()}" >
+                <i class="fas-custom fa-custom-save" data-bind="css: {'fa-spin': saving()}"></i>
+                {{ _(" Save") }}
+            </button>
+            <button class="btn btn-danger">
+                <i class="fa fa-eraser"></i>
+                {{ _(" Reset") }}
+            </button>
         </div>
         <div class="btn-group pull-right">
             <button class="btn" data-bind="click: toggle_backup">
                 <i class="fas-custom" data-bind="css: {'fa-custom-cloud-download-alt': !backup_open(), 'fa-custom-edit': backup_open()}"></i>
-                <span data-bind="text: backup_open() ? 'EEPROM' : 'Backup'"></span>
+                <span data-bind="text: backup_open() ? '{{ _("EEPROM") }}' : '{{ _("Backup") }}'"></span>
             </button>
         </div>
     </div>
 </div>
-<div class="tab-content">
-    <div id="eeprom_tab_data" class="collapse in">
-        <div class="row-fluid">
-            <div class="span3">
-                {% include "snippets/sidebar.jinja2" %}
-            </div>
-            <div class="span9 eeprom-content">
-                <div class="tab-content">
-                    <div id="eeprom_acceleration" class="tab-pane">
-                        {% include 'sub/acceleration.jinja2' %}
-                    </div>
-                    <div id="eeprom_advanced" class="tab-pane">
-                        {% include 'sub/advanced.jinja2' %}
-                    </div>
-                    <div id="eeprom_autolevel" class="tab-pane">
-                        {% include 'sub/autolevel.jinja2' %}
-                    </div>
-                    <div id="eeprom_delta" class="tab-pane">
-                        {% include 'sub/delta.jinja2' %}
-                    </div>
-                    <div id="eeprom_endstop" class="tab-pane">
-                        {% include 'sub/endstop.jinja2' %}
-                    </div>
-                    <div id="eeprom_feedrate" class="tab-pane">
-                        {% include 'sub/feedrate.jinja2' %}
-                    </div>
-                    <div id="eeprom_linear" class="tab-pane">
-                        {% include 'sub/linear.jinja2' %}
-                    </div>
-                    <div id="eeprom_material" class="tab-pane">
-                        {% include 'sub/material.jinja2' %}
-                    </div>
-                    <div id="eeprom_offset" class="tab-pane">
-                        {% include 'sub/offset.jinja2' %}
-                    </div>
-                    <div id="eeprom_pid" class="tab-pane">
-                        {% include 'sub/pid.jinja2' %}
-                    </div>
-                    <div id="eeprom_steps" class="tab-pane active">
-                        {% include 'sub/steps.jinja2' %}
-                    </div>
+<div id="eeprom_tab_data" class="collapse in">
+    <div class="row-fluid">
+        <div class="span3">
+            {% include "snippets/sidebar.jinja2" %}
+        </div>
+        <div class="span9 eeprom-content">
+            <div class="tab-content">
+                <div id="eeprom_acceleration" class="tab-pane">
+                    {% include 'sub/acceleration.jinja2' %}
+                </div>
+                <div id="eeprom_advanced" class="tab-pane">
+                    {% include 'sub/advanced.jinja2' %}
+                </div>
+                <div id="eeprom_autolevel" class="tab-pane">
+                    {% include 'sub/autolevel.jinja2' %}
+                </div>
+                <div id="eeprom_delta" class="tab-pane">
+                    {% include 'sub/delta.jinja2' %}
+                </div>
+                <div id="eeprom_endstop" class="tab-pane">
+                    {% include 'sub/endstop.jinja2' %}
+                </div>
+                <div id="eeprom_feedrate" class="tab-pane">
+                    {% include 'sub/feedrate.jinja2' %}
+                </div>
+                <div id="eeprom_linear" class="tab-pane">
+                    {% include 'sub/linear.jinja2' %}
+                </div>
+                <div id="eeprom_material" class="tab-pane">
+                    {% include 'sub/material.jinja2' %}
+                </div>
+                <div id="eeprom_offset" class="tab-pane">
+                    {% include 'sub/offset.jinja2' %}
+                </div>
+                <div id="eeprom_pid" class="tab-pane">
+                    {% include 'sub/pid.jinja2' %}
+                </div>
+                <div id="eeprom_steps" class="tab-pane active">
+                    {% include 'sub/steps.jinja2' %}
                 </div>
             </div>
         </div>
     </div>
-    <div id="eeprom_tab_backup" class="collapse">
-        backup
-    </div>
+</div>
+<div id="eeprom_tab_backup" class="collapse">
+    backup
 </div>
