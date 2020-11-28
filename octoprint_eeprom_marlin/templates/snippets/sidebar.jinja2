@@ -1,0 +1,35 @@
+<ul class="nav nav-list sidenav">
+    <li data-bind="visible: eeprom.steps.visible" class="active">
+        <a data-toggle="tab" href="#eeprom_steps">Steps</a>
+    </li>
+    <li data-bind="visible: eeprom.feedrate.visible">
+        <a data-toggle="tab" href="#eeprom_feedrate">Feedrate</a>
+    </li>
+    <li data-bind="visible: eeprom.max_acceleration.visible() || eeprom.print_acceleration.visible()">
+        <a data-toggle="tab" href="#eeprom_acceleration">Acceleration</a>
+    </li>
+    <li data-bind="visible: eeprom.home_offset.visible() || eeprom.probe_offset.visible()">
+        <a data-toggle="tab" href="#eeprom_offset">Offsets</a>
+    </li>
+    <li data-bind="visible: eeprom.bed_pid.visible() || eeprom.hotend_pid.visible()">
+        <a data-toggle="tab" href="#eeprom_pid">PID</a>
+    </li>
+    <li data-bind="visible: eeprom.delta.visible">
+        <a data-toggle="tab" href="#eeprom_delta">Delta</a>
+    </li>
+    <li data-bind="visible: eeprom.endstop.visible">
+        <a data-toggle="tab" href="#eeprom_endstop">Endstop</a>
+    </li>
+    <li data-bind="visible: eeprom.filament.visible">
+        <a data-toggle="tab" href="#eeprom_material">Material</a>
+    </li>
+    <li data-bind="visible: eeprom.autolevel.visible">
+        <a data-toggle="tab" href="#eeprom_autolevel">Autolevel</a>
+    </li>
+    <li data-bind="visible: eeprom.linear.visible">
+        <a data-toggle="tab" href="#eeprom_linear">Linear Advance</a>
+    </li>
+    <li data-bind="visible: eeprom.advanced.visible">
+        <a data-toggle="tab" href="#eeprom_advanced">Advanced</a>
+    </li>
+</ul>

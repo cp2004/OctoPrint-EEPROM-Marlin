@@ -1,0 +1,16 @@
+<div data-bind="visible: eeprom.home_offset.visible">
+    <strong>{{ _("Home Offset") }}</strong>
+    <hr>
+    <!-- ko foreach: UI.home_offset -->
+    {% include "snippets/single_field.jinja2" %}
+    <!-- /ko -->
+</div>
+
+<div data-bind="visible: eeprom.probe_offset.visible">
+    <hr>
+    <strong>{{ _("Probe Offset") }}</strong>
+    <hr>
+    <!-- ko foreach: UI.probe_offset -->
+    {% include "snippets/single_field.jinja2" %}
+    <!-- /ko -->
+</div>

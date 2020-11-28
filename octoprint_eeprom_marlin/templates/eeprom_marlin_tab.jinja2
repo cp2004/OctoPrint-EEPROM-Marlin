@@ -20,26 +20,42 @@
     <div id="eeprom_tab_data" class="tab-pane active">
         <div class="row-fluid">
             <div class="span3">
-                <ul class="nav nav-list sidenav">
-                    <li data-bind="visible: eeprom.advanced.visible" class="active"><a data-toggle="tab" href="#eeprom_advanced">Advanced</a></li>
-                    <li data-bind="visible: eeprom.autolevel.visible"><a data-toggle="tab" href="#eeprom_auto_level">Autolevel</a></li>
-                    <li data-bind="visible: eeprom.bed_pid.visible() || eeprom.hotend_pid.visible()"><a data-toggle="tab" href="#eeprom_pid">PID</a></li>
-                    <li data-bind="visible: eeprom.delta.visible"><a data-toggle="tab" href="#eeprom_delta">Delta</a></li>
-                </ul>
+                {% include "snippets/sidebar.jinja2" %}
             </div>
             <div class="span9 eeprom-content">
                 <div class="tab-content">
-                    <div id="eeprom_advanced" class="tab-pane active">
+                    <div id="eeprom_acceleration" class="tab-pane">
+                        {% include 'sub/acceleration.jinja2' %}
+                    </div>
+                    <div id="eeprom_advanced" class="tab-pane">
                         {% include 'sub/advanced.jinja2' %}
                     </div>
-                    <div id="eeprom_auto_level" class="tab-pane">
+                    <div id="eeprom_autolevel" class="tab-pane">
                         {% include 'sub/autolevel.jinja2' %}
+                    </div>
+                    <div id="eeprom_delta" class="tab-pane">
+                        {% include 'sub/delta.jinja2' %}
+                    </div>
+                    <div id="eeprom_endstop" class="tab-pane">
+                        {% include 'sub/endstop.jinja2' %}
+                    </div>
+                    <div id="eeprom_feedrate" class="tab-pane">
+                        {% include 'sub/feedrate.jinja2' %}
+                    </div>
+                    <div id="eeprom_linear" class="tab-pane">
+                        {% include 'sub/linear.jinja2' %}
+                    </div>
+                    <div id="eeprom_material" class="tab-pane">
+                        {% include 'sub/material.jinja2' %}
+                    </div>
+                    <div id="eeprom_offset" class="tab-pane">
+                        {% include 'sub/offset.jinja2' %}
                     </div>
                     <div id="eeprom_pid" class="tab-pane">
                         {% include 'sub/pid.jinja2' %}
                     </div>
-                    <div id="eeprom_delta" class="tab-pane">
-                        {% include 'sub/delta.jinja2' %}
+                    <div id="eeprom_steps" class="tab-pane active">
+                        {% include 'sub/steps.jinja2' %}
                     </div>
                 </div>
             </div>

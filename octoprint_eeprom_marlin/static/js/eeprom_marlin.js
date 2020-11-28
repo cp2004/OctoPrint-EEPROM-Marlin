@@ -1,7 +1,7 @@
 /**
  * Plugin was Created by Salandora on 27.07.2015, Modified by Anderson Silva on 20.08.2017, Contribution of CyberDracula on 15.08.2017.
  * Full maintenance of plugin since 09.2020 (September) by Charlie Powell
- * This file no longer contains any work of previous contributors
+ * This file no longer contains any work of previous contributors as of version 3.0
  */
 
 $(function () {
@@ -381,6 +381,135 @@ $(function () {
                     units: "mm/s",
                 },
             ],
+            autolevel: [
+                {
+                    label: "Enabled",
+                    value: self.eeprom.autolevel.S,
+                    units: "0/1",
+                },
+                {
+                    label: "Z fade height",
+                    value: self.eeprom.autolevel.Z,
+                    units: "mm",
+                },
+            ],
+            bed_pid: [
+                {
+                    label: "Bed kP",
+                    value: self.eeprom.bed_pid.P,
+                    units: null,
+                },
+                {
+                    label: "Bed kI",
+                    value: self.eeprom.bed_pid.I,
+                    units: null,
+                },
+                {
+                    label: "Bed kD",
+                    value: self.eeprom.bed_pid.D,
+                    units: null,
+                },
+            ],
+            delta: [
+                {
+                    label: "Calibration radius",
+                    value: self.eeprom.delta.B,
+                    units: null,
+                },
+                {
+                    label: "Delta height",
+                    value: self.eeprom.delta.H,
+                    units: null,
+                },
+                {
+                    label: "Diagonal rod",
+                    value: self.eeprom.delta.L,
+                    units: null,
+                },
+                {
+                    label: "Segments per second",
+                    value: self.eeprom.delta.S,
+                    units: null,
+                },
+                {
+                    label: "Alpha (Tower 1) angle trim",
+                    value: self.eeprom.delta.X,
+                    units: null,
+                },
+                {
+                    label: "Beta (Tower 2) angle trim",
+                    value: self.eeprom.delta.Y,
+                    units: null,
+                },
+                {
+                    label: "Gamma (Tower 3) angle trim",
+                    value: self.eeprom.delta.Z,
+                    units: null,
+                },
+            ],
+            endstop: [
+                {
+                    label: "Adjustment for X",
+                    value: self.eeprom.endstop.X,
+                    units: "mm",
+                },
+                {
+                    label: "Adjustment for Y",
+                    value: self.eeprom.endstop.Y,
+                    units: "mm",
+                },
+                {
+                    label: "Adjustment for Z",
+                    value: self.eeprom.endstop.Z,
+                    units: "mm",
+                },
+            ],
+            feedrate: [
+                {
+                    label: "X axis",
+                    value: self.eeprom.feedrate.X,
+                    units: "mm/s",
+                },
+                {
+                    label: "Y axis",
+                    value: self.eeprom.feedrate.Y,
+                    units: "mm/s",
+                },
+                {
+                    label: "Z axis",
+                    value: self.eeprom.feedrate.Z,
+                    units: "mm/s",
+                },
+                {
+                    label: "E axis",
+                    value: self.eeprom.feedrate.E,
+                    units: "mm/s",
+                },
+            ],
+            filament: [
+                {
+                    label: "Filament Diameter",
+                    value: self.eeprom.filament.D,
+                    units: "mm",
+                },
+            ],
+            home_offset: [
+                {
+                    label: "X home offset",
+                    value: self.eeprom.home_offset.X,
+                    units: "mm",
+                },
+                {
+                    label: "Y home offset",
+                    value: self.eeprom.home_offset.Y,
+                    units: "mm",
+                },
+                {
+                    label: "Z home offset",
+                    value: self.eeprom.home_offset.Z,
+                    units: "mm",
+                },
+            ],
             hotend_pid: [
                 {
                     label: "Hotend kP",
@@ -398,33 +527,89 @@ $(function () {
                     units: null,
                 },
             ],
-            bed_pid: [
+            linear: [
                 {
-                    label: "Bed kP",
-                    value: self.eeprom.hotend_pid.P,
-                    units: null,
-                },
-                {
-                    label: "Bed kI",
-                    value: self.eeprom.hotend_pid.I,
-                    units: null,
-                },
-                {
-                    label: "Bed kD",
-                    value: self.eeprom.hotend_pid.D,
+                    label: "K factor",
+                    value: self.eeprom.linear.K,
                     units: null,
                 },
             ],
-            autolevel: [
+            max_acceleration: [
                 {
-                    label: "Enabled",
-                    value: self.eeprom.autolevel.S,
-                    units: "0/1",
+                    label: "X maximum acceleration",
+                    value: self.eeprom.max_acceleration.X,
+                    units: "mm/s2",
                 },
                 {
-                    label: "Z fade height",
-                    value: self.eeprom.autolevel.Z,
+                    label: "Y maximum acceleration",
+                    value: self.eeprom.max_acceleration.Y,
+                    units: "mm/s2",
+                },
+                {
+                    label: "Z maximum acceleration",
+                    value: self.eeprom.max_acceleration.Z,
+                    units: "mm/s2",
+                },
+                {
+                    label: "E maximum acceleration",
+                    value: self.eeprom.max_acceleration.E,
+                    units: "mm/s2",
+                },
+            ],
+            print_acceleration: [
+                {
+                    label: "Printing acceleration",
+                    value: self.eeprom.print_acceleration.P,
+                    units: "mm/s2",
+                },
+                {
+                    label: "Retract acceleration",
+                    value: self.eeprom.print_acceleration.R,
+                    units: "mm/s2",
+                },
+                {
+                    label: "Travel acceleration",
+                    value: self.eeprom.print_acceleration.T,
+                    units: "mm/s2",
+                },
+            ],
+            probe_offset: [
+                {
+                    label: "Z probe X offset",
+                    value: self.eeprom.probe_offset.X,
                     units: "mm",
+                },
+                {
+                    label: "Z probe Y offset",
+                    value: self.eeprom.probe_offset.Y,
+                    units: "mm",
+                },
+                {
+                    label: "Z probe Z offset",
+                    value: self.eeprom.probe_offset.Z,
+                    units: "mm",
+                },
+            ],
+            steps: [
+                {
+                    label: "X steps",
+                    value: self.eeprom.steps.X,
+                    units: "steps/mm",
+                },
+                {
+                    label: "Y steps",
+                    value: self.eeprom.steps.Y,
+                    units: "steps/mm",
+                },
+                {
+                    label: "Z steps",
+                    value: self.eeprom.steps.Z,
+                    units: "steps/mm",
+                },
+                {
+                    label: "Y steps",
+                    value: self.eeprom.steps.E,
+                    units: "steps/mm",
                 },
             ],
         };

@@ -1,0 +1,8 @@
+<div data-bind="visible: eeprom.filament.visible">
+    <strong>{{ _("Filament settings") }}</strong>
+    <hr>
+    <!-- ko foreach: UI.filament -->
+    {% include "snippets/single_field.jinja2" %}
+    <!-- /ko -->
+</div>
+<!-- TODO Material heatup parameters (M145) -->
