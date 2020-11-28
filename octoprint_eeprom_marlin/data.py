@@ -17,7 +17,7 @@ COMMAND_PARAMS = {
     "M206": ["X", "Y", "Z"],
     "M666": ["X", "Y", "Z"],
     "M665": ["B", "H", "L", "R", "S", "X", "Y", "Z"],
-    "M900": ["K", "R"],
+    "M900": ["K"],
     "M200": ["D"],
     "M301": ["P", "I", "D"],
     "M304": ["P", "I", "D"],
@@ -110,7 +110,7 @@ class EEPROMData:
         self.delta = IndividualData(
             "delta", "M665", ["B", "H", "L", "R", "S", "X", "Y", "Z"]
         )
-        self.linear = IndividualData("linear", "M900", ["K", "R"])
+        self.linear = IndividualData("linear", "M900", ["K"])
         self.filament = IndividualData("filament", "M200", ["D"])
         self.hotend_pid = IndividualData("hotend_pid", "M301", ["P", "I", "D"])
         self.bed_pid = IndividualData("bed_pid", "M304", ["P", "I", "D"])

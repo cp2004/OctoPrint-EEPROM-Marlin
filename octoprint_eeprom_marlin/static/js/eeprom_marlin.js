@@ -223,7 +223,6 @@ $(function () {
                 var linear = {};
 
                 linear.K = ko.observable();
-                linear.R = ko.observable();
 
                 linear.visible = ko.computed(function () {
                     for (let param in linear) {
