@@ -21,10 +21,10 @@
         <div class="row-fluid">
             <div class="span3">
                 <ul class="nav nav-list sidenav">
-                    <li class="active"><a data-toggle="tab" href="#eeprom_advanced">Advanced</a></li>
-                    <li><a data-toggle="tab" href="#eeprom_auto_level">Autolevel</a></li>
-                    <li><a data-toggle="tab" href="#eeprom_pid">PID</a></li>
-                    <li><a data-toggle="tab" href="#eeprom_delta">Delta</a></li>
+                    <li data-bind="visible: eeprom.advanced.visible" class="active"><a data-toggle="tab" href="#eeprom_advanced">Advanced</a></li>
+                    <li data-bind="visible: eeprom.autolevel.visible"><a data-toggle="tab" href="#eeprom_auto_level">Autolevel</a></li>
+                    <li data-bind="visible: eeprom.bed_pid.visible() || eeprom.hotend_pid.visible()"><a data-toggle="tab" href="#eeprom_pid">PID</a></li>
+                    <li data-bind="visible: eeprom.delta.visible"><a data-toggle="tab" href="#eeprom_delta">Delta</a></li>
                 </ul>
             </div>
             <div class="span9 eeprom-content">

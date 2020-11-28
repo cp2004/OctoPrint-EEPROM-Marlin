@@ -25,6 +25,18 @@ $(function () {
                 advanced.Y = ko.observable();
                 advanced.Z = ko.observable();
 
+                advanced.visible = ko.computed(function () {
+                    for (let param in advanced) {
+                        if (param === "visible") {
+                            continue;
+                        }
+                        if (advanced[param]() !== null) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+
                 return advanced;
             })();
 
@@ -33,6 +45,18 @@ $(function () {
 
                 autolevel.S = ko.observable();
                 autolevel.Z = ko.observable();
+
+                autolevel.visible = ko.computed(function () {
+                    for (let param in autolevel) {
+                        if (param === "visible") {
+                            continue;
+                        }
+                        if (autolevel[param]() !== null) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
 
                 return autolevel;
             })();
@@ -43,6 +67,18 @@ $(function () {
                 bed_pid.D = ko.observable();
                 bed_pid.I = ko.observable();
                 bed_pid.P = ko.observable();
+
+                bed_pid.visible = ko.computed(function () {
+                    for (let param in bed_pid) {
+                        if (param === "visible") {
+                            continue;
+                        }
+                        if (bed_pid[param]() !== null) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
 
                 return bed_pid;
             })();
@@ -59,6 +95,18 @@ $(function () {
                 delta.Y = ko.observable();
                 delta.Z = ko.observable();
 
+                delta.visible = ko.computed(function () {
+                    for (let param in delta) {
+                        if (param === "visible") {
+                            continue;
+                        }
+                        if (delta[param]() !== null) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+
                 return delta;
             })();
 
@@ -68,6 +116,18 @@ $(function () {
                 endstop.X = ko.observable();
                 endstop.Y = ko.observable();
                 endstop.Z = ko.observable();
+
+                endstop.visible = ko.computed(function () {
+                    for (let param in endstop) {
+                        if (param === "visible") {
+                            continue;
+                        }
+                        if (endstop[param]() !== null) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
 
                 return endstop;
             })();
@@ -80,6 +140,18 @@ $(function () {
                 feedrate.Y = ko.observable();
                 feedrate.Z = ko.observable();
 
+                feedrate.visible = ko.computed(function () {
+                    for (let param in feedrate) {
+                        if (param === "visible") {
+                            continue;
+                        }
+                        if (feedrate[param]() !== null) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+
                 return feedrate;
             })();
 
@@ -87,6 +159,18 @@ $(function () {
                 var filament = {};
 
                 filament.D = ko.observable();
+
+                filament.visible = ko.computed(function () {
+                    for (let param in filament) {
+                        if (param === "visible") {
+                            continue;
+                        }
+                        if (filament[param]() !== null) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
 
                 return filament;
             })();
@@ -98,6 +182,18 @@ $(function () {
                 home_offset.Y = ko.observable();
                 home_offset.Z = ko.observable();
 
+                home_offset.visible = ko.computed(function () {
+                    for (let param in home_offset) {
+                        if (param === "visible") {
+                            continue;
+                        }
+                        if (home_offset[param]() !== null) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+
                 return home_offset;
             })();
 
@@ -108,6 +204,18 @@ $(function () {
                 hotend_pid.I = ko.observable();
                 hotend_pid.P = ko.observable();
 
+                hotend_pid.visible = ko.computed(function () {
+                    for (let param in hotend_pid) {
+                        if (param === "visible") {
+                            continue;
+                        }
+                        if (hotend_pid[param]() !== null) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+
                 return hotend_pid;
             })();
 
@@ -116,6 +224,18 @@ $(function () {
 
                 linear.K = ko.observable();
                 linear.R = ko.observable();
+
+                linear.visible = ko.computed(function () {
+                    for (let param in linear) {
+                        if (param === "visible") {
+                            continue;
+                        }
+                        if (linear[param]() !== null) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
 
                 return linear;
             })();
@@ -128,6 +248,18 @@ $(function () {
                 max_acceleration.Y = ko.observable();
                 max_acceleration.Z = ko.observable();
 
+                max_acceleration.visible = ko.computed(function () {
+                    for (let param in max_acceleration) {
+                        if (param === "visible") {
+                            continue;
+                        }
+                        if (max_acceleration[param]() !== null) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+
                 return max_acceleration;
             })();
 
@@ -137,6 +269,18 @@ $(function () {
                 print_acceleration.P = ko.observable();
                 print_acceleration.R = ko.observable();
                 print_acceleration.T = ko.observable();
+
+                print_acceleration.visible = ko.computed(function () {
+                    for (let param in print_acceleration) {
+                        if (param === "visible") {
+                            continue;
+                        }
+                        if (print_acceleration[param]() !== null) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
 
                 return print_acceleration;
             })();
@@ -148,6 +292,18 @@ $(function () {
                 probe_offset.Y = ko.observable();
                 probe_offset.Z = ko.observable();
 
+                probe_offset.visible = ko.computed(function () {
+                    for (let param in probe_offset) {
+                        if (param === "visible") {
+                            continue;
+                        }
+                        if (probe_offset[param]() !== null) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+
                 return probe_offset;
             })();
 
@@ -158,6 +314,18 @@ $(function () {
                 steps.Y = ko.observable();
                 steps.Z = ko.observable();
                 steps.E = ko.observable();
+
+                steps.visible = ko.computed(function () {
+                    for (let param in steps) {
+                        if (param === "visible") {
+                            continue;
+                        }
+                        if (steps[param]() !== null) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
 
                 return steps;
             })();
@@ -248,37 +416,22 @@ $(function () {
                     units: null,
                 },
             ],
+            autolevel: [
+                {
+                    label: "Enabled",
+                    value: self.eeprom.autolevel.S,
+                    units: "0/1",
+                },
+                {
+                    label: "Z fade height",
+                    value: self.eeprom.autolevel.Z,
+                    units: "mm",
+                },
+            ],
         };
-
-        // Computed observables for tab visibility
-        self.visible_advanced = ko.pureComputed(function () {
-            for (let param in self.eeprom.advanced) {
-                if (self.eeprom.advanced[param]()) {
-                    return true;
-                }
-            }
-            return false;
-        });
-        self.visible_hotend_pid = ko.pureComputed(function () {
-            for (let param in self.eeprom.hotend_pid) {
-                if (self.eeprom.hotend_pid[param]()) {
-                    return true;
-                }
-            }
-            return false;
-        });
-        self.visible_bed_pid = ko.pureComputed(function () {
-            for (let param in self.eeprom.bed_pid) {
-                if (self.eeprom.bed_pid[param]()) {
-                    return true;
-                }
-            }
-            return false;
-        });
 
         self.eeprom_from_json = function (data) {
             // loops through response and assigns values to observables
-            console.log(data);
             for (let key in data.eeprom) {
                 let value = data.eeprom[key];
                 for (let param in value.params) {
@@ -294,7 +447,9 @@ $(function () {
                 let data = { name: key, params: {} };
                 let value = self.eeprom[key];
                 for (let param in value) {
-                    data.params[param] = value[param]();
+                    if (param !== "visible") {
+                        data.params[param] = value[param]();
+                    }
                 }
                 eeprom.push(data);
             }
