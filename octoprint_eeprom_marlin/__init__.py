@@ -204,5 +204,5 @@ def __plugin_load__():
         "octoprint.comm.protocol.firmware.info": plugin.comm_protocol_firmware_info,
         "octoprint.comm.protocol.firmware.capabilities": plugin.comm_protocol_firmware_cap,
         "octoprint.comm.protocol.gcode.received": plugin.comm_protocol_gcode_received,
-        "octoprint.comm.protocol.gcode.sent": plugin.comm_protocol_gcode_sending,
+        "octoprint.comm.protocol.gcode.sending": plugin.comm_protocol_gcode_sending,
     }
