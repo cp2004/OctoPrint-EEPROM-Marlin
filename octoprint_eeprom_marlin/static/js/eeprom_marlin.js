@@ -807,6 +807,7 @@ $(function () {
             if (data.type === "load") {
                 console.log(data);
                 self.eeprom_from_json(data.data);
+                info_from_json(data.data);
                 self.loading(false);
             }
         };
