@@ -11,6 +11,7 @@ __copyright__ = (
 import octoprint.plugin
 
 from octoprint_eeprom_marlin import _version, api, data, parser, settings
+from octoprint_eeprom_marlin.events import EventHandler
 
 __version__ = _version.get_versions()["version"]
 del _version
@@ -23,6 +24,7 @@ class EEPROMMarlinPlugin(
     octoprint.plugin.WizardPlugin,
     octoprint.plugin.SettingsPlugin,
     octoprint.plugin.SimpleApiPlugin,
+    octoprint.plugin.EventHandlerPlugin,
 ):
     # Data models
     _firmware_info = None
@@ -32,6 +34,7 @@ class EEPROMMarlinPlugin(
     # Useful classes
     _parser = None
     _api = None
+    _event_reactor = None
 
     # Flags
     collecting_eeprom = False
@@ -47,6 +50,7 @@ class EEPROMMarlinPlugin(
         # Useful classes
         self._parser = parser.Parser(self._logger)
         self._api = api.API(self)
+        self._event_reactor = EventHandler(self)
 
         # Flags
         self.collecting_eeprom = False
@@ -94,6 +98,10 @@ class EEPROMMarlinPlugin(
     def on_api_get(self, request):
         return self._api.on_api_get(request)
 
+    # Event handling
+    def on_event(self, event, payload):
+        self._event_reactor.on_event(event, payload)
+
     # Websocket communication
     def send_message(self, type, data):
         payload = {"type": type, "data": data}
@@ -112,7 +120,7 @@ class EEPROMMarlinPlugin(
         # https://docs.octoprint.org/en/master/plugins/hooks.html#firmware_capability_hook
         self._firmware_info.add_capabilities(already_defined)
 
-    def comm_protocol_gcode_sent(
+    def comm_protocol_gcode_sending(
         self,
         comm,
         phase,
@@ -135,7 +143,13 @@ class EEPROMMarlinPlugin(
         if self.collecting_eeprom:
             if "ok" in line.lower():
                 # Send the new data to the UI to be reloaded
-                self.send_message("load", {"eeprom": self._eeprom_data.to_dict()})
+                self.send_message(
+                    "load",
+                    {
+                        "eeprom": self._eeprom_data.to_dict(),
+                        "info": self._firmware_info.to_dict(),
+                    },
+                )
                 self.collecting_eeprom = False
             else:
                 parsed = self._parser.parse_eeprom_data(line)
@@ -190,5 +204,5 @@ def __plugin_load__():
         "octoprint.comm.protocol.firmware.info": plugin.comm_protocol_firmware_info,
         "octoprint.comm.protocol.firmware.capabilities": plugin.comm_protocol_firmware_cap,
         "octoprint.comm.protocol.gcode.received": plugin.comm_protocol_gcode_received,
-        "octoprint.comm.protocol.gcode.sent": plugin.comm_protocol_gcode_sent,
+        "octoprint.comm.protocol.gcode.sent": plugin.comm_protocol_gcode_sending,
     }
