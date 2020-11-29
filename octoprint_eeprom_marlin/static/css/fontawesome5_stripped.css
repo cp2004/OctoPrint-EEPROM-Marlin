@@ -39,6 +39,9 @@ readers do not read off random characters that represent icons */
 .fa-custom-edit:before {
   content: "\f044";
 }
+.fa-custom-plug:before {
+  content: "\f1e6";
+}
 
 @font-face {
   font-family: 'Font Awesome 5 Brands';

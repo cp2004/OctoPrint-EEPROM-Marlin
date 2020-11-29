@@ -1,0 +1,16 @@
+<div class="eeprom-notconnected" data-bind="visible: !info.name() && !initialLoad()">
+    <p>
+        <span class="fa-stack fa-3x">
+            <i class="fas-custom fa-custom-plug fa-stack-2x text-info"></i>
+            <i class="fa fa-times fa-stack-2x text-error"></i>
+        </span>
+    </p>
+    <p>
+        <strong>
+            {{ _("Looks like the printer is disconnected") }}
+        </strong>
+    </p>
+    <p>
+        {{ ("Connect to the printer to edit it's configuration.") }}
+    </p>
+</div>

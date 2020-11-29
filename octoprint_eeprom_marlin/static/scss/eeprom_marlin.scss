@@ -81,7 +81,9 @@ $touchUI_icon: "\f14b";
     }
   }
 
-  .eeprom-notmarlin {
+  .eeprom-notmarlin,
+  .eeprom-notconnected,
+  .eeprom-backup {
     p,
     i {
       text-align: center;
