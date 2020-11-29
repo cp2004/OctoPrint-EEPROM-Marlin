@@ -7,15 +7,15 @@
     </div>
     <div class="span9">
         <div class="btn-group">
-            <button class="btn" data-bind="click: load_eeprom">
+            <button class="btn" data-bind="click: load_eeprom, enable: !initialLoad() && !loading() && !saving()">
                 <i class="fa fa-refresh" data-bind="css: {'fa-spin': loading()}"></i>
                 {{ _(" Load") }}
             </button>
-            <button class="btn" data-bind="click: save_eeprom, css: {'btn-primary': unsaved()}" >
-                <i class="fas-custom fa-custom-save" data-bind="css: {'fa-spin': saving()}"></i>
+            <button class="btn" data-bind="click: save_eeprom, css: {'btn-primary': unsaved()}, enable: !initialLoad() && !loading() && !saving()" >
+                <i class="fas-custom" data-bind="css: {'fa-refresh fa-spin': saving(), 'fa-custom-save': !saving()}"></i>
                 {{ _(" Save") }}
             </button>
-            <button class="btn btn-danger">
+            <button class="btn btn-danger" data-bind="enable: !initialLoad() && !loading() && !saving()">
                 <i class="fa fa-eraser"></i>
                 {{ _(" Reset") }}
             </button>
@@ -28,7 +28,7 @@
         </div>
     </div>
 </div>
-<div id="eeprom_tab_data" class="collapse in">
+<div id="eeprom_tab_data" class="collapse in" data-bind="visible: !initialLoad()">
     <div class="row-fluid">
         <div class="span3">
             {% include "snippets/sidebar.jinja2" %}
@@ -75,3 +75,4 @@
 <div id="eeprom_tab_backup" class="collapse">
     backup
 </div>
+{% include "overlays/loading.jinja2" %}

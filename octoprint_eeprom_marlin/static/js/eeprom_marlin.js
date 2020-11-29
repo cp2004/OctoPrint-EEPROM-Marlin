@@ -739,7 +739,8 @@ $(function () {
         }
 
         // State bindings
-        self.loading = ko.observable(true);
+        self.loading = ko.observable(false);
+        self.initialLoad = ko.observable(true);
         self.saving = ko.observable(false);
         self.controls_enabled = ko.pureComputed(function () {
             return self.loading() || self.saving();
@@ -747,7 +748,7 @@ $(function () {
         self.unsaved = ko.observable(false);
 
         self.edited = function () {
-            if (!self.loading()) {
+            if (!self.initialLoad() && !self.loading()) {
                 self.unsaved(true);
             }
         };
@@ -806,6 +807,7 @@ $(function () {
                 self.eeprom_from_json(response);
                 info_from_json(response);
                 self.loading(false);
+                self.initialLoad(false);
             });
         };
     }

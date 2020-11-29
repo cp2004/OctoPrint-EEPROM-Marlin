@@ -65,4 +65,15 @@ $touchUI_icon: "\f14b";
     border: 0;
     padding: 0;
   }
+
+  .eeprom-loading {
+    p {
+      font-size: xx-large;
+      text-align: center;
+      i,
+      span {
+        margin-bottom: 5px;
+      }
+    }
+  }
 }
