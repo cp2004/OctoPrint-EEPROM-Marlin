@@ -76,4 +76,14 @@ $touchUI_icon: "\f14b";
       }
     }
   }
+
+  .eeprom-notmarlin {
+    p,
+    i {
+      text-align: center;
+      .text-bold {
+        font-weight: bolder;
+      }
+    }
+  }
 }
