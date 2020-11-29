@@ -745,7 +745,10 @@ $(function () {
         self.unsaved = ko.observable(false);
         self.enable_fields = ko.pureComputed(function () {
             return (
-                !self.loading() && !self.saving() && !self.printerState.isBusy()
+                !self.loading() &&
+                !self.saving() &&
+                !self.printerState.isBusy() &&
+                self.printerState.isReady()
             );
         });
         self.enable_buttons = ko.pureComputed(function () {
@@ -753,7 +756,8 @@ $(function () {
                 !self.loading() &&
                 !self.initialLoad() &&
                 self.info.is_marlin() &&
-                !self.printerState.isBusy()
+                !self.printerState.isBusy() &&
+                self.printerState.isReady()
             );
         });
 
