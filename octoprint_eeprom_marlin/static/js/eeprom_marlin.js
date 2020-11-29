@@ -747,7 +747,9 @@ $(function () {
         });
         self.unsaved = ko.observable(false);
         self.enable_buttons = ko.pureComputed(function () {
-            return !self.loading && !self.initialLoad() && self.info.is_marlin;
+            return (
+                !self.loading() && !self.initialLoad() && self.info.is_marlin()
+            );
         });
 
         self.edited = function () {
