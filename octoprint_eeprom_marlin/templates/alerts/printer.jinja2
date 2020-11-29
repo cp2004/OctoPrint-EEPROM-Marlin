@@ -1,4 +1,7 @@
-<div class="alert alert-block" data-bind="visible: !enable_fields() && !initialLoad() && info.name()">
+<div class="alert alert-block" data-bind="visible: !loading() && !saving() && !enable_fields() && !initialLoad() && info.name()">
     <p><strong>Read-only mode</strong></p>
-    <p>{{ _("Printer is currently printing or disconnected, EEPROM configuration is disabled. Editor is in read-only mode") }}</p>
+    <p>
+        {{ _("Printer is currently") }}
+        <span data-bind="text: printerState.isBusy() ? '{{ _("printing") }}' : '{{ _("disconnected") }}'"></span>
+        {{ _("so EEPROM configuration is disabled. Editor is in read-only mode") }}</p>
 </div>
