@@ -8,7 +8,7 @@ $(function () {
     function EEPROMMarlinViewModel(parameters) {
         var self = this;
 
-        self.settingsViewModel = parameters[0];
+        self.printerState = parameters[0];
 
         self.eeprom = (function () {
             var eeprom = {};
@@ -742,13 +742,18 @@ $(function () {
         self.loading = ko.observable(false);
         self.initialLoad = ko.observable(true);
         self.saving = ko.observable(false);
-        self.controls_enabled = ko.pureComputed(function () {
-            return self.loading() || self.saving();
-        });
         self.unsaved = ko.observable(false);
+        self.enable_fields = ko.pureComputed(function () {
+            return (
+                !self.loading() && !self.saving() && !self.printerState.isBusy()
+            );
+        });
         self.enable_buttons = ko.pureComputed(function () {
             return (
-                !self.loading() && !self.initialLoad() && self.info.is_marlin()
+                !self.loading() &&
+                !self.initialLoad() &&
+                self.info.is_marlin() &&
+                !self.printerState.isBusy()
             );
         });
 
@@ -819,7 +824,7 @@ $(function () {
 
     OCTOPRINT_VIEWMODELS.push({
         construct: EEPROMMarlinViewModel,
-        dependencies: ["settingsViewModel"],
+        dependencies: ["printerStateViewModel"],
         elements: ["#tab_plugin_eeprom_marlin_2"],
     });
 });

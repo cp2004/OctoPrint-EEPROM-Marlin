@@ -28,6 +28,11 @@
         </div>
     </div>
 </div>
+<div class="row-fluid eeprom-alerts">
+    <div class="span12">
+        {% include "alerts/printer.jinja2" %}
+    </div>
+</div>
 <div id="eeprom_tab_data" class="collapse in" data-bind="visible: !initialLoad() && info.is_marlin()">
     <div class="row-fluid">
         <div class="span3">

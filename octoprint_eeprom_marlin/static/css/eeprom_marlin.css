@@ -38,15 +38,19 @@
 #tab_plugin_eeprom_marlin_2 .tab-content {
   border: 0;
   padding: 0; }
+#tab_plugin_eeprom_marlin_2 .eeprom-alerts .span12 {
+  min-height: 0; }
 #tab_plugin_eeprom_marlin_2 .eeprom-loading p {
   font-size: xx-large;
   text-align: center; }
   #tab_plugin_eeprom_marlin_2 .eeprom-loading p i,
   #tab_plugin_eeprom_marlin_2 .eeprom-loading p span {
     margin-bottom: 5px; }
-#tab_plugin_eeprom_marlin_2 .eeprom-notmarlin p, #tab_plugin_eeprom_marlin_2 .eeprom-notmarlin i {
+#tab_plugin_eeprom_marlin_2 .eeprom-notmarlin p,
+#tab_plugin_eeprom_marlin_2 .eeprom-notmarlin i {
   text-align: center; }
-  #tab_plugin_eeprom_marlin_2 .eeprom-notmarlin p .text-bold, #tab_plugin_eeprom_marlin_2 .eeprom-notmarlin i .text-bold {
+  #tab_plugin_eeprom_marlin_2 .eeprom-notmarlin p .text-bold,
+  #tab_plugin_eeprom_marlin_2 .eeprom-notmarlin i .text-bold {
     font-weight: bolder; }
 
 /*# sourceMappingURL=eeprom_marlin.css.map */

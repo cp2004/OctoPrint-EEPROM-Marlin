@@ -66,6 +66,10 @@ $touchUI_icon: "\f14b";
     padding: 0;
   }
 
+  .eeprom-alerts .span12 {
+    min-height: 0;
+  }
+
   .eeprom-loading {
     p {
       font-size: xx-large;
