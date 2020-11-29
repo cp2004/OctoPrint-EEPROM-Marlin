@@ -34,9 +34,10 @@ class API:
     def on_api_command(self, command, data):
         if command == CMD_LOAD:
             # Get data from printer
-            self._printer.commands(
-                "M503" if self._settings.get(["use_m503"]) else "M501"
-            )
+            if self._printer.is_ready():
+                self._printer.commands(
+                    "M503" if self._settings.get(["use_m503"]) else "M501"
+                )
         elif command == CMD_SAVE:
             # Send changed data to printer
             old_eeprom = deepcopy(self._eeprom_data.to_dict())
@@ -60,16 +61,17 @@ class API:
         )
 
     def save_eeprom_data(self, old, new):
-        commands = []
-        for name, data in old.items():
-            new_data = new[name]
-            diff = octoprint.util.dict_minimal_mergediff(data, new_data)
-            if diff:
-                commands.append(self.construct_command(new_data))
+        if self._printer.is_ready():
+            commands = []
+            for name, data in old.items():
+                new_data = new[name]
+                diff = octoprint.util.dict_minimal_mergediff(data, new_data)
+                if diff:
+                    commands.append(self.construct_command(new_data))
 
-        if commands:
-            self._printer.commands(commands)
-            self._printer.commands("M500")
+            if commands:
+                self._printer.commands(commands)
+                self._printer.commands("M500")
 
     @staticmethod
     def construct_command(data):
