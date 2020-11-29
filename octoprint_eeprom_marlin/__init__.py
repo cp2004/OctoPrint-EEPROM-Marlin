@@ -140,7 +140,7 @@ class EEPROMMarlinPlugin(
             else:
                 parsed = self._parser.parse_eeprom_data(line)
                 if parsed:
-                    self._eeprom_data.from_dict(parsed)
+                    self._eeprom_data.from_dict(parsed, ui=False)
 
         return line
 

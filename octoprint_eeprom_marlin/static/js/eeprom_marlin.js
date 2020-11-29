@@ -239,6 +239,52 @@ $(function () {
                 return linear;
             })();
 
+            eeprom.material1 = (function () {
+                var material1 = {};
+
+                material1.B = ko.observable();
+                material1.F = ko.observable();
+                material1.H = ko.observable();
+                material1.S = ko.observable();
+
+                material1.visible = ko.computed(function () {
+                    for (let param in material1) {
+                        if (param === "visible") {
+                            continue;
+                        }
+                        if (material1[param]() !== null) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+
+                return material1;
+            })();
+
+            eeprom.material2 = (function () {
+                var material2 = {};
+
+                material2.B = ko.observable();
+                material2.F = ko.observable();
+                material2.H = ko.observable();
+                material2.S = ko.observable();
+
+                material2.visible = ko.computed(function () {
+                    for (let param in material2) {
+                        if (param === "visible") {
+                            continue;
+                        }
+                        if (material2[param]() !== null) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+
+                return material2;
+            })();
+
             eeprom.max_acceleration = (function () {
                 var max_acceleration = {};
 
@@ -532,6 +578,40 @@ $(function () {
                     label: "K factor",
                     value: self.eeprom.linear.K,
                     units: null,
+                },
+            ],
+            material1: [
+                {
+                    label: "Hotend Temperature",
+                    value: self.eeprom.material1.H,
+                    units: "°C",
+                },
+                {
+                    label: "Bed Temperature",
+                    value: self.eeprom.material1.B,
+                    units: "°C",
+                },
+                {
+                    label: "Fan Speed",
+                    value: self.eeprom.material1.F,
+                    units: "0-255",
+                },
+            ],
+            material2: [
+                {
+                    label: "Hotend Temperature",
+                    value: self.eeprom.material2.H,
+                    units: "°C",
+                },
+                {
+                    label: "Bed Temperature",
+                    value: self.eeprom.material2.B,
+                    units: "°C",
+                },
+                {
+                    label: "Fan Speed",
+                    value: self.eeprom.material2.F,
+                    units: "0-255",
                 },
             ],
             max_acceleration: [

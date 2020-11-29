@@ -23,6 +23,7 @@ COMMAND_PARAMS = {
     "M304": ["P", "I", "D"],
     "M205": ["S", "T", "B", "X", "Y", "Z", "E", "J"],
     "M420": ["S", "Z"],
+    "M145": ["S", "B", "H", "F"],
 }
 
 COMMAND_NAMES = {
@@ -40,6 +41,7 @@ COMMAND_NAMES = {
     "M304": "bed_pid",
     "M205": "advanced",
     "M420": "autolevel",
+    "M145": "material",
 }
 
 
@@ -118,6 +120,8 @@ class EEPROMData:
             "advanced", "M205", ["S", "T", "B", "X", "Y", "Z", "E", "J"]
         )
         self.autolevel = IndividualData("autolevel", "M420", ["S", "Z"])
+        self.material1 = IndividualData("material1", "M145", ["S", "B", "H", "F"])
+        self.material2 = IndividualData("material2", "M145", ["S", "B", "H", "F"])
 
     def from_list(self, data):
         """
@@ -126,29 +130,55 @@ class EEPROMData:
         :return: None
         """
         for item in data:
-            data_class = getattr(self, item["name"])
-            data_class.params_from_dict(item["params"])
+            self.from_dict(item)
 
-    def from_dict(self, data):
+    def from_dict(self, data, ui=True):
         """
         Parse data from dict into class
         :param data: dict of a type of data
+        :param ui: bool, where the data came from
         :return: None
         """
-        data_class = getattr(self, data["name"])
+        if not ui and data["command"] == "M145":
+            try:
+                if int(data["params"]["S"]) == 0:
+                    data_class = self.material1
+                elif int(data["params"]["S"]) == 1:
+                    data_class = self.material2
+                else:
+                    # unable to parse again
+                    return
+            except KeyError:
+                # Unable to parse M145
+                return
+        else:
+            data_class = getattr(self, data["name"])
         data_class.params_from_dict(data["params"])
 
     def to_dict(self):
         # Wraps all the data up to send it to the UI
         data = {}
         for command, name in COMMAND_NAMES.items():
-            cls = getattr(self, name)
-            data[name] = {"command": command, "params": cls.params}
+            if command == "M145":
+                cls = getattr(self, name + "1")
+                data[name + "1"] = {"command": command, "params": cls.params}
+                cls2 = getattr(self, name + "2")
+                data[name + "2"] = {"command": command, "params": cls2.params}
+            else:
+                cls = getattr(self, name)
+                data[name] = {"command": command, "params": cls.params}
 
         return data
 
     def to_list(self):
         data = []
         for command, name in COMMAND_NAMES.items():
-            params = getattr(self, name).params
-            data.append({"name": name, "command": command, "params": params})
+            if command == "M145":
+                # Needs special handling
+                params = getattr(self, name + "1").params
+                data.append({"name": name + "1", "command": command, "params": params})
+                params2 = getattr(self, name + "2").params
+                data.append({"name": name + "2", "command": command, "params": params2})
+            else:
+                params = getattr(self, name).params
+                data.append({"name": name, "command": command, "params": params})

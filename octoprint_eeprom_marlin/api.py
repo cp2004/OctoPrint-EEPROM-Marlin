@@ -75,5 +75,8 @@ class API:
     def construct_command(data):
         command = data["command"]
         for param, value in data["params"].items():
-            command = command + " " + param + str(value)
+            value = (
+                str(value) if command != "M145" and param != "S" else str(int(value))
+            )
+            command = command + " " + param + value
         return command
