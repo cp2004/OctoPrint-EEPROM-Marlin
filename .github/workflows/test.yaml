@@ -24,7 +24,7 @@ jobs:
           python -m pip install octoprint
       - name: 🔨 Build a binary wheel and a source tarball
         run: |
-          python setup.py sdist bdist_wheel
+          python setup.py sdist --formats=zip
       - name: ⬆ Upload build result
         uses: actions/upload-artifact@v1
         with:
