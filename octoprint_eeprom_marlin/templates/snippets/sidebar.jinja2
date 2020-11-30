@@ -1,5 +1,8 @@
 <ul class="nav nav-list sidenav">
-    <li data-bind="visible: eeprom.steps.visible" class="active">
+    <li class="active">
+        <a data-toggle="tab" href="#eeprom_info">Firmware Info</a>
+    </li>
+    <li data-bind="visible: eeprom.steps.visible">
         <a data-toggle="tab" href="#eeprom_steps">Steps</a>
     </li>
     <li data-bind="visible: eeprom.feedrate.visible">

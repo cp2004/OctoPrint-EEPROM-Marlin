@@ -48,6 +48,40 @@ $touchUI_icon: "\f14b";
     }
   }
 
+  .eeprom-info {
+    .card {
+      box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+      border: 1px solid rgba(0, 0, 0, 0.125);
+      border-radius: 0.25rem;
+      padding: 1.25rem 0.5rem;
+      margin-bottom: 10px;
+
+      p:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    .eeprom-capabilities {
+      .table {
+        .thead-light th {
+          color: #495057;
+          background-color: #e9ecef;
+          border-color: #dee2e6;
+        }
+
+        thead tr {
+          th.capability {
+            width: 60%;
+          }
+
+          th.value {
+            width: 40%;
+          }
+        }
+      }
+    }
+  }
+
   .eeprom-brand {
     text-align: center;
     font-weight: bold;
@@ -74,6 +108,7 @@ $touchUI_icon: "\f14b";
     p {
       font-size: xx-large;
       text-align: center;
+
       i,
       span {
         margin-bottom: 5px;

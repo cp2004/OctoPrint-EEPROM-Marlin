@@ -40,6 +40,9 @@
         </div>
         <div class="span9 eeprom-content">
             <div class="tab-content">
+                <div id="eeprom_info" class="tab-pane active">
+                    {% include 'sub/info.jinja2' %}
+                </div>
                 <div id="eeprom_acceleration" class="tab-pane">
                     {% include 'sub/acceleration.jinja2' %}
                 </div>
@@ -70,7 +73,7 @@
                 <div id="eeprom_pid" class="tab-pane">
                     {% include 'sub/pid.jinja2' %}
                 </div>
-                <div id="eeprom_steps" class="tab-pane active">
+                <div id="eeprom_steps" class="tab-pane">
                     {% include 'sub/steps.jinja2' %}
                 </div>
             </div>

@@ -732,8 +732,29 @@ $(function () {
         })();
 
         function info_from_json(data) {
-            self.info.additional(data.info.additional);
-            self.info.capabilities(data.info.capabilities);
+            self.info.additional([]);
+            for (let additional in data.info.additional) {
+                if (additional === "FIRMWARE_NAME") {
+                    continue;
+                }
+                let value = data.info.additional[additional];
+                let name = capitaliseWords(additional.replace(/_/gi, " "));
+                // format report to more human-readable style
+                self.info.additional.push({
+                    name: name,
+                    val: value,
+                });
+            }
+            self.info.capabilities([]);
+            for (let capability in data.info.capabilities) {
+                let value = data.info.capabilities[capability];
+                let cap = capitaliseWords(capability.replace(/_/gi, " "));
+                // format cap to more human-readable style
+                self.info.capabilities.push({
+                    cap: cap,
+                    val: value,
+                });
+            }
             self.info.is_marlin(data.info.is_marlin);
             self.info.name(data.info.name);
         }
@@ -825,6 +846,15 @@ $(function () {
                 self.initialLoad(false);
             });
         };
+
+        // Utilities
+        function capitaliseWords(str) {
+            return str.replace(/\w\S*/g, function (txt) {
+                return (
+                    txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+                );
+            });
+        }
     }
 
     OCTOPRINT_VIEWMODELS.push({

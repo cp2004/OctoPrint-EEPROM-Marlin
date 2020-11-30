@@ -26,6 +26,22 @@
   min-height: 450px; }
   #tab_plugin_eeprom_marlin_2 div.eeprom-content .tab-content {
     padding: 5px 10px; }
+#tab_plugin_eeprom_marlin_2 .eeprom-info .card {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.25rem;
+  padding: 1.25rem 0.5rem;
+  margin-bottom: 10px; }
+  #tab_plugin_eeprom_marlin_2 .eeprom-info .card p:last-child {
+    margin-bottom: 0; }
+#tab_plugin_eeprom_marlin_2 .eeprom-info .eeprom-capabilities .table .thead-light th {
+  color: #495057;
+  background-color: #e9ecef;
+  border-color: #dee2e6; }
+#tab_plugin_eeprom_marlin_2 .eeprom-info .eeprom-capabilities .table thead tr th.capability {
+  width: 60%; }
+#tab_plugin_eeprom_marlin_2 .eeprom-info .eeprom-capabilities .table thead tr th.value {
+  width: 40%; }
 #tab_plugin_eeprom_marlin_2 .eeprom-brand {
   text-align: center;
   font-weight: bold;
