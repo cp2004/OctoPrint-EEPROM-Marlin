@@ -7,6 +7,7 @@ __copyright__ = (
 )
 # Originally by Anderson Silva, development taken over by Charlie Powell in September 2020
 # Vast majority of the work here is by Charlie Powell, for full details see the git history.
+from copy import deepcopy
 
 import octoprint.plugin
 
@@ -110,7 +111,12 @@ class EEPROMMarlinPlugin(
     # Hook handlers
     def comm_protocol_firmware_info(self, comm, name, fw_data, *args, **kwargs):
         # https://docs.octoprint.org/en/master/plugins/hooks.html#octoprint-comm-protocol-firmware-info
+        old_is_marlin = deepcopy(self._firmware_info.is_marlin)
         self._firmware_info.is_marlin = self._parser.is_marlin(name)
+        if not old_is_marlin and self._firmware_info.is_marlin:
+            # Connected and need to send M503
+            command = "M503" if self._settings.get_boolean(["use_m503"]) else "M501"
+            self._printer.commands(command)
         self._firmware_info.name = name
         self._firmware_info.additional_info_from_dict(fw_data)
 

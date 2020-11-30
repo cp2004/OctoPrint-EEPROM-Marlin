@@ -1,4 +1,5 @@
-<div class="eeprom-notconnected" data-bind="visible: !info.name() && !initialLoad()">
+
+<div class="eeprom-notconnected" data-bind="visible: !initialLoad() && !(info.name().length > 0)">
     <p>
         <span class="fa-stack fa-3x">
             <i class="fas-custom fa-custom-plug fa-stack-2x text-info"></i>

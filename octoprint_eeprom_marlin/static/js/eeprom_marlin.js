@@ -837,7 +837,7 @@ $(function () {
             }
         };
 
-        self.onAllBound = function () {
+        self.onAllBound = self.onEventConnected = function () {
             self.loading(true);
             OctoPrint.simpleApiGet("eeprom_marlin").done(function (response) {
                 self.eeprom_from_json(response);

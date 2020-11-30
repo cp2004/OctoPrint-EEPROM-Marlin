@@ -19,5 +19,5 @@ class EventHandler:
             self.event_to_react_to[event](payload)
 
     def connected(self, payload):
-        command = "M503" if self._settings.get_boolean(["use_m503"]) else "M501"
-        self._printer.commands(command)
+        # No longer required, TODO remove this
+        pass
