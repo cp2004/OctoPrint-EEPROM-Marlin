@@ -33,7 +33,7 @@
         {% include "alerts/printer.jinja2" %}
     </div>
 </div>
-<div id="eeprom_tab_data" class="collapse in" data-bind="visible: !initialLoad() && info.name().length > 0">
+<div id="eeprom_tab_data" class="collapse in" data-bind="visible: !initialLoad() && info.is_marlin() && info.name().length > 0">
     <div class="row-fluid">
         <div class="span3">
             {% include "snippets/sidebar.jinja2" %}
