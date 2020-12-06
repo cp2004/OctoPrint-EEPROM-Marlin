@@ -28,7 +28,7 @@ jobs:
       - name: 🚚 rename to sdist.zip
         run: |
           ls dist
-          mv dist/Marlin\ EEPROM\ Editor-*.zip dist/sdist.zip
+          mv dist/Marlin\ EEPROM\ editor-*.zip dist/sdist.zip
       - name: ⬆ Upload build result
         uses: actions/upload-artifact@v1
         with:
