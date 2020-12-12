@@ -8,21 +8,21 @@
     <div class="span9">
         <div class="btn-group">
             <button class="btn" data-bind="click: load_eeprom, enable: enable_buttons">
-                <i class="fa fa-refresh" data-bind="css: {'fa-spin': loading()}"></i>
+                <i class="fa fa-fw fa-refresh" data-bind="css: {'fa-spin': loading()}"></i>
                 {{ _(" Load") }}
             </button>
             <button class="btn" data-bind="click: save_eeprom, css: {'btn-primary': unsaved()}, enable: enable_buttons" >
-                <i class="fas-custom" data-bind="css: {'fa-refresh fa-spin': saving(), 'fa-custom-save': !saving()}"></i>
+                <i class="fas-custom fa-fw" data-bind="css: {'fa-refresh fa-spin': saving(), 'fa-custom-save': !saving()}"></i>
                 {{ _(" Save") }}
             </button>
             <button class="btn btn-danger" data-bind="enable: enable_buttons">
-                <i class="fa fa-eraser"></i>
+                <i class="fa fa-fw fa-eraser"></i>
                 {{ _(" Reset") }}
             </button>
         </div>
         <div class="btn-group pull-right">
             <button class="btn" data-bind="click: toggle_backup">
-                <i class="fas-custom" data-bind="css: {'fa-custom-cloud-download-alt': !backup_open(), 'fa-custom-edit': backup_open()}"></i>
+                <i class="fas-custom fa-fw" data-bind="css: {'fa-custom-cloud-download-alt': !backup_open(), 'fa-custom-edit': backup_open()}"></i>
                 <span data-bind="text: backup_open() ? '{{ _("EEPROM") }}' : '{{ _("Backup") }}'"></span>
             </button>
         </div>
