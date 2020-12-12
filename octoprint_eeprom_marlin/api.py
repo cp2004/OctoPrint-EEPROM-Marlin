@@ -6,10 +6,14 @@ from copy import deepcopy
 import flask
 import octoprint.util
 
+from octoprint_eeprom_marlin.backup import BackupNameTakenError
+from octoprint_eeprom_marlin.util import build_backup_name
+
 CMD_LOAD = "load"
 CMD_SAVE = "save"
 CMD_BACKUP = "backup"
 CMD_RESTORE = "restore"
+CMD_RESET = "reset"
 
 
 class API:
@@ -19,16 +23,17 @@ class API:
         self._printer = plugin._printer
         self._firmware_info = plugin._firmware_info
         self._eeprom_data = plugin._eeprom_data
+        self._backup_handler = plugin._backup_handler
         self._plugin = plugin
 
     @staticmethod
     def get_api_commands():
         return {
-            "load": [],
-            "save": ["eeprom_data"],
-            "backup": [],
-            "restore": ["data"],
-            "reset": [],
+            CMD_LOAD: [],
+            CMD_SAVE: ["eeprom_data"],
+            CMD_BACKUP: [],
+            CMD_RESTORE: ["name"],
+            CMD_RESET: [],
         }
 
     def on_api_command(self, command, data):
@@ -47,9 +52,12 @@ class API:
 
         elif command == CMD_BACKUP:
             # Execute a backup
-            raise NotImplementedError
+            return self.create_backup(data.get("name"))
         elif command == CMD_RESTORE:
             # Restore the backup
+            raise NotImplementedError
+        elif command == CMD_RESET:
+            # Reset (M502)
             raise NotImplementedError
 
     def on_api_get(self, request):
@@ -57,6 +65,7 @@ class API:
             {
                 "info": self._firmware_info.to_dict(),
                 "eeprom": self._eeprom_data.to_dict(),
+                "backups": self._backup_handler.get_backups(quick=True),
             }
         )
 
@@ -82,3 +91,23 @@ class API:
             )
             command = command + " " + param + value
         return command
+
+    def create_backup(self, name):
+        if not name:
+            # Custom backup names should be passed, otherwise auto-generate
+            name = build_backup_name()
+
+        eeprom_data = self._eeprom_data.to_dict()
+        try:
+            self._backup_handler.create_backup(name, eeprom_data)
+            success = True
+            error = ""
+        except BackupNameTakenError:
+            success = False
+            error = "Backup name is already in use, please use a different name"
+        except Exception as e:
+            success = False
+            error = "An unknown error occured while creating the backup, consult the log for details"
+            self._logger.exception(e)
+
+        return flask.jsonify({"success": success, "error": error})

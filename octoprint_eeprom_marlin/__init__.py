@@ -11,8 +11,15 @@ from copy import deepcopy
 
 import octoprint.plugin
 
-from octoprint_eeprom_marlin import _version, api, data, parser, settings
-from octoprint_eeprom_marlin.events import EventHandler
+from octoprint_eeprom_marlin import (
+    _version,
+    api,
+    backup,
+    data,
+    events,
+    parser,
+    settings,
+)
 
 __version__ = _version.get_versions()["version"]
 del _version
@@ -33,6 +40,7 @@ class EEPROMMarlinPlugin(
     _changed_data = None
 
     # Useful classes
+    _backup_handler = None
     _parser = None
     _api = None
     _event_reactor = None
@@ -48,10 +56,12 @@ class EEPROMMarlinPlugin(
         self._firmware_info = data.FirmwareInfo()
         self._eeprom_data = data.EEPROMData()
 
-        # Useful classes
+        # Useful classes - watch the inheritance order:
+        # API requires backup handler
+        self._backup_handler = backup.BackupHandler(self)
         self._parser = parser.Parser(self._logger)
         self._api = api.API(self)
-        self._event_reactor = EventHandler(self)
+        self._event_reactor = events.EventHandler(self)
 
         # Flags
         self.collecting_eeprom = False
