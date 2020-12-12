@@ -6,7 +6,7 @@ from copy import deepcopy
 import flask
 import octoprint.util
 
-from octoprint_eeprom_marlin.backup import BackupNameTakenError
+from octoprint_eeprom_marlin.backup import BackupMissingError, BackupNameTakenError
 from octoprint_eeprom_marlin.util import build_backup_name
 
 CMD_LOAD = "load"
@@ -55,7 +55,7 @@ class API:
             return self.create_backup(data.get("name"))
         elif command == CMD_RESTORE:
             # Restore the backup
-            raise NotImplementedError
+            return self.restore_backup(data.get("name"))
         elif command == CMD_RESET:
             # Reset (M502)
             raise NotImplementedError
@@ -111,3 +111,38 @@ class API:
             self._logger.exception(e)
 
         return flask.jsonify({"success": success, "error": error})
+
+    def restore_backup(self, name):
+        if not self._printer.is_ready():
+            return flask.abort(409)
+
+        try:
+            backup_data = self._backup_handler.read_backup(name)
+        except BackupMissingError as e:
+            self._logger.error("Specified backup could not be found")
+            self._logger.exception(e)
+            return flask.jsonify(
+                {"success": False, "error": "Backup specified does not exist"}
+            )
+
+        eeprom_data = backup_data["data"]
+        # convert json dict to a list, for usage of common parsing methods
+        eeprom_list = []
+        for key in eeprom_data.keys():
+            eeprom_list.append(
+                {
+                    "name": key,
+                    "command": eeprom_data[key]["command"],
+                    "params": eeprom_data[key]["params"],
+                }
+            )
+
+        # Save the data
+        old_data = deepcopy(self._eeprom_data.to_dict())
+        self._eeprom_data.from_list(eeprom_list)
+        new_data = self._eeprom_data.to_dict()
+        self.save_eeprom_data(old_data, new_data)
+
+        return flask.jsonify(
+            {"success": True, "eeprom": self._eeprom_data.to_dict(), "name": name}
+        )
