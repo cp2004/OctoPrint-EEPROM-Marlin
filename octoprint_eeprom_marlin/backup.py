@@ -42,13 +42,30 @@ class BackupHandler:
 
     """
 
-    def __int__(self, plugin):
+    def __init__(self, plugin):
         self.plugin = plugin
         self._data_folder = self.plugin.get_plugin_data_folder()
         self._settings = plugin._settings
         self._logger = plugin._logger
         self._metadata_file_path = os.path.join(self._data_folder, METADATA_FILENAME)
         self.metadata = None
+
+        # Make sure we have the metadata available
+        try:
+            # Try read from disk
+            self.get_backups(quick=False)
+        except MetadataMissingError as e:
+            self._logger.exception(e)
+            self._logger.warning("Metadata was missing, re-creating")
+            self.get_backups(scan=True)
+        except MetadataInvalidError as e:
+            self._logger.exception(e)
+            self._logger.warning("Metadata was invalid, re-creating")
+            self.get_backups(scan=True)
+        except Exception as e:
+            self._logger.error("Unknown error reading metadata")
+            self._logger.exception(e)
+            raise
 
     def get_backups(self, quick=True, scan=False):
         """
@@ -57,7 +74,7 @@ class BackupHandler:
         otherwise checks metadata file on disk, doesn't scan folder
         :return: list: list of backup names
         """
-        if quick and isinstance(self.metadata, MetaData):
+        if quick and not scan and isinstance(self.metadata, MetaData):
             # Return what we already have in memory
             return self.metadata.backups
 
@@ -78,7 +95,7 @@ class BackupHandler:
                     )
                 else:
                     self.metadata = MetaData(
-                        data, self._metadata_file_path, self._data_folder
+                        self._metadata_file_path, data, self._data_folder
                     )
             return self.metadata.backups
 
@@ -156,7 +173,7 @@ class BackupHandler:
         :param name:
         :return:
         """
-        return os.path.join(self._data_folder, BACKUPS_PATH, name)
+        return os.path.join(self._data_folder, BACKUPS_PATH, "{}.json".format(name))
 
     def _validate_metadata(self, data):
         """
@@ -167,8 +184,8 @@ class BackupHandler:
         try:
             data["version"]
             backups = data["backups"]
-            if not isinstance(backups, list):
-                return False
+            if isinstance(backups, list):
+                return True
             else:
                 return False
         except KeyError:
@@ -198,15 +215,15 @@ class BackupHandler:
         for (_path, _dirnames, filenames) in os.walk(
             os.path.join(self._data_folder, BACKUPS_PATH)
         ):
-            invalids = []
+            valids = []
             for file in filenames:
                 # TODO optimise performance here - this may make the backup be read twice
-                if not self._validate_backup(file):
-                    invalids.append(filenames)
+                name, _ext = os.path.splitext(file)
+                if self._validate_backup(name):
+                    valids.append(name)
 
-            for invalid in invalids:
-                filenames.remove(invalid)
-            files.extend(filenames)
+            files.extend(valids)
+            # Only walk one level
             break
 
         return files
@@ -248,7 +265,7 @@ class MetaData:
         Write metadata to disk
         :return: None
         """
-        data = {"versions": self.version, "backups": self.backups}
+        data = {"version": self.version, "backups": self.backups}
         with io.open(self.path, "wt", encoding="utf-8") as metadata_file:
             metadata_file.write(to_unicode(json.dumps(data)))
 
