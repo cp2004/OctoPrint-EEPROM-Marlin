@@ -94,6 +94,12 @@ class EEPROMMarlinPlugin(
                 "template": "eeprom_marlin_tab.jinja2",
                 "custom_bindings": True,
             },
+            {
+                "type": "settings",
+                "name": "Marlin EEPROM Editor",
+                "template": "eeprom_marlin_settings.jinja2",
+                "custom_bindings": False,
+            },
         ]
 
     def get_template_vars(self):

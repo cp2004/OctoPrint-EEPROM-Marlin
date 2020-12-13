@@ -2,4 +2,4 @@
 """
 Contains the default settings for the plugin, to extract them from the main plugin class
 """
-defaults = {"use_m503": True, "custom_name": True}
+defaults = {"use_m503": True, "custom_name": False}
