@@ -50,7 +50,7 @@ jobs:
           python -m pip install octoprint
       - name: 🧪 Test install of package
         run: |
-          python -m pip install "dist/Marlin EERPOM editor-*.zip"
+          python -m pip install "dist/Marlin EEPROM editor-*.zip"
 
   upload-asset:
     name: 📦 Upload asset to release
@@ -66,7 +66,7 @@ jobs:
           path: dist
       - name: 🚚 Rename to release.zip
         run: |
-          cp "dist/Marlin EERPOM editor-*.zip" release.zip
+          cp "dist/Marlin EEPROM editor-*.zip" release.zip
       - name: 🥅 Catch release ID
         id: get_release
         uses: bruceadams/get-release@v1.2.2
