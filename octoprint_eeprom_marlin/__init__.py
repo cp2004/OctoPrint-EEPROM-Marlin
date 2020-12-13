@@ -84,12 +84,6 @@ class EEPROMMarlinPlugin(
         return [
             {
                 "type": "tab",
-                "template": "eeprom_marlin_tab_old.jinja2",
-                "div": "tab_plugin_eeprom_marlin_old",
-                "custom_bindings": True,
-            },
-            {
-                "type": "tab",
                 "name": "EEPROM Editor",
                 "template": "eeprom_marlin_tab.jinja2",
                 "custom_bindings": True,
