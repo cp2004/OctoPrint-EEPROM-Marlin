@@ -9,6 +9,7 @@ $(function () {
         var self = this;
 
         self.printerState = parameters[0];
+        self.settingsViewModel = parameters[1];
 
         self.eeprom = (function () {
             var eeprom = {};
@@ -850,9 +851,34 @@ $(function () {
             });
         };
 
+        self.backup_name = ko.observable();
+
+        self.new_backup = function () {
+            console.log(
+                self.settingsViewModel.settings.plugins.eeprom_marlin.custom_name()
+            );
+            if (
+                self.settingsViewModel.settings.plugins.eeprom_marlin.custom_name()
+            ) {
+                // Trigger modal with custom name
+                $("#eepromBackupNameModal").modal("show");
+            } else {
+                self.create_backup();
+            }
+        };
+
         self.create_backup = function () {
-            // TODO implement naming backups here
-            OctoPrint.simpleApiCommand("eeprom_marlin", "backup").done(
+            $("#eepromBackupNameModal").modal("hide");
+
+            var payload = {};
+            if (
+                self.settingsViewModel.settings.plugins.eeprom_marlin.custom_name()
+            ) {
+                payload = { name: self.backup_name() };
+            }
+            self.backup_name("");
+
+            OctoPrint.simpleApiCommand("eeprom_marlin", "backup", payload).done(
                 function (response) {
                     let success = response.success;
                     if (!success) {
@@ -1002,7 +1028,7 @@ $(function () {
 
     OCTOPRINT_VIEWMODELS.push({
         construct: EEPROMMarlinViewModel,
-        dependencies: ["printerStateViewModel"],
+        dependencies: ["printerStateViewModel", "settingsViewModel"],
         elements: ["#tab_plugin_eeprom_marlin_2"],
     });
 });

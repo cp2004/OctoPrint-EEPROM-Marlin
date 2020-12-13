@@ -96,6 +96,8 @@ class API:
         if not name:
             # Custom backup names should be passed, otherwise auto-generate
             name = util.build_backup_name()
+        else:
+            name = util.sanitize(name)
 
         eeprom_data = self._eeprom_data.to_dict()
         try:
