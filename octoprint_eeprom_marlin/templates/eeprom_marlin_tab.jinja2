@@ -15,7 +15,7 @@
                 <i class="fas-custom fa-fw" data-bind="css: {'fa-refresh fa-spin': saving(), 'fa-custom-save': !saving()}"></i>
                 {{ _(" Save") }}
             </button>
-            <button class="btn btn-danger" data-bind="enable: enable_buttons">
+            <button class="btn btn-danger" data-bind="click: reset_eeprom, enable: enable_buttons">
                 <i class="fa fa-fw fa-eraser"></i>
                 {{ _(" Reset") }}
             </button>

@@ -65,7 +65,7 @@ class API:
             return self.upload_restore(data.get("data"))
         elif command == CMD_RESET:
             # Reset (M502)
-            raise NotImplementedError
+            return self.reset_eeprom()
 
     def on_api_get(self, request):
         return flask.jsonify(
@@ -91,6 +91,13 @@ class API:
             if commands:
                 self._printer.commands(commands)
                 self._printer.commands("M500")
+
+    def reset_eeprom(self):
+        if self._printer.is_ready():
+            # Reset, save, load
+            self._printer.commands(
+                ["M502", "M500", "M503" if self._settings.get(["use_m503"]) else "M501"]
+            )
 
     def create_backup(self, name):
         if not name:

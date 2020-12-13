@@ -812,7 +812,15 @@ $(function () {
         };
 
         self.reset_eeprom = function () {
-            console.log("not implemented");
+            showConfirmationDialog(
+                "This will reset the EEPROM settings to factory defaults",
+                function () {
+                    OctoPrint.simpleApiCommand("eeprom_marlin", "reset");
+                },
+                {
+                    proceed: "Reset",
+                }
+            );
         };
 
         self.toggle_backup = function () {
