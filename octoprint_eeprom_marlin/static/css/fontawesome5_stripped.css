@@ -42,6 +42,9 @@ readers do not read off random characters that represent icons */
 .fa-custom-plug:before {
   content: "\f1e6";
 }
+.fa-custom-cloud-upload-alt:before {
+  content: "\f382";
+}
 
 @font-face {
   font-family: 'Font Awesome 5 Brands';

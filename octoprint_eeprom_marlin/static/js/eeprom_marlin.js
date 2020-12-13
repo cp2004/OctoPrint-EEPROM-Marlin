@@ -731,7 +731,7 @@ $(function () {
             return info;
         })();
 
-        function info_from_json(data) {
+        self.info_from_json = function (data) {
             self.info.additional([]);
             for (let additional in data.info.additional) {
                 if (additional === "FIRMWARE_NAME") {
@@ -757,7 +757,9 @@ $(function () {
             }
             self.info.is_marlin(data.info.is_marlin);
             self.info.name(data.info.name);
-        }
+        };
+
+        self.backups = ko.observableArray([]);
 
         // State bindings
         self.loading = ko.observable(false);
@@ -824,6 +826,69 @@ $(function () {
             }
         };
 
+        self.backups_from_response = function (data) {
+            self.backups(data);
+        };
+
+        self.delete_backup = function (name) {
+            console.log("Not implemented, pretending to delete a backup");
+            console.log(name);
+        };
+
+        self.create_backup = function () {
+            // TODO implement naming backups here
+            OctoPrint.simpleApiCommand("eeprom_marlin", "backup").done(
+                function (response) {
+                    let success = response.success;
+                    if (!success) {
+                        new PNotify({
+                            title: "Error creating a backup",
+                            text: response.error,
+                            type: "error",
+                            hide: false,
+                        });
+                    } else {
+                        new PNotify({
+                            title: "Backup created successfully",
+                            type: "success",
+                            hide: true,
+                            delay: 4000,
+                        });
+                        OctoPrint.simpleApiGet("eeprom_marlin").done(function (
+                            response
+                        ) {
+                            self.backups_from_response(response.backups);
+                        });
+                    }
+                }
+            );
+        };
+
+        self.restore_backup = function (name) {
+            OctoPrint.simpleApiCommand("eeprom_marlin", "restore", {
+                name: name,
+            }).done(function (response) {
+                let success = response.success;
+                if (!success) {
+                    new PNotify({
+                        title: "Error restoring backup",
+                        text: response.error,
+                        type: "error",
+                        hide: false,
+                    });
+                } else {
+                    new PNotify({
+                        title: "Backup restored successfully",
+                        text: "Restored " + response.name,
+                        type: "success",
+                        hide: true,
+                        delay: 4000,
+                    });
+                    self.eeprom_from_json(response.eeprom);
+                }
+            });
+        };
+
         // DataUpdater
         self.onDataUpdaterPluginMessage = function (plugin, data) {
             if (plugin !== "eeprom_marlin") {
@@ -832,7 +897,7 @@ $(function () {
             if (data.type === "load") {
                 console.log(data);
                 self.eeprom_from_json(data.data);
-                info_from_json(data.data);
+                self.info_from_json(data.data);
                 self.loading(false);
             }
         };
@@ -841,7 +906,8 @@ $(function () {
             self.loading(true);
             OctoPrint.simpleApiGet("eeprom_marlin").done(function (response) {
                 self.eeprom_from_json(response);
-                info_from_json(response);
+                self.info_from_json(response);
+                self.backups_from_response(response.backups);
                 self.loading(false);
                 self.initialLoad(false);
             });
