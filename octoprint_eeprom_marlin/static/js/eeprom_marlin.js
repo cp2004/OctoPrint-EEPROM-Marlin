@@ -831,8 +831,21 @@ $(function () {
         };
 
         self.delete_backup = function (name) {
-            console.log("Not implemented, pretending to delete a backup");
-            console.log(name);
+            OctoPrint.simpleApiCommand("eeprom_marlin", "delete", {
+                name: name,
+            }).done(function (response) {
+                let success = response.success;
+                if (!success) {
+                    new PNotify({
+                        title: "Error creating a backup",
+                        text: response.error,
+                        type: "error",
+                        hide: false,
+                    });
+                } else {
+                    self.backups_from_response(response.backups);
+                }
+            });
         };
 
         self.create_backup = function () {

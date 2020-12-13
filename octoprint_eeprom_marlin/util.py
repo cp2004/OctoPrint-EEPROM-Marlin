@@ -6,3 +6,11 @@ import time
 
 def build_backup_name():
     return "eeprom_backup-{}".format(time.strftime("%Y%m%d-%H%M%S"))
+
+
+def construct_command(data):
+    command = data["command"]
+    for param, value in data["params"].items():
+        value = str(value) if command != "M145" and param != "S" else str(int(value))
+        command = command + " " + param + value
+    return command

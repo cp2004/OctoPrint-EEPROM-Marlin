@@ -7,13 +7,14 @@ import flask
 import octoprint.util
 
 from octoprint_eeprom_marlin.backup import BackupMissingError, BackupNameTakenError
-from octoprint_eeprom_marlin.util import build_backup_name
+from octoprint_eeprom_marlin.util import build_backup_name, construct_command
 
 CMD_LOAD = "load"
 CMD_SAVE = "save"
 CMD_BACKUP = "backup"
 CMD_RESTORE = "restore"
 CMD_RESET = "reset"
+CMD_DELETE = "delete"
 
 
 class API:
@@ -33,6 +34,7 @@ class API:
             CMD_SAVE: ["eeprom_data"],
             CMD_BACKUP: [],
             CMD_RESTORE: ["name"],
+            CMD_DELETE: ["name"],
             CMD_RESET: [],
         }
 
@@ -56,6 +58,9 @@ class API:
         elif command == CMD_RESTORE:
             # Restore the backup
             return self.restore_backup(data.get("name"))
+        elif command == CMD_DELETE:
+            # Delete the backup
+            return self.delete_backup(data.get("name"))
         elif command == CMD_RESET:
             # Reset (M502)
             raise NotImplementedError
@@ -76,21 +81,11 @@ class API:
                 new_data = new[name]
                 diff = octoprint.util.dict_minimal_mergediff(data, new_data)
                 if diff:
-                    commands.append(self.construct_command(new_data))
+                    commands.append(construct_command(new_data))
 
             if commands:
                 self._printer.commands(commands)
                 self._printer.commands("M500")
-
-    @staticmethod
-    def construct_command(data):
-        command = data["command"]
-        for param, value in data["params"].items():
-            value = (
-                str(value) if command != "M145" and param != "S" else str(int(value))
-            )
-            command = command + " " + param + value
-        return command
 
     def create_backup(self, name):
         if not name:
@@ -146,3 +141,22 @@ class API:
         return flask.jsonify(
             {"success": True, "eeprom": self._eeprom_data.to_dict(), "name": name}
         )
+
+    def delete_backup(self, name):
+        try:
+            self._backup_handler.delete_backup(name)
+            response = {"success": True}
+        except BackupMissingError:
+            response = {
+                "success": False,
+                "error": "The backup specified could not be found",
+            }
+        except Exception:
+            response = {
+                "success": False,
+                "error": "Unknown error occurred, check log for details",
+            }
+
+        response.update({"backups": self._backup_handler.get_backups(quick=True)})
+
+        return flask.jsonify(response)

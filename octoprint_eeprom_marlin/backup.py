@@ -167,6 +167,21 @@ class BackupHandler:
 
         return data
 
+    def delete_backup(self, name):
+        backup_path = self._get_backup_filename(name)
+        if not os.path.exists(backup_path):
+            raise BackupMissingError(
+                "Could not delete backup at {}, it is not there".format(backup_path)
+            )
+        try:
+            os.remove(backup_path)
+        except Exception as e:
+            self._logger.error("There was an error deleting {}".format(backup_path))
+            self._logger.exception(e)
+            raise
+
+        self.metadata.remove_backup(name)
+
     def _get_backup_filename(self, name):
         """
         Joins backup name to the intended storage location
@@ -278,6 +293,20 @@ class MetaData:
         """
         data = {"name": name, "time": time}
         self.backups.append(data)
+        self.save_metadata()
+
+    def remove_backup(self, name):
+        """
+        Remove a backup from the metadata & save it
+        :param name: name of backup to remove
+        :return: none
+        """
+        backups = []
+        for backup in self.backups:
+            if backup["name"] != name:
+                backups.append(backup)
+
+        self.backups = backups
         self.save_metadata()
 
 
