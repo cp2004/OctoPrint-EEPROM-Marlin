@@ -5,10 +5,13 @@ __license__ = "GNU Affero General Public License http://www.gnu.org/licenses/agp
 __copyright__ = (
     "Copyright (C) 2020 Charlie Powell - Released under terms of the AGPLv3 License"
 )
+import json
+
 # Originally by Anderson Silva, development taken over by Charlie Powell in September 2020
 # Vast majority of the work here is by Charlie Powell, for full details see the git history.
 from copy import deepcopy
 
+import flask
 import octoprint.plugin
 
 from octoprint_eeprom_marlin import (
@@ -33,6 +36,7 @@ class EEPROMMarlinPlugin(
     octoprint.plugin.SettingsPlugin,
     octoprint.plugin.SimpleApiPlugin,
     octoprint.plugin.EventHandlerPlugin,
+    octoprint.plugin.BlueprintPlugin,
 ):
     # Data models
     _firmware_info = None
@@ -108,6 +112,23 @@ class EEPROMMarlinPlugin(
 
     def on_api_get(self, request):
         return self._api.on_api_get(request)
+
+    # BluePrint handling
+    @octoprint.plugin.BlueprintPlugin.route("/download/<name>")
+    def download_backup(self, name):
+        try:
+            backup_data = self._backup_handler.read_backup(name)
+        except backup.BackupMissingError:
+            flask.abort(404)
+            return
+
+        return flask.Response(
+            json.dumps(backup_data),
+            mimetype="text/plain",
+            headers={
+                "Content-Disposition": 'attachment; filename="{}.json"'.format(name)
+            },
+        )
 
     # Event handling
     def on_event(self, event, payload):
