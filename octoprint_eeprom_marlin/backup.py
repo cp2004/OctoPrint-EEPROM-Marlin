@@ -131,7 +131,7 @@ class BackupHandler:
                 raise BackupNameTakenError("Backup {} already exists!".format(name))
 
         if not backup_time:
-            now = time.asctime(time.localtime())
+            now = time.strftime("%Y-%m-%d %H:%M:%S")
         else:
             now = backup_time
 
