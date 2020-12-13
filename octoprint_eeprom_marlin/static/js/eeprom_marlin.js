@@ -760,6 +760,8 @@ $(function () {
         };
 
         self.backups = ko.observableArray([]);
+        self.backup_upload_name = ko.observable();
+        self.backup_upload_data = undefined;
 
         // State bindings
         self.loading = ko.observable(false);
@@ -900,6 +902,68 @@ $(function () {
                     self.eeprom_from_json(response.eeprom);
                 }
             });
+        };
+
+        $("#plugin_eeprom_marlin_backup_upload").fileupload({
+            dataType: "json",
+            maxNumberOfFiles: 1,
+            autoUpload: false,
+            headers: OctoPrint.getRequestHeaders(),
+            add: function (e, data) {
+                if (data.files.length === 0) {
+                    // no files? ignore
+                    return false;
+                }
+
+                self.backup_upload_name(data.files[0].name);
+                self.backup_upload_data = data;
+            },
+            done: function (e, data) {
+                self.backup_upload_name(undefined);
+                self.backup_upload_name = undefined;
+            },
+        });
+
+        self.restore_from_upload = function () {
+            if (self.backup_upload_data === undefined) return;
+            var input, file, fr;
+
+            if (typeof window.FileReader !== "function") {
+                alert("The file API is not supported on this browser");
+                return;
+            }
+
+            file = self.backup_upload_data.files[0];
+            fr = new FileReader();
+            fr.onload = recievedText;
+            fr.readAsText(file);
+
+            function recievedText(e) {
+                let lines = e.target.result;
+                var json_data = JSON.parse(lines);
+                OctoPrint.simpleApiCommand("eeprom_marlin", "upload_restore", {
+                    data: json_data,
+                }).done(function (response) {
+                    let success = response.success;
+                    if (!success) {
+                        new PNotify({
+                            title: "Error restoring backup",
+                            text: response.error,
+                            type: "error",
+                            hide: false,
+                        });
+                    } else {
+                        new PNotify({
+                            title: "Backup restored successfully",
+                            type: "success",
+                            hide: true,
+                            delay: 4000,
+                        });
+                        self.eeprom_from_json(response.eeprom);
+                    }
+                    $("#eepromUploadBackupModal").modal("hide");
+                });
+            }
         };
 
         // DataUpdater

@@ -6,8 +6,8 @@ from copy import deepcopy
 import flask
 import octoprint.util
 
+from octoprint_eeprom_marlin import util
 from octoprint_eeprom_marlin.backup import BackupMissingError, BackupNameTakenError
-from octoprint_eeprom_marlin.util import build_backup_name, construct_command
 
 CMD_LOAD = "load"
 CMD_SAVE = "save"
@@ -15,6 +15,7 @@ CMD_BACKUP = "backup"
 CMD_RESTORE = "restore"
 CMD_RESET = "reset"
 CMD_DELETE = "delete"
+CMD_UPLOAD_RESTORE = "upload_restore"
 
 
 class API:
@@ -36,6 +37,7 @@ class API:
             CMD_RESTORE: ["name"],
             CMD_DELETE: ["name"],
             CMD_RESET: [],
+            CMD_UPLOAD_RESTORE: ["data"],
         }
 
     def on_api_command(self, command, data):
@@ -47,10 +49,7 @@ class API:
                 )
         elif command == CMD_SAVE:
             # Send changed data to printer
-            old_eeprom = deepcopy(self._eeprom_data.to_dict())
-            self._eeprom_data.from_list(data.get("eeprom_data"))
-            new_eeprom = self._eeprom_data.to_dict()
-            self.save_eeprom_data(old_eeprom, new_eeprom)
+            self.save_eeprom_data(data.get("eeprom_data"))
 
         elif command == CMD_BACKUP:
             # Execute a backup
@@ -61,6 +60,9 @@ class API:
         elif command == CMD_DELETE:
             # Delete the backup
             return self.delete_backup(data.get("name"))
+        elif command == CMD_UPLOAD_RESTORE:
+            # Restore backup from upload
+            return self.upload_restore(data.get("data"))
         elif command == CMD_RESET:
             # Reset (M502)
             raise NotImplementedError
@@ -74,14 +76,17 @@ class API:
             }
         )
 
-    def save_eeprom_data(self, old, new):
+    def save_eeprom_data(self, new_data):
+        old_eeprom = deepcopy(self._eeprom_data.to_dict())
+        self._eeprom_data.from_list(new_data)
+        new_eeprom = self._eeprom_data.to_dict()
         if self._printer.is_ready():
             commands = []
-            for name, data in old.items():
-                new_data = new[name]
+            for name, data in old_eeprom.items():
+                new_data = new_eeprom[name]
                 diff = octoprint.util.dict_minimal_mergediff(data, new_data)
                 if diff:
-                    commands.append(construct_command(new_data))
+                    commands.append(util.construct_command(new_data))
 
             if commands:
                 self._printer.commands(commands)
@@ -90,7 +95,7 @@ class API:
     def create_backup(self, name):
         if not name:
             # Custom backup names should be passed, otherwise auto-generate
-            name = build_backup_name()
+            name = util.build_backup_name()
 
         eeprom_data = self._eeprom_data.to_dict()
         try:
@@ -122,21 +127,10 @@ class API:
 
         eeprom_data = backup_data["data"]
         # convert json dict to a list, for usage of common parsing methods
-        eeprom_list = []
-        for key in eeprom_data.keys():
-            eeprom_list.append(
-                {
-                    "name": key,
-                    "command": eeprom_data[key]["command"],
-                    "params": eeprom_data[key]["params"],
-                }
-            )
+        eeprom_list = util.backup_json_to_list(eeprom_data)
 
         # Save the data
-        old_data = deepcopy(self._eeprom_data.to_dict())
-        self._eeprom_data.from_list(eeprom_list)
-        new_data = self._eeprom_data.to_dict()
-        self.save_eeprom_data(old_data, new_data)
+        self.save_eeprom_data(eeprom_list)
 
         return flask.jsonify(
             {"success": True, "eeprom": self._eeprom_data.to_dict(), "name": name}
@@ -160,3 +154,15 @@ class API:
         response.update({"backups": self._backup_handler.get_backups(quick=True)})
 
         return flask.jsonify(response)
+
+    def upload_restore(self, backup_data):
+        if not self._backup_handler._perform_validate(backup_data):
+            return flask.jsonify(
+                {"success": False, "error": "Backup is not valid, could not restore it"}
+            )
+
+        eeprom_data = backup_data["data"]
+        eeprom_list = util.backup_json_to_list(eeprom_data)
+
+        self.save_eeprom_data(eeprom_list)
+        return flask.jsonify({"success": True, "eeprom": self._eeprom_data.to_dict()})

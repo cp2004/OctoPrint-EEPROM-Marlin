@@ -206,12 +206,15 @@ class BackupHandler:
         except KeyError:
             return False
 
-    def _validate_backup(self, name):
+    def validate_backup(self, name):
         """
         This does some basic checking that required items such as name, date & version exist
         :return: bool: if the backup is valid
         """
-        data = self.read_backup(name)
+        return self._perform_validate(self.read_backup(name))
+
+    @staticmethod
+    def _perform_validate(data):
         try:
             data["version"]
             data["time"]
@@ -234,7 +237,7 @@ class BackupHandler:
             for file in filenames:
                 # TODO optimise performance here - this may make the backup be read twice
                 name, _ext = os.path.splitext(file)
-                if self._validate_backup(name):
+                if self.validate_backup(name):
                     valids.append(name)
 
             files.extend(valids)

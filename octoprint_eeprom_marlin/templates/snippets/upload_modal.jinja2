@@ -1,0 +1,31 @@
+<div id="eepromUploadBackupModal" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3>Upload a backup</h3>
+    </div>
+    <div class="modal-body">
+        <p>Select a file to upload and restore</p>
+        <form class="form-horizontal" onsubmit="return false;">
+            <div class="control-group">
+                <label class="control-label">{{ _('Backup file') }}</label>
+                <div class="controls">
+                    <div class="input-prepend">
+                        <span class="btn fileinput-button">
+                            <span>{{ _('Browse...') }}</span>
+                            <input id="plugin_eeprom_marlin_backup_upload" type="file" name="file" accept=".json">
+                        </span>
+                        <span class="add-on" data-bind="text: backup_upload_name"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+        <button class="btn btn-primary" data-bind="click: restore_from_upload">{{ _('Upload & restore') }}</button>
+    </div>
+</div>

@@ -14,3 +14,17 @@ def construct_command(data):
         value = str(value) if command != "M145" and param != "S" else str(int(value))
         command = command + " " + param + value
     return command
+
+
+def backup_json_to_list(eeprom_data):
+    eeprom_list = []
+    for key in eeprom_data.keys():
+        eeprom_list.append(
+            {
+                "name": key,
+                "command": eeprom_data[key]["command"],
+                "params": eeprom_data[key]["params"],
+            }
+        )
+
+    return eeprom_list
