@@ -5,76 +5,76 @@
 #touch body #navbar #all_touchui_settings #tab_plugin_eeprom_marlin_link2 a:before {
   content: ""; }
 
-#tab_plugin_eeprom_marlin_2 div.eeprom-nav {
+#tab_plugin_eeprom_marlin div.eeprom-nav {
   margin-bottom: 12.5px; }
-#tab_plugin_eeprom_marlin_2 ul.sidenav {
+#tab_plugin_eeprom_marlin ul.sidenav {
   border-radius: 4px; }
-  #tab_plugin_eeprom_marlin_2 ul.sidenav li:first-child > a {
+  #tab_plugin_eeprom_marlin ul.sidenav li:first-child > a {
     border-radius: 4px 4px 0 0;
     border-top: 1px solid #ddd !important; }
-  #tab_plugin_eeprom_marlin_2 ul.sidenav li:last-child > a {
+  #tab_plugin_eeprom_marlin ul.sidenav li:last-child > a {
     border-radius: 0 0 4px 4px; }
-  #tab_plugin_eeprom_marlin_2 ul.sidenav li > a {
+  #tab_plugin_eeprom_marlin ul.sidenav li > a {
     border: 1px solid #ddd;
     border-top: 0;
     background-clip: border-box; }
-#tab_plugin_eeprom_marlin_2 div.eeprom-content {
+#tab_plugin_eeprom_marlin div.eeprom-content {
   border-top: 1px solid #ddd;
   border-left: 1px solid #ddd;
   border-radius: 4px 0 0 0;
   padding: 5px 5px 5px 0;
   min-height: 450px; }
-  #tab_plugin_eeprom_marlin_2 div.eeprom-content .tab-content {
+  #tab_plugin_eeprom_marlin div.eeprom-content .tab-content {
     padding: 5px 10px; }
-#tab_plugin_eeprom_marlin_2 .eeprom-info .card {
+#tab_plugin_eeprom_marlin .eeprom-info .card {
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
   border: 1px solid rgba(0, 0, 0, 0.125);
   border-radius: 0.25rem;
   padding: 1.25rem 0.5rem;
   margin-bottom: 10px; }
-  #tab_plugin_eeprom_marlin_2 .eeprom-info .card p:last-child {
+  #tab_plugin_eeprom_marlin .eeprom-info .card p:last-child {
     margin-bottom: 0; }
-#tab_plugin_eeprom_marlin_2 .eeprom-info .eeprom-capabilities .table .thead-light th {
+#tab_plugin_eeprom_marlin .eeprom-info .eeprom-capabilities .table .thead-light th {
   color: #495057;
   background-color: #e9ecef;
   border-color: #dee2e6; }
-#tab_plugin_eeprom_marlin_2 .eeprom-info .eeprom-capabilities .table thead tr th.capability {
+#tab_plugin_eeprom_marlin .eeprom-info .eeprom-capabilities .table thead tr th.capability {
   width: 60%; }
-#tab_plugin_eeprom_marlin_2 .eeprom-info .eeprom-capabilities .table thead tr th.value {
+#tab_plugin_eeprom_marlin .eeprom-info .eeprom-capabilities .table thead tr th.value {
   width: 40%; }
-#tab_plugin_eeprom_marlin_2 .eeprom-brand {
+#tab_plugin_eeprom_marlin .eeprom-brand {
   text-align: center;
   font-weight: bold;
   border-bottom: 1px solid #ddd;
   border-right: 1px solid #ddd;
   border-radius: 0 0 4px 0;
   padding: 2px; }
-  #tab_plugin_eeprom_marlin_2 .eeprom-brand p {
+  #tab_plugin_eeprom_marlin .eeprom-brand p {
     margin-bottom: 0; }
-#tab_plugin_eeprom_marlin_2 .tab-content {
+#tab_plugin_eeprom_marlin .tab-content {
   border: 0;
   padding: 0; }
-#tab_plugin_eeprom_marlin_2 .eeprom-alerts .span12 {
+#tab_plugin_eeprom_marlin .eeprom-alerts .span12 {
   min-height: 0; }
-#tab_plugin_eeprom_marlin_2 .eeprom-loading p {
+#tab_plugin_eeprom_marlin .eeprom-loading p {
   font-size: xx-large;
   text-align: center; }
-  #tab_plugin_eeprom_marlin_2 .eeprom-loading p i,
-  #tab_plugin_eeprom_marlin_2 .eeprom-loading p span {
+  #tab_plugin_eeprom_marlin .eeprom-loading p i,
+  #tab_plugin_eeprom_marlin .eeprom-loading p span {
     margin-bottom: 5px; }
-#tab_plugin_eeprom_marlin_2 .eeprom-notmarlin p,
-#tab_plugin_eeprom_marlin_2 .eeprom-notmarlin i,
-#tab_plugin_eeprom_marlin_2 .eeprom-notconnected p,
-#tab_plugin_eeprom_marlin_2 .eeprom-notconnected i,
-#tab_plugin_eeprom_marlin_2 .eeprom-backup p,
-#tab_plugin_eeprom_marlin_2 .eeprom-backup i {
+#tab_plugin_eeprom_marlin .eeprom-notmarlin p,
+#tab_plugin_eeprom_marlin .eeprom-notmarlin i,
+#tab_plugin_eeprom_marlin .eeprom-notconnected p,
+#tab_plugin_eeprom_marlin .eeprom-notconnected i,
+#tab_plugin_eeprom_marlin .eeprom-backup p,
+#tab_plugin_eeprom_marlin .eeprom-backup i {
   text-align: center; }
-  #tab_plugin_eeprom_marlin_2 .eeprom-notmarlin p .text-bold,
-  #tab_plugin_eeprom_marlin_2 .eeprom-notmarlin i .text-bold,
-  #tab_plugin_eeprom_marlin_2 .eeprom-notconnected p .text-bold,
-  #tab_plugin_eeprom_marlin_2 .eeprom-notconnected i .text-bold,
-  #tab_plugin_eeprom_marlin_2 .eeprom-backup p .text-bold,
-  #tab_plugin_eeprom_marlin_2 .eeprom-backup i .text-bold {
+  #tab_plugin_eeprom_marlin .eeprom-notmarlin p .text-bold,
+  #tab_plugin_eeprom_marlin .eeprom-notmarlin i .text-bold,
+  #tab_plugin_eeprom_marlin .eeprom-notconnected p .text-bold,
+  #tab_plugin_eeprom_marlin .eeprom-notconnected i .text-bold,
+  #tab_plugin_eeprom_marlin .eeprom-backup p .text-bold,
+  #tab_plugin_eeprom_marlin .eeprom-backup i .text-bold {
     font-weight: bolder; }
 
 /*# sourceMappingURL=eeprom_marlin.css.map */

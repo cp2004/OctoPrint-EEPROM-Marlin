@@ -1037,6 +1037,6 @@ $(function () {
     OCTOPRINT_VIEWMODELS.push({
         construct: EEPROMMarlinViewModel,
         dependencies: ["printerStateViewModel", "settingsViewModel"],
-        elements: ["#tab_plugin_eeprom_marlin_2"],
+        elements: ["#tab_plugin_eeprom_marlin"],
     });
 });
