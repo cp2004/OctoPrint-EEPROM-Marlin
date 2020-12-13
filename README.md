@@ -1,6 +1,21 @@
 # Marlin EEPROM Editor
 
-This plugin is designed to get, change and save the values in the EEPROM of your Marlin Firmware based Machine.
+The Marlin EEPROM editor provides an easy to use, feature-rich UI to edit your machine's configuration.
+
+## Features
+
+- Load & parse the EEPROM data out of the firmware
+- Edit many of the values configured
+- Save EEPROM changes on the printer with a minimal number of commands
+
+- Storage of data on the OctoPrint server, so it can be viewed while printer is disconnected or printing.
+- Backup feature:
+
+  - Enabled saving configuration snapshots, restoring, downloading, uploading
+
+- Display firmware info, including capability report
+
+Be sure to [check out the screenshots](#Screenshots) below for more details!
 
 ## Setup
 
@@ -17,9 +32,9 @@ This plugin requires that you have **both** these items in Marlin's `Configurati
 
 In other words, `EEPROM_CHITCHAT` and the M503 command must be enabled - comment out disabling it.
 
-## COMING SOON
+## New in Marlin EEPROM Editor V3.0.0
 
-A complete re-write of this plugin is in the works. When it is ready for inital testing I'll be looking for willing beta-testers. If you're interested, let me know!
+A complete re-write of this plugin, now V3!
 
 Featuring:
 
@@ -27,4 +42,14 @@ Featuring:
 - Storage of data on the OctoPrint server, so it can be viewed while the printer is disconnected or printing.
 - Brand new UI, written from the ground up.
 - All-new backup feature, allowing naming and storing of backups, so you can quickly swap between profiles and more.
-- More optimisations and features may sneak in, stay tuned!
+
+## Screenhots
+
+Firmware info overview
+![Firmware Info](assets/firmware_info.png)
+
+Configuration editor
+![Configuration Editor](assets/config.png)
+
+Backup feature
+![Backup feature](assets/backup.png)
