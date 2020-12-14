@@ -50,6 +50,9 @@ class BackupHandler:
         self._metadata_file_path = os.path.join(self._data_folder, METADATA_FILENAME)
         self.metadata = None
 
+        if not self.test_backup_path():
+            self.create_backup_path()
+
         # Make sure we have the metadata available
         try:
             # Try read from disk
@@ -245,6 +248,25 @@ class BackupHandler:
             break
 
         return files
+
+    def test_backup_path(self):
+        """
+        Tests if the path exists
+        :param path: path relative to data folder to test
+        :return: bool: if path is valid
+        """
+        return os.path.exists(os.path.join(self._data_folder, BACKUPS_PATH))
+
+    def create_backup_path(self):
+        """
+        Creates a directory under path, relative to plugin data folder
+        :param path: path relative to data folder to create
+        :return: None
+        """
+        try:
+            os.mkdir(os.path.join(self._data_folder, BACKUPS_PATH))
+        except FileExistsError:
+            self._logger.error("Tried to create backup path but it already existed")
 
 
 class MetaData:
