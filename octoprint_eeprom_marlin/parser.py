@@ -44,7 +44,7 @@ regexes_parameters = {
     "floatZ": regex_creator("float", "Z"),
 }
 
-regex_command = re.compile(r"echo:\s(?P<gcode>M(?P<value>\d{1,3}))")
+regex_command = re.compile(r"echo:\s*(?P<gcode>M(?P<value>\d{1,3}))")
 
 
 class Parser:

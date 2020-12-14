@@ -57,7 +57,7 @@ class ParserTestCase(unittest.TestCase):
                 "params": {"X": 400.0, "Y": 400.0, "Z": 5.0, "E": 25.0},
             },
             "echo:; Maximum Acceleration (units/s2):": None,
-            "echo: M201 E74.0 X2000.0 Y2000.0 Z10.0": {
+            "echo:  M201 E74.0 X2000.0 Y2000.0 Z10.0": {
                 "name": "max_acceleration",
                 "command": "M201",
                 "params": {"X": 2000.0, "Y": 2000.0, "Z": 10.0, "E": 74.0},
@@ -75,7 +75,7 @@ class ParserTestCase(unittest.TestCase):
                 "params": {"X": 0.0, "Y": 0.0, "Z": 0.0},
             },
             "echo:; Z-Probe Offset (mm):": None,
-            "echo: M851 X5.0 Y5.0 Z0.2": {
+            "echo:  M851 X5.0 Y5.0 Z0.2": {
                 "name": "probe_offset",
                 "command": "M851",
                 "params": {"X": 5.0, "Y": 5.0, "Z": 0.2},
@@ -93,7 +93,7 @@ class ParserTestCase(unittest.TestCase):
                 "params": {"X": -1.0, "Y": 0.0, "Z": 0.0},
             },
             "echo:; Delta config:": None,
-            "echo: M665 B0.0 H100.0 L25.0 R6.5 S100.0 X20.0 Y20.0 Z20.0": {
+            "echo:  M665 B0.0 H100.0 L25.0 R6.5 S100.0 X20.0 Y20.0 Z20.0": {
                 "name": "delta",
                 "command": "M665",
                 "params": {
