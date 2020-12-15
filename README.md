@@ -14,7 +14,7 @@ You should only run this if you are OK with things not working perfectly. I have
 
 Install using the following URL in OctoPrint's plugin manager > get more > ...from URL:
 ```
-https://github.com/cp2004/OctoPrint-EEPROM-Marlin/archive/3.0.0r3.zip
+https://github.com/cp2004/OctoPrint-EEPROM-Marlin/archive/3.0.0rc3.zip
 ```
 Once that is installed (and in OP 1.5.0+) you will be able to select 'release candidate' as the release channel (under 'Software Update'), to get future RC updates automatically:
 ![image](https://user-images.githubusercontent.com/31997505/102026390-722e7200-3d95-11eb-80e1-05197b9868f0.png)
