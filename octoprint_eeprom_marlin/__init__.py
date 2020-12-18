@@ -226,6 +226,12 @@ class EEPROMMarlinPlugin(
 
 
 __plugin_name__ = "Marlin EEPROM Editor"
+__plugin_description__ = """
+    Makes it possible to change the EEPROM values of Marlin Firmware through OctoPrint.
+    Plugin previously maintained by Anderson Silva, currently Charlie Powell.
+    """
+__plugin_author__ = "Charlie Powell"
+__plugin_license__ = "AGPLv3"
 __plugin_pythoncompat__ = ">=2.7,<4"
 __plugin_version__ = __version__
 
