@@ -22,6 +22,7 @@ from octoprint_eeprom_marlin import (
     events,
     parser,
     settings,
+    sponsors_contributors,
 )
 
 __version__ = _version.get_versions()["version"]
@@ -100,7 +101,11 @@ class EEPROMMarlinPlugin(
         ]
 
     def get_template_vars(self):
-        return {"version": self._plugin_version}
+        return {
+            "version": self._plugin_version,
+            "SPONSORS": sponsors_contributors.export_sponsors(),
+            "CONTRIBUTORS": sponsors_contributors.export_contributors(),
+        }
 
     # Settings handling - see settings submodule
     def get_settings_defaults(self):

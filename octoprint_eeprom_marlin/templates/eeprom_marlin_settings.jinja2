@@ -30,6 +30,8 @@
 <p>Enjoying the plugin? <strong>Support it's development!</strong> I work on all of my plugins in my spare time, if you think this was worth it please consider supporting my work below:</p>
 
 <a class="btn btn-success" href="https://github.com/sponsors/cp2004/" target="_blank"><i class="fa fa-heart" aria-hidden="true"></i> Support the plugin</a>
+<button class="btn btn-success" data-toggle="modal" data-target="#EEPROMSponsorsModal">View Sponsors</button>
+<button class="btn btn-primary" data-toggle="modal" data-target="#EEPROMContributorModal">View Contributors</button>
 
 <!-- Footer -->
 <div>
@@ -38,3 +40,5 @@
     Marlin EEPROM Editor by <a href="https:github.com/cp2004">Charlie Powell</a> | <i class="fa fa-tag text-success"></i> Version {{ plugin_eeprom_marlin_version }} - <a href="https://github.com/cp2004/OctoPrint-EEPROM-Marlin/releases" target="_blank">Release Notes</a>
 </p>
 </div>
+<!-- Sponsors & Contributor modals -->
+{% include "sponsors-contributors.jinja2" %}
