@@ -1,7 +1,13 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, unicode_literals
+
 """
 OctoPrint event handling, in a module
 """
+__license__ = "GNU Affero General Public License http://www.gnu.org/licenses/agpl.html"
+__copyright__ = (
+    "Copyright (C) 2020 Charlie Powell - Released under terms of the AGPLv3 License"
+)
 from octoprint.events import Events
 
 
