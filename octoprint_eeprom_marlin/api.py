@@ -112,6 +112,9 @@ class API:
             name = util.build_backup_name()
         else:
             name = util.sanitize(name)
+            if not name:
+                # Name consisted of only symbols or something, no empty names around here
+                name = util.build_backup_name()
 
         self._logger.info("Creating backup {}".format(name))
 
