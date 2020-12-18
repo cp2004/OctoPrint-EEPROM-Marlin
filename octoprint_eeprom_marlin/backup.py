@@ -63,6 +63,7 @@ class BackupHandler:
         try:
             # Try read from disk
             self.get_backups(quick=False)
+            self._logger.info("Backup metadata initialised")
         except MetadataMissingError as e:
             self._logger.exception(e)
             self._logger.warning("Metadata was missing, re-creating")

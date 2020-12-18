@@ -55,10 +55,11 @@ class EEPROMMarlinPlugin(
     def initialize(self):
         # Initialise is called when all injections are complete
         # Means we can add our own things that depend on previous injected properties
+        self._logger.debug("Starting up EEPROM editor, intialising modules...")
 
         # Data models
         self._firmware_info = data.FirmwareInfo()
-        self._eeprom_data = data.EEPROMData()
+        self._eeprom_data = data.EEPROMData(self)
 
         # Useful classes - watch the inheritance order:
         # API requires backup handler
@@ -66,6 +67,8 @@ class EEPROMMarlinPlugin(
         self._parser = parser.Parser(self._logger)
         self._api = api.API(self)
         self._event_reactor = events.EventHandler(self)
+
+        self._logger.info("All EEPROM editor modules loaded")
 
         # Flags
         self.collecting_eeprom = False
@@ -172,7 +175,7 @@ class EEPROMMarlinPlugin(
         # https://docs.octoprint.org/en/master/plugins/hooks.html#protocol_gcodephase_hook
         self._logger.debug(cmd)
         if cmd == "M501" or cmd == "M503":
-            self._logger.info("M501/3 detected")
+            self._logger.info("{} detected, collecting data".format(cmd))
             self.collecting_eeprom = True
 
     def comm_protocol_gcode_received(self, comm, line, *args, **kwargs):
@@ -180,6 +183,7 @@ class EEPROMMarlinPlugin(
         if self.collecting_eeprom:
             if "ok" in line.lower():
                 # Send the new data to the UI to be reloaded
+                self._logger.info("Finished data collection, updating UI")
                 self.send_message(
                     "load",
                     {
