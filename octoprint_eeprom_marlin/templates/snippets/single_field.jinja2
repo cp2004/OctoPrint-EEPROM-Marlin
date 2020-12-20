@@ -1,0 +1,16 @@
+<div class="row-fluid" data-bind="visible: value() !== null">
+    <div class="span6">
+        <label class="pull-right" data-bind="text: label"></label>
+    </div>
+    <div class="span6">
+        <!-- ko if: units -->
+        <div class="input-append">
+            <input type="number" class="input-small" step="0.01" data-bind="value: value, enable: $root.enable_fields(), event: {keyup: $root.edited()}">
+            <span class="add-on" data-bind="text: units"></span>
+        </div>
+        <!-- /ko -->
+        <!-- ko ifnot: units -->
+        <input type="number" class="input-small" step="0.01" data-bind="value: value, enable: $root.enable_fields(), event: {keyup: $root.edited()}">
+        <!-- /ko -->
+    </div>
+</div>

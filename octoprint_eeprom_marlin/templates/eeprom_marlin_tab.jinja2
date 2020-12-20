@@ -1,325 +1,91 @@
-<h4>Marlin EEPROM Editor</h4>
-<span style="color: red" data-bind="visible: isConnected() && !isMarlinFirmware()">Sorry. This plugin does not work with your machine, only Marlin based firmware</span>
-<span style="color: red" data-bind="visible: !isConnected()">Printer not connected.</span>
-<span style="color: red" data-bind="visible: isPrinting()">EEPROM settings are disabled if the printer is printing</span>
-<div data-bind="visible: isConnected() && isMarlinFirmware() && !isPrinting() ">
-    <!--b>Firmware:</b> <span data-bind="text: firmware_name()"></span!-->
-    <form class="form-horizontal">
-        <button id="eeprom_marlin_load" data-bind="enabled: isMarlinFirmware, click: loadEeprom" class="btn" aria-hidden="true"><i class="fa fa-refresh" aria-hidden="true"></i> {{ _('Load') }}</button>
-        <button id="eeprom_marlin_upload" data-bind="enabled: isMarlinFirmware, click: saveEeprom" class="btn" aria-hidden="true"><i class="fa fa-upload" aria-hidden="true"></i> {{ _('Upload') }}</button>
-        <button id="eeprom_marlin_backup" data-bind="enabled: isMarlinFirmware, click: backupEeprom" class="btn" aria-hidden="true"><i class="fa fa-cloud-download" aria-hidden="true"></i> {{ _('Backup') }}</button>
-        <button id="eeprom_marlin_restore" data-bind="enabled: isMarlinFirmware, click: restoreEeprom" class="btn" aria-hidden="true"><i class="fa fa-upload" aria-hidden="true"></i> {{ _('Restore') }}</button>
-        <button id="eeprom_marlin_reset" data-bind="enabled: isMarlinFirmware, click: resetEeprom" class="btn btn-danger pull-right" aria-hidden="true"><i class="fa fa-eraser" aria-hidden="true"></i> {{ _('Reset') }}</button>
-    </form>
-    <div style="display: none;"><input type="file" id="fileBackup" name="fileBackup" /></div>
-    <ul class="nav nav-pills">
-        <li class="active">
-            <a href="#eeprom_marlin_info" data-toggle="tab">Info</a>
-        </li>
-        <li data-bind="visible: eepromDataStepsCount()">
-            <a href="#eeprom_marlin_steps" data-toggle="tab">Steps</a>
-        </li>
-        <li data-bind="visible: eepromDataFRatesCount()">
-            <a href="#eeprom_marlin_frates" data-toggle="tab">Feedrates</a>
-        </li>
-        <li data-bind="visible: eepromDataAccelCount()">
-            <a href="#eeprom_marlin_accel" data-toggle="tab">Acceleration</a>
-        </li>
-        <li data-bind="visible: eepromDataHomingCount()">
-            <a href="#eeprom_marlin_homing" data-toggle="tab">Home offset</a>
-        </li>
-        <li data-bind="visible: eepromDataPIDCount()">
-            <a href="#eeprom_marlin_pid" data-toggle="tab">PID</a>
-        </li>
-        <li data-bind="visible: eepromDataMaterialCount()">
-            <a href="#eeprom_marlin_material" data-toggle="tab">Material</a>
-        </li>
-        <li data-bind="visible: eepromDataFilamentCount()">
-            <a href="#eeprom_marlin_filament" data-toggle="tab">Filament</a>
-        </li>
-        <li data-bind="visible: eepromDataEndstopCount()">
-            <a href="#eeprom_marlin_endstop" data-toggle="tab">Endstop</a>
-        </li>
-        <li data-bind="visible: eepromDataDeltaCount()">
-            <a href="#eeprom_marlin_delta" data-toggle="tab">Delta</a>
-        </li>
-        <li data-bind="visible: eepromDataCount()">
-            <a href="#eeprom_marlin_advanced" data-toggle="tab">Advanced</a>
-        </li>
-    </ul>
-    <div class="tab-content">
-        <div id="eeprom_marlin_info" class="tab-pane active">
-            <fieldset>
-                <legend data-bind="visible: eepromDataStepsCount()">Firmware Info</legend>
-                <pre data-bind="text: firmware_info()"></pre>
-            </fieldset>
-        </div>
-        <div id="eeprom_marlin_steps" class="tab-pane">
-            <fieldset>
-                <legend data-bind="visible: eepromDataStepsCount()">Steps per mm</legend>
-                <div class="row-fluid" data-bind="foreach: eepromDataSteps">
-                    <div class="span3">
-                        <label class="control-label" data-bind="text: label"></label>
-                        <div class="controls">
-                            <div class="input-append">
-                                <input type="number" class="input-small text-right" data-bind="value: value" onchange="changedEepromForm();">
-                                <span class="add-on" data-bind="text: unit"></span>
-                            </div>
-                            <span class="help-block" data-bind="text: description"></span>
-                        </div>
-                    </div>
-                </div>
-            </fieldset>
-        </div>
-        <div id="eeprom_marlin_frates" class="tab-pane">
-            <fieldset>
-                <legend data-bind="visible: eepromDataFRatesCount()">Maximum feedrates</legend>
-                <div class="row-fluid" data-bind="foreach: eepromDataFRates">
-                    <div class="span3">
-                        <label class="control-label" data-bind="text: label"></label>
-                        <div class="controls">
-                            <div class="input-append">
-                                <input type="number" class="input-small text-right" data-bind="value: value" onchange="changedEepromForm();">
-                                <span class="add-on" data-bind="text: unit"></span>
-                            </div>
-                            <span class="help-block" data-bind="text: description"></span>
-                        </div>
-                    </div>
-                </div>
-            </fieldset>
-        </div>
-        <div id="eeprom_marlin_accel" class="tab-pane">
-            <fieldset>
-                <legend data-bind="visible: eepromDataMaxAccelCount()">Maximum Acceleration</legend>
-                <div class="row-fluid" data-bind="foreach: eepromDataMaxAccel">
-                    <div class="span3">
-                        <label class="control-label" data-bind="text: label"></label>
-                        <div class="controls">
-                            <div class="input-append">
-                                <input type="number" class="input-small text-right" data-bind="value: value" onchange="changedEepromForm();">
-                                <span class="add-on" data-bind="text: unit"></span>
-                            </div>
-                            <span class="help-block" data-bind="text: description"></span>
-                        </div>
-                    </div>
-                </div>
-                <legend data-bind="visible: eepromDataAccelCount()">Acceleration</legend>
-                <div class="row-fluid" data-bind="foreach: eepromDataAccel">
-                    <div class="span3">
-                        <label class="control-label" data-bind="text: label"></label>
-                        <div class="controls">
-                            <div class="input-append">
-                                <input type="number" class="input-small text-right" data-bind="value: value" onchange="changedEepromForm();">
-                                <span class="add-on" data-bind="text: unit"></span>
-                            </div>
-                            <span class="help-block" data-bind="text: description"></span>
-                        </div>
-                    </div>
-                </div>
-            </fieldset>
-        </div>
-        <div id="eeprom_marlin_homing" class="tab-pane">
-            <fieldset>
-                <legend data-bind="visible: eepromDataHomingCount()">Home offset</legend>
-                <div class="row=fluid" data-bind="foreach: eepromDataHoming">
-                    <div class="span3">
-                        <label class="control-label" data-bind="text: label"></label>
-                        <div class="controls">
-                            <div class="input-append">
-                                <input type="number" class="input-mini text-right" data-bind="value: value" onchange="changedEepromForm();">
-                                <span class="add-on" data-bind="text: unit"></span>
-                            </div>
-                            <span class="help-block" data-bind="text: description"></span>
-                        </div>
-                    </div>
-                </div>
-            </fieldset>
-        </div>
-        <div id="eeprom_marlin_pid" class="tab-pane">
-            <fieldset>
-                <legend data-bind="visible: eepromDataPIDCount()">PID Settings</legend>
-                <div class="row-fluid" data-bind="foreach: eepromDataPID">
-                    <div class="span3">
-                        <label class="control-label" data-bind="text: label"></label>
-                        <div class="controls">
-                            <div class="input-append">
-                                <input type="number" class="input-mini text-right" data-bind="value: value" onchange="changedEepromForm();">
-                                <span class="add-on" data-bind="text: unit"></span>
-                            </div>
-                            <span class="help-block" data-bind="text: description"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="row-fluid" data-bind="foreach: eepromDataPIDB">
-                    <div class="span3">
-                        <label class="control-label" data-bind="text: label"></label>
-                        <div class="controls">
-                            <div class="input-append">
-                                <input type="number" class="input-mini text-right" data-bind="value: value" onchange="changedEepromForm();">
-                                <span class="add-on" data-bind="text: unit"></span>
-                            </div>
-                            <span class="help-block" data-bind="text: description"></span>
-                        </div>
-                    </div>
-                </div>
-            </fieldset>
-        </div>
-        <div id="eeprom_marlin_material" class="tab-pane">
-            <fieldset>
-                <legend data-bind="visible: eepromDataMaterialCount()">Material heatup</legend>
-                <div class="row-fluid" data-bind="foreach: eepromDataMaterialHS0">
-                    <div class="span3">
-                        <label class="control-label" data-bind="text: label"></label>
-                        <div class="controls">
-                            <div class="input-append">
-                                <input type="number" class="input-mini text-right" data-bind="value: value" onchange="changedEepromForm();">
-                                <span class="add-on" data-bind="text: unit"></span>
-                            </div>
-                            <span class="help-block" data-bind="text: description"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="row-fluid" data-bind="foreach: eepromDataMaterialHS1">
-                    <div class="span3">
-                        <label class="control-label" data-bind="text: label"></label>
-                        <div class="controls">
-                            <div class="input-append">
-                                <input type="number" class="input-mini text-right" data-bind="value: value" onchange="changedEepromForm();">
-                                <span class="add-on" data-bind="text: unit"></span>
-                            </div>
-                            <span class="help-block" data-bind="text: description"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="row-fluid" data-bind="foreach: eepromDataMaterialHS2">
-                    <div class="span3">
-                        <label class="control-label" data-bind="text: label"></label>
-                        <div class="controls">
-                            <div class="input-append">
-                                <input type="number" class="input-mini text-right" data-bind="value: value" onchange="changedEepromForm();">
-                                <span class="add-on" data-bind="text: unit"></span>
-                            </div>
-                            <span class="help-block" data-bind="text: description"></span>
-                        </div>
-                    </div>
-                </div>
-            </fieldset>
-        </div>
-        <div id="eeprom_marlin_filament" class="tab-pane">
-            <fieldset>
-                <legend data-bind="visible: eepromDataFilamentCount()">Filament settings</legend>
-                <div class="row-fluid" data-bind="foreach: eepromDataFilament">
-                    <div class="span12">
-                        <label class="control-label" data-bind="text: label"></label>
-                        <div class="controls">
-                            <div class="input-append">
-                                <input type="number" class="input-mini text-right" data-bind="value: value" onchange="changedEepromForm();">
-                                <span class="add-on" data-bind="text: unit"></span>
-                            </div>
-                            <span class="help-block" data-bind="text: description"></span>
-                        </div>
-                    </div>
-                </div>
-            </fieldset>
-        </div>
-        <div id="eeprom_marlin_endstop" class="tab-pane">
-            <fieldset>
-                <legend data-bind="visible: eepromDataEndstopCount()">Endstop adjustment</legend>
-                <div class="row-fluid" data-bind="foreach: eepromDataEndstop">
-                    <div class="span3">
-                        <label class="control-label" data-bind="text: label"></label>
-                        <div class="controls">
-                            <div class="input-append">
-                                <input type="number" class="input-mini text-right" data-bind="value: value" onchange="changedEepromForm();">
-                                <span class="add-on" data-bind="text: unit"></span>
-                            </div>
-                            <span class="help-block" data-bind="text: description"></span>
-                        </div>
-                    </div>
-                </div>
-            </fieldset>
-        </div>
-        <div id="eeprom_marlin_delta" class="tab-pane">
-            <fieldset>
-                <legend data-bind="visible: eepromDataDeltaCount()">Delta settings</legend>
-                <div class="row-fluid" data-bind="foreach: eepromDataDelta1">
-                    <div class="span3">
-                        <label class="control-label" data-bind="text: label"></label>
-                        <div class="controls">
-                            <div class="input-append">
-                                <input type="number" class="input-mini text-right" data-bind="value: value" onchange="changedEepromForm();">
-                                <span class="add-on" data-bind="text: unit"></span>
-                            </div>
-                            <span class="help-block" data-bind="text: description"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="row-fluid" data-bind="foreach: eepromDataDelta2">
-                    <div class="span3">
-                        <label class="control-label" data-bind="text: label"></label>
-                        <div class="controls">
-                            <div class="input-append">
-                                <input type="number" class="input-mini text-right" data-bind="value: value" onchange="changedEepromForm();">
-                                <span class="add-on" data-bind="text: unit"></span>
-                            </div>
-                            <span class="help-block" data-bind="text: description"></span>
-                        </div>
-                    </div>
-                </div>
-            </fieldset>
-        </div>
-        <div id="eeprom_marlin_advanced" class="tab-pane">
-            <fieldset>
-                <legend data-bind="visible: eepromDataCount()">Advanced</legend>
-                <div class="row-fluid" data-bind="foreach: eepromData1">
-                    <div class="span3">
-                        <label class="control-label" data-bind="text: label"></label>
-                        <div class="controls">
-                            <div class="input-append">
-                                <input type="number" class="input-mini text-right" data-bind="value: value" onchange="changedEepromForm();">
-                                <span class="add-on" data-bind="text: unit"></span>
-                            </div>
-                            <span class="help-block" data-bind="text: description"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="row-fluid" data-bind="foreach: eepromData2">
-                    <div class="span3">
-                        <label class="control-label" data-bind="text: label"></label>
-                        <div class="controls">
-                            <div class="input-append">
-                                <input type="number" class="input-mini text-right" data-bind="value: value" onchange="changedEepromForm();">
-                                <span class="add-on" data-bind="text: unit"></span>
-                            </div>
-                            <span class="help-block" data-bind="text: description"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="row-fluid" data-bind="foreach: eepromDataLevel">
-                    <div class="span3">
-                        <label class="control-label" data-bind="text: label"></label>
-                        <div class="controls">
-                            <div class="input-append">
-                                <input type="number" class="input-mini text-right" data-bind="value: value" onchange="changedEepromForm();">
-                                <span class="add-on" data-bind="text: unit"></span>
-                            </div>
-                            <span class="help-block" data-bind="text: description"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="row-fluid" data-bind="foreach: eepromDataLinear">
-                    <div class="span3">
-                        <label class="control-label" data-bind="text: label"></label>
-                        <div class="controls">
-                            <div class="input-append">
-                                <input type="number" class="input-mini text-right" data-bind="value: value" onchange="changedEepromForm();">
-                                <span class="add-on" data-bind="text: unit"></span>
-                            </div>
-                            <span class="help-block" data-bind="text: description"></span>
-                        </div>
-                    </div>
-                </div>
-            </fieldset>
+<div class="row-fluid eeprom-nav">
+    <div class="span3">
+        <div class="eeprom-brand">
+            <i class="fas-custom fa-2x fa-custom-edit text-success pull-right"></i>
+            <p>EEPROM <br>Editor</p>
         </div>
     </div>
+    <div class="span9">
+        <div class="btn-group" data-bind="visible: !backup_open()">
+            <button class="btn" data-bind="click: load_eeprom, enable: enable_buttons">
+                <i class="fa fa-fw fa-refresh" data-bind="css: {'fa-spin': loading()}"></i>
+                {{ _(" Load") }}
+            </button>
+            <button class="btn" data-bind="click: save_eeprom, css: {'btn-primary': unsaved()}, enable: enable_buttons" >
+                <i class="fas-custom fa-fw" data-bind="css: {'fa-refresh fa-spin': saving(), 'fa-custom-save': !saving()}"></i>
+                {{ _(" Save") }}
+            </button>
+            <button class="btn btn-danger" data-bind="click: reset_eeprom, enable: enable_buttons">
+                <i class="fa fa-fw fa-eraser"></i>
+                {{ _(" Reset") }}
+            </button>
+        </div>
+        {% include "backup/controls.jinja2" %}
+        <div class="btn-group pull-right">
+            <button class="btn" data-bind="click: toggle_backup">
+                <i class="fas-custom fa-fw" data-bind="css: {'fa-custom-cloud-download-alt': !backup_open(), 'fa-custom-edit': backup_open()}"></i>
+                <span data-bind="text: backup_open() ? '{{ _("EEPROM") }}' : '{{ _("Backup") }}'"></span>
+            </button>
+        </div>
+    </div>
+</div>
+<div class="row-fluid eeprom-alerts">
+    <div class="span12">
+        {% include "alerts/printer.jinja2" %}
+    </div>
+</div>
+<div id="eeprom_tab_data" class="collapse in" data-bind="visible: !initialLoad() && info.is_marlin() && info.name().length > 0">
+    <div class="row-fluid">
+        <div class="span3">
+            {% include "snippets/sidebar.jinja2" %}
+        </div>
+        <div class="span9 eeprom-content">
+            <div class="tab-content">
+                <div id="eeprom_info" class="tab-pane active">
+                    {% include 'sub/info.jinja2' %}
+                </div>
+                <div id="eeprom_acceleration" class="tab-pane">
+                    {% include 'sub/acceleration.jinja2' %}
+                </div>
+                <div id="eeprom_advanced" class="tab-pane">
+                    {% include 'sub/advanced.jinja2' %}
+                </div>
+                <div id="eeprom_autolevel" class="tab-pane">
+                    {% include 'sub/autolevel.jinja2' %}
+                </div>
+                <div id="eeprom_delta" class="tab-pane">
+                    {% include 'sub/delta.jinja2' %}
+                </div>
+                <div id="eeprom_endstop" class="tab-pane">
+                    {% include 'sub/endstop.jinja2' %}
+                </div>
+                <div id="eeprom_feedrate" class="tab-pane">
+                    {% include 'sub/feedrate.jinja2' %}
+                </div>
+                <div id="eeprom_linear" class="tab-pane">
+                    {% include 'sub/linear.jinja2' %}
+                </div>
+                <div id="eeprom_material" class="tab-pane">
+                    {% include 'sub/material.jinja2' %}
+                </div>
+                <div id="eeprom_offset" class="tab-pane">
+                    {% include 'sub/offset.jinja2' %}
+                </div>
+                <div id="eeprom_pid" class="tab-pane">
+                    {% include 'sub/pid.jinja2' %}
+                </div>
+                <div id="eeprom_steps" class="tab-pane">
+                    {% include 'sub/steps.jinja2' %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="eeprom_tab_backup" class="collapse">
+    {% include "backup/backup.jinja2" %}
+</div>
+<div id="eeprom_overlays" data-bind="visible: !backup_open()">
+{% include "overlays/loading.jinja2" %}
+{% include "overlays/not_marlin.jinja2" %}
+{% include "overlays/not_connected.jinja2" %}
 </div>

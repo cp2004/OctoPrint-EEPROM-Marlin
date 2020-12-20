@@ -1,0 +1,15 @@
+<div data-bind="visible: eeprom.print_acceleration.visible">
+    <strong>{{ _("Print Acceleration") }}</strong>
+    <hr>
+    <!-- ko foreach: UI.print_acceleration -->
+    {% include "snippets/single_field.jinja2" %}
+    <!-- /ko -->
+</div>
+<div data-bind="visible: eeprom.print_acceleration.visible">
+    <hr>
+    <strong>{{ _("Maximum Acceleration") }}</strong>
+    <hr>
+    <!-- ko foreach: UI.max_acceleration -->
+    {% include "snippets/single_field.jinja2" %}
+    <!-- /ko -->
+</div>

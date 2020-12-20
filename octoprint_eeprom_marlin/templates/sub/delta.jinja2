@@ -1,0 +1,7 @@
+<div data-bind="visible: eeprom.delta.visible">
+    <strong>{{ _("Delta Configuration") }}</strong>
+    <hr>
+    <!-- ko foreach: UI.delta -->
+    {% include "snippets/single_field.jinja2" %}
+    <!-- /ko -->
+</div>

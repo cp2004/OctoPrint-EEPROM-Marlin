@@ -1,9 +1,44 @@
 <h4>Marlin EEPROM Editor</h4>
-<p>This plugin is designed to get, change and save the values in the EEPROM of your Marlin Firmware based Machine.</p>
 <div class="alert alert-info">
-<h3><i class="fas-custom fa-custom-hand-point-right text-warning"></i> The EEPROM editor has moved</h3>
-<p>You can now find it in its own little tab in the main web UI. This space will be reserved for the <em>plugin's settings</em> in the future, rather than the actual plugin interface.</p>
+    <h3><i class="fas-custom fa-custom-hand-point-right text-warning"></i> The EEPROM editor has moved</h3>
+    <p>You can now find it in its own tab in the main web UI.</p>
 </div>
-<p>Enjoying the plugin? <strong>Support it's development!</strong> I work on all of my plugins in my spare time, if you think this was worth it please consider supporting my work below</p>
 
-<iframe src="https://github.com/sponsors/cp2004/card" title="Sponsor cp2004" height="225" width="600" style="border: 0;"></iframe>
+<form class="form-horizontal" onsubmit="return false;">
+    <div class="control-group">
+        <label class="control-label">{{ _('Use M503') }}</label>
+        <div class="controls">
+            <input type="checkbox" class="inline" data-bind="checked: settings.plugins.eeprom_marlin.use_m503">
+            <p class="help-block">
+                If disabled, the plugin will fall back on M501.
+            </p>
+        </div>
+
+    </div>
+    <br>
+    <div class="control-group">
+        <label class="control-label">{{ _("Use custom backup names") }}</label>
+        <div class="controls">
+            <input type="checkbox" class="inline" data-bind="checked: settings.plugins.eeprom_marlin.custom_name">
+            <p class="help-block">
+                If enabled, a popup box will be shown to allow you to name the backup. Otherwise auto-generated.
+            </p>
+        </div>
+    </div>
+</form>
+
+<p>Enjoying the plugin? <strong>Support it's development!</strong> I work on all of my plugins in my spare time, if you think this was worth it please consider supporting my work below:</p>
+
+<a class="btn btn-success" href="https://github.com/sponsors/cp2004/" target="_blank"><i class="fa fa-heart" aria-hidden="true"></i> Support the plugin</a>
+<button class="btn btn-success" data-toggle="modal" data-target="#EEPROMSponsorsModal">View Sponsors</button>
+<button class="btn btn-primary" data-toggle="modal" data-target="#EEPROMContributorModal">View Contributors</button>
+
+<!-- Footer -->
+<div>
+<hr>
+<p>
+    Marlin EEPROM Editor by <a href="https:github.com/cp2004">Charlie Powell</a> | <i class="fa fa-tag text-success"></i> Version {{ plugin_eeprom_marlin_version }} - <a href="https://github.com/cp2004/OctoPrint-EEPROM-Marlin/releases" target="_blank">Release Notes</a>
+</p>
+</div>
+<!-- Sponsors & Contributor modals -->
+{% include "sponsors-contributors.jinja2" %}

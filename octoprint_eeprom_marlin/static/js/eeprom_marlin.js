@@ -1,1770 +1,1042 @@
 /**
-* Created by Salandora on 27.07.2015.
-* Modified by Anderson Silva on 20.08.2017.
-* Contribution of CyberDracula on 15.08.2017.
-* Maintenance of plugin taken over 09.2020 (September) by Charlie Powell.
-*/
-var hasChangedEepromForm = false;
-$(function() {
-    function EepromMarlinViewModel(parameters) {
+ * Plugin was Created by Salandora on 27.07.2015, Modified by Anderson Silva on 20.08.2017, Contribution of CyberDracula on 15.08.2017.
+ * Full maintenance of plugin since 09.2020 (September) by Charlie Powell
+ * This file no longer contains any work of previous contributors as of version 3.0
+ */
+
+$(function () {
+    function EEPROMMarlinViewModel(parameters) {
         var self = this;
-        self.execBackup = false;
-        self.startBackup = false;
-        self.backupConfig = "";
-        self.stateControls = true;
 
-        self.setRegExVars = function(version) {
-            // All versions
-            self.eepromM501RegEx = /M501/;
-            self.eepromOKRegEx = /ok/;
-            self.eepromM92RegEx = /M92 ([X])(.*)[^0-9]([Y])(.*)[^0-9]([Z])(.*)[^0-9]([E])(.*)/;
-            self.eepromM203RegEx = /M203 ([X])(.*)[^0-9]([Y])(.*)[^0-9]([Z])(.*)[^0-9]([E])(.*)/;
-            self.eepromM201RegEx = /M201 ([X])(.*)[^0-9]([Y])(.*)[^0-9]([Z])(.*)[^0-9]([E])(.*)/;
-            self.eepromM206RegEx = /M206 ([X])(.*)[^0-9]([Y])(.*)[^0-9]([Z])(.*)/;
-            self.eepromM851RegEx = /M851 ([Z])(.*)/;
-            self.eepromM200RegEx = /M200 ([D])(.*)/;
-            self.eepromM666RegEx = /M666 ([X])(.*)[^0-9]([Y])(.*)[^0-9]([Z])(.*)/;
-            self.eepromM304RegEx = /M304 ([P])(.*)[^0-9]([I])(.*)[^0-9]([D])(.*)/;
-            self.eepromM665RegEx = /M665 ([L])(.*)[^0-9]([R])(.*)[^0-9]([H])(.*)[^0-9]([S])(.*)[^0-9]([B])(.*)[^0-9]([X])(.*)[^0-9]([Y])(.*)[^0-9]([Z])(.*)/;
-            self.eepromM420RegEx = /M420 ([S])([0-1]*)[^0-9]*([Z]*)(.*)/;
-            self.eepromM900RegEx = /M900 ([K])(.*)[^0-9]([R])(.*)/;
+        self.printerState = parameters[0];
+        self.settingsViewModel = parameters[1];
 
+        self.eeprom = (function () {
+            var eeprom = {};
 
-            // Specific versions
-            if (version == 'latest' || version == 'Marlin 1.1.0-RC8' || version == 'Marlin 1.1.1' || version == 'Marlin 1.1.2' || version == 'Marlin 1.1.3' || version == 'Marlin 1.1.4' || version == 'Marlin 1.1.5' || version == 'Marlin 1.1.6' || version == 'Marlin 1.1.7' || version == 'Marlin 1.1.8') {
-                self.eepromM205RegEx = /M205 ([S])(.*)[^0-9]([T])(.*)[^0-9]([B])(.*)[^0-9]([X])(.*)[^0-9]([Y])(.*)[^0-9]([Z])(.*)[^0-9]([E])(.*)/;
-                self.eepromM145S0RegEx = /M145 S0 ([H])(.*)[^0-9]([B])(.*)[^0-9]([F])(.*)/;
-                self.eepromM145S1RegEx = /M145 S1 ([H])(.*)[^0-9]([B])(.*)[^0-9]([F])(.*)/;
-                self.eepromM145S2RegEx = /M145 S2 ([H])(.*)[^0-9]([B])(.*)[^0-9]([F])(.*)/;
-                self.eepromM301RegEx = /M301 ([P])(.*)[^0-9]([I])(.*)[^0-9]([D])(.*)/;
-                self.eepromM204RegEx = /M204 ([P])(.*)[^0-9]([R])(.*)[^0-9]([T])(.*)/;
-            } else if (version == 'Marlin 1.1.0-RC1' || version == 'Marlin 1.1.0-RC2' || version == 'Marlin 1.1.0-RC3' || version == 'Marlin 1.1.0-RC4' || version == 'Marlin 1.1.0-RC5' || version == 'Marlin 1.1.0-RC6' || version == 'Marlin 1.1.0-RC7') {
-                self.eepromM205RegEx = /M205 ([S])(.*)[^0-9]([T])(.*)[^0-9]([B])(.*)[^0-9]([X])(.*)[^0-9]([Z])(.*)[^0-9]([E])(.*)/;
-                self.eepromM145S0RegEx = /M145 M0 ([H])(.*)[^0-9]([B])(.*)[^0-9]([F])(.*)/;
-                self.eepromM145S1RegEx = /M145 M1 ([H])(.*)[^0-9]([B])(.*)[^0-9]([F])(.*)/;
-                self.eepromM145S2RegEx = /M145 M2 ([H])(.*)[^0-9]([B])(.*)[^0-9]([F])(.*)/;
-                self.eepromM301RegEx = /M301 ([P])(.*)[^0-9]([I])(.*)[^0-9]([D])(.*)[^0-9]([C])(.*)[^0-9]([L])(.*)/;
-                self.eepromM204RegEx = /M204 ([P])(.*)[^0-9]([R])(.*)[^0-9]([T])(.*)/;
-            } else if (version == 'Marlin 1.0.2+' || version == 'Marlin V1.0.2;' || version == 'Marlin 1.0.2' || version == 'Marlin V1;') {
-                self.eepromM204RegEx = /M204 ([S])(.*)[^0-9]([T])(.*)/;
-                self.eepromM205RegEx = /M205 ([S])(.*)[^0-9]([T])(.*)[^0-9]([B])(.*)[^0-9]([X])(.*)[^0-9]([Z])(.*)[^0-9]([E])(.*)/;
-                self.eepromM301RegEx = /M301 ([P])(.*)[^0-9]([I])(.*)[^0-9]([D])(.*)/;
-            } else {
-                self.eepromM205RegEx = /M205 ([S])(.*)[^0-9]([T])(.*)[^0-9]([B])(.*)[^0-9]([X])(.*)[^0-9]([Y])(.*)[^0-9]([Z])(.*)[^0-9]([E])(.*)/;
-                self.eepromM145S0RegEx = /M145 S0 ([H])(.*)[^0-9]([B])(.*)[^0-9]([F])(.*)/;
-                self.eepromM145S1RegEx = /M145 S1 ([H])(.*)[^0-9]([B])(.*)[^0-9]([F])(.*)/;
-                self.eepromM145S2RegEx = /M145 S2 ([H])(.*)[^0-9]([B])(.*)[^0-9]([F])(.*)/;
-                self.eepromM301RegEx = /M301 ([P])(.*)[^0-9]([I])(.*)[^0-9]([D])(.*)/;
-                self.eepromM204RegEx = /M204 ([P])(.*)[^0-9]([R])(.*)[^0-9]([T])(.*)/;
-            }
-        };
+            eeprom.advanced = (function () {
+                var advanced = {};
 
-        self.control = parameters[0];
-        self.connection = parameters[1];
-        self.FIRMWARE_NAME = ko.observable("");
-        self.FIRMWARE_INFO = ko.observable("");
+                advanced.B = ko.observable();
+                advanced.E = ko.observable();
+                advanced.J = ko.observable();
+                advanced.S = ko.observable();
+                advanced.T = ko.observable();
+                advanced.X = ko.observable();
+                advanced.Y = ko.observable();
+                advanced.Z = ko.observable();
 
-        self.firmwareRegEx = /FIRMWARE_NAME:([^\s]*) ([^\s]*)/i;
-        self.firmwareCapRegEx = /Cap:([^\s]*)/i;
-        self.marlinRegEx = /Marlin[^\s]*/i;
-
-        self.setRegExVars('latest');
-
-        self.isMarlinFirmware = ko.observable(false);
-        self.isMarlinFirmware.subscribe(function (newValue) {
-            self.loadEeprom();
-        });
-
-        self.isConnected = ko.computed(function() {
-            return self.connection.isOperational() || self.connection.isPrinting() ||
-            self.connection.isReady() || self.connection.isPaused();
-        });
-
-        self.isPrinting = ko.computed(function() {
-           return self.connection.isPrinting() || self.connection.isPaused();
-        });
-
-        self.eepromData1 = ko.observableArray([]);
-        self.eepromData2 = ko.observableArray([]);
-        self.eepromDataLevel = ko.observableArray([]);
-        self.eepromDataSteps = ko.observableArray([]);
-        self.eepromDataFRates = ko.observableArray([]);
-        self.eepromDataMaxAccel = ko.observableArray([]);
-        self.eepromDataAccel = ko.observableArray([]);
-        self.eepromDataPID = ko.observableArray([]);
-        self.eepromDataPIDB = ko.observableArray([]);
-        self.eepromDataHoming = ko.observableArray([]);
-        self.eepromDataMaterialHS0 = ko.observableArray([]);
-        self.eepromDataMaterialHS1 = ko.observableArray([]);
-        self.eepromDataMaterialHS2 = ko.observableArray([]);
-        self.eepromDataFilament = ko.observableArray([]);
-        self.eepromDataEndstop = ko.observableArray([]);
-        self.eepromDataDelta1 = ko.observableArray([]);
-        self.eepromDataDelta2 = ko.observableArray([]);
-        self.eepromDataLinear = ko.observableArray([]);
-
-        self.onStartup = function() {
-            $('#settings_plugin_eeprom_marlin_link a').on('show', function(e) {
-                if (self.isConnected() && !self.isMarlinFirmware()) {
-                    self._requestFirmwareInfo();
-                }
-            });
-        };
-
-        self.firmware_name = function() {
-            return self.FIRMWARE_NAME();
-        };
-
-        self.firmware_info = function() {
-            return self.FIRMWARE_INFO();
-        };
-
-        self.eepromFieldParse = function(line, restoreBackup = false) {
-            var matchOK = self.eepromOKRegEx.exec(line);
-            if (matchOK) {
-                setTimeout(function() {self.setControls(true); }, 2000);
-            }
-
-            // M92 steps per unit
-            var match = self.eepromM92RegEx.exec(line);
-            if (match) {
-                self.eepromDataSteps.push({
-                    dataType: 'M92 X',
-                    label: 'X axis',
-                    origValue: ((restoreBackup) ? '' : match[2]),
-                    value: match[2],
-                    unit: 'mm',
-                    description: 'steps per unit'
-                });
-
-                self.eepromDataSteps.push({
-                    dataType: 'M92 Y',
-                    label: 'Y axis',
-                    origValue: ((restoreBackup) ? '' : match[4]),
-                    value: match[4],
-                    unit: 'mm',
-                    description: 'steps per unit'
-                });
-
-                self.eepromDataSteps.push({
-                    dataType: 'M92 Z',
-                    label: 'Z axis',
-                    origValue: ((restoreBackup) ? '' : match[6]),
-                    value: match[6],
-                    unit: 'mm',
-                    description: 'steps per unit'
-                });
-
-                self.eepromDataSteps.push({
-                    dataType: 'M92 E',
-                    label: 'Extruder',
-                    origValue: ((restoreBackup) ? '' : match[8]),
-                    value: match[8],
-                    unit: 'mm',
-                    description: 'steps per unit'
-                });
-            }
-
-            // M203 feedrates
-            match = self.eepromM203RegEx.exec(line);
-            if (match) {
-                self.eepromDataFRates.push({
-                    dataType: 'M203 X',
-                    label: 'X axis',
-                    origValue: ((restoreBackup) ? '' : match[2]),
-                    value: match[2],
-                    unit: 'mm',
-                    description: 'rate per unit'
-                });
-
-                self.eepromDataFRates.push({
-                    dataType: 'M203 Y',
-                    label: 'Y axis',
-                    origValue: ((restoreBackup) ? '' : match[4]),
-                    value: match[4],
-                    unit: 'mm',
-                    description: 'rate per unit'
-                });
-
-                self.eepromDataFRates.push({
-                    dataType: 'M203 Z',
-                    label: 'Z axis',
-                    origValue: ((restoreBackup) ? '' : match[6]),
-                    value: match[6],
-                    unit: 'mm',
-                    description: 'rate per unit'
-                });
-
-                self.eepromDataFRates.push({
-                    dataType: 'M203 E',
-                    label: 'Extruder',
-                    origValue: ((restoreBackup) ? '' : match[8]),
-                    value: match[8],
-                    unit: 'mm',
-                    description: 'rate per unit'
-                });
-            }
-
-            // M201 Maximum Acceleration (mm/s2)
-            match = self.eepromM201RegEx.exec(line);
-            if (match) {
-                self.eepromDataMaxAccel.push({
-                    dataType: 'M201 X',
-                    label: 'X axis',
-                    origValue: ((restoreBackup) ? '' : match[2]),
-                    value: match[2],
-                    unit: 'mm/s2',
-                    description: ''
-                });
-
-                self.eepromDataMaxAccel.push({
-                    dataType: 'M201 Y',
-                    label: 'Y axis',
-                    origValue: ((restoreBackup) ? '' : match[4]),
-                    value: match[4],
-                    unit: 'mm/s2',
-                    description: ''
-                });
-
-                self.eepromDataMaxAccel.push({
-                    dataType: 'M201 Z',
-                    label: 'Z axis',
-                    origValue: ((restoreBackup) ? '' : match[6]),
-                    value: match[6],
-                    unit: 'mm/s2',
-                    description: ''
-                });
-
-                self.eepromDataMaxAccel.push({
-                    dataType: 'M201 E',
-                    label: 'Extruder',
-                    origValue: ((restoreBackup) ? '' : match[8]),
-                    value: match[8],
-                    unit: 'mm/s2',
-                    description: ''
-                });
-            }
-
-            // M851 Z-Probe Offset
-            match = self.eepromM851RegEx.exec(line);
-            if (match) {
-                self.eepromData1.push({
-                    dataType: 'M851 Z',
-                    label: 'Z-Probe Offset',
-                    origValue: ((restoreBackup) ? '' : match[2]),
-                    value: match[2],
-                    unit: 'mm',
-                    description: ''
-                });
-            }
-
-            // M206 Home offset
-            match = self.eepromM206RegEx.exec(line);
-            if (match) {
-                self.eepromDataHoming.push({
-                    dataType: 'M206 X',
-                    label: 'X axis',
-                    origValue: ((restoreBackup) ? '' : match[2]),
-                    value: match[2],
-                    unit: 'mm',
-                    description: ''
-                });
-
-                self.eepromDataHoming.push({
-                    dataType: 'M206 Y',
-                    label: 'Y axis',
-                    origValue: ((restoreBackup) ? '' : match[4]),
-                    value: match[4],
-                    unit: 'mm',
-                    description: ''
-                });
-
-                self.eepromDataHoming.push({
-                    dataType: 'M206 Z',
-                    label: 'Z axis',
-                    origValue: ((restoreBackup) ? '' : match[6]),
-                    value: match[6],
-                    unit: 'mm',
-                    description: ''
-                });
-            }
-
-            // M666 Endstop adjustment
-            match = self.eepromM666RegEx.exec(line);
-            if (match) {
-                self.eepromDataEndstop.push({
-                    dataType: 'M666 X',
-                    label: 'X axis',
-                    origValue: ((restoreBackup) ? '' : match[2]),
-                    value: match[2],
-                    unit: 'mm',
-                    description: ''
-                });
-
-                self.eepromDataEndstop.push({
-                    dataType: 'M666 Y',
-                    label: 'Y axis',
-                    origValue: ((restoreBackup) ? '' : match[4]),
-                    value: match[4],
-                    unit: 'mm',
-                    description: ''
-                });
-
-                self.eepromDataEndstop.push({
-                    dataType: 'M666 Z',
-                    label: 'Z axis',
-                    origValue: ((restoreBackup) ? '' : match[6]),
-                    value: match[6],
-                    unit: 'mm',
-                    description: ''
-                });
-            }
-
-            // M665 Delta settings
-            match = self.eepromM665RegEx.exec(line);
-            if (match) {
-                self.eepromDataDelta1.push({
-                    dataType: 'M665 L',
-                    label: 'Diag Rod',
-                    origValue: ((restoreBackup) ? '' : match[2]),
-                    value: match[2],
-                    unit: 'mm',
-                    description: ''
-                });
-
-                self.eepromDataDelta1.push({
-                    dataType: 'M665 R',
-                    label: 'Radius',
-                    origValue: ((restoreBackup) ? '' : match[4]),
-                    value: match[4],
-                    unit: 'mm',
-                    description: ''
-                });
-
-                self.eepromDataDelta1.push({
-                    dataType: 'M665 S',
-                    label: 'Segments',
-                    origValue: ((restoreBackup) ? '' : match[6]),
-                    value: match[6],
-                    unit: 's',
-                    description: ''
-                });
-
-                self.eepromDataDelta2.push({
-                    dataType: 'M665 A',
-                    label: 'Diag A',
-                    origValue: ((restoreBackup) ? '' : match[8]),
-                    value: match[8],
-                    unit: 'mm',
-                    description: ''
-                });
-
-                self.eepromDataDelta2.push({
-                    dataType: 'M665 B',
-                    label: 'Diag B',
-                    origValue: ((restoreBackup) ? '' : match[10]),
-                    value: match[10],
-                    unit: 'mm',
-                    description: ''
-                });
-
-                self.eepromDataDelta2.push({
-                    dataType: 'M665 C',
-                    label: 'Diag C',
-                    origValue: ((restoreBackup) ? '' : match[12]),
-                    value: match[12],
-                    unit: 'mm',
-                    description: ''
-                });
-            }
-
-            // M900 Linear settings
-            match = self.eepromM900RegEx.exec(line);
-            if (match) {
-                self.eepromDataLinear.push({
-                    dataType: 'M900 K',
-                    label: 'Linear Advance K',
-                    origValue: ((restoreBackup) ? '' : match[2]),
-                    value: match[2],
-                    unit: 'mm',
-                    description: ''
-                });
-
-                self.eepromDataLinear.push({
-                    dataType: 'M900 R',
-                    label: 'Linear Ratio',
-                    origValue: ((restoreBackup) ? '' : match[4]),
-                    value: match[4],
-                    unit: 'mm',
-                    description: ''
-                });
-            }
-
-            // Filament diameter
-            match = self.eepromM200RegEx.exec(line);
-            if (match) {
-                if (self.eepromDataFilament().length === 0) {
-                    self.eepromDataFilament.push({
-                        dataType: 'M200 D',
-                        label: 'Diameter',
-                        origValue: ((restoreBackup) ? '' : match[2]),
-                        value: match[2],
-                        unit: 'mm',
-                        description: ''
-                    });
-                }
-            }
-
-            // M304 PID settings
-            match = self.eepromM304RegEx.exec(line);
-            if (match) {
-                self.eepromDataPIDB.push({
-                    dataType: 'M304 P',
-                    label: 'Bed Kp',
-                    origValue: ((restoreBackup) ? '' : match[2]),
-                    value: match[2],
-                    unit: 'term',
-                    description: ''
-                });
-
-                self.eepromDataPIDB.push({
-                    dataType: 'M304 I',
-                    label: 'Ki',
-                    origValue: ((restoreBackup) ? '' : match[4]),
-                    value: match[4],
-                    unit: 'term',
-                    description: ''
-                });
-
-                self.eepromDataPIDB.push({
-                    dataType: 'M304 D',
-                    label: 'Kd',
-                    origValue: ((restoreBackup) ? '' : match[6]),
-                    value: match[6],
-                    unit: 'term',
-                    description: ''
-                });
-            }
-
-            if (self.firmware_name() == 'Marlin 1.1.0-RC8' || self.firmware_name() == 'Marlin 1.1.1' || self.firmware_name() == 'Marlin 1.1.2' || self.firmware_name() == 'Marlin 1.1.3' || self.firmware_name() == 'Marlin 1.1.4' || self.firmware_name() == 'Marlin 1.1.5' || self.firmware_name() == 'Marlin 1.1.6' || self.firmware_name() == 'Marlin 1.1.7' || self.firmware_name() == 'Marlin 1.1.8') {
-                // M205 Advanced variables
-                match = self.eepromM205RegEx.exec(line);
-                if (match) {
-                    self.eepromData1.push({
-                        dataType: 'M205 S',
-                        label: 'Min feedrate',
-                        origValue: ((restoreBackup) ? '' : match[2]),
-                        value: match[2],
-                        unit: 'mm/s',
-                        description: ''
-                    });
-
-                    self.eepromData1.push({
-                        dataType: 'M205 T',
-                        label: 'Min travel',
-                        origValue: ((restoreBackup) ? '' : match[4]),
-                        value: match[4],
-                        unit: 'mm/s',
-                        description: ''
-                    });
-
-                    self.eepromData1.push({
-                        dataType: 'M205 B',
-                        label: 'Min segment',
-                        origValue: ((restoreBackup) ? '' : match[6]),
-                        value: match[6],
-                        unit: 'mm/s',
-                        description: ''
-                    });
-
-                    self.eepromData2.push({
-                        dataType: 'M205 X',
-                        label: 'Max X jerk',
-                        origValue: ((restoreBackup) ? '' : match[8]),
-                        value: match[8],
-                        unit: 'mm/s',
-                        description: ''
-                    });
-
-                    self.eepromData2.push({
-                        dataType: 'M205 Y',
-                        label: 'Max Y jerk',
-                        origValue: ((restoreBackup) ? '' : match[10]),
-                        value: match[10],
-                        unit: 'mm/s',
-                        description: ''
-                    });
-
-                    self.eepromData2.push({
-                        dataType: 'M205 Z',
-                        label: 'Max Z jerk',
-                        origValue: ((restoreBackup) ? '' : match[12]),
-                        value: match[12],
-                        unit: 'mm/s',
-                        description: ''
-                    });
-
-                    self.eepromData2.push({
-                        dataType: 'M205 E',
-                        label: 'Max E jerk',
-                        origValue: ((restoreBackup) ? '' : match[14]),
-                        value: match[14],
-                        unit: 'mm/s',
-                        description: ''
-                    });
-                }
-
-                // M204 Acceleration
-                match = self.eepromM204RegEx.exec(line);
-                if (match) {
-                    self.eepromDataAccel.push({
-                        dataType: 'M204 P',
-                        label: 'Printing moves',
-                        origValue: ((restoreBackup) ? '' : match[2]),
-                        value: match[2],
-                        unit: 'mm/s2',
-                        description: ''
-                    });
-
-                    self.eepromDataAccel.push({
-                        dataType: 'M204 R',
-                        label: 'Retract',
-                        origValue: ((restoreBackup) ? '' : match[4]),
-                        value: match[4],
-                        unit: 'mm/s2',
-                        description: ''
-                    });
-
-                    self.eepromDataAccel.push({
-                        dataType: 'M204 T',
-                        label: 'Travel',
-                        origValue: ((restoreBackup) ? '' : match[6]),
-                        value: match[6],
-                        unit: 'mm/s2',
-                        description: ''
-                    });
-                }
-
-                // M301 PID settings
-                match = self.eepromM301RegEx.exec(line);
-                if (match) {
-                    self.eepromDataPID.push({
-                        dataType: 'M301 P',
-                        label: 'Hotend Kp',
-                        origValue: ((restoreBackup) ? '' : match[2]),
-                        value: match[2],
-                        unit: 'term',
-                        description: ''
-                    });
-
-                    self.eepromDataPID.push({
-                        dataType: 'M301 I',
-                        label: 'Ki',
-                        origValue: ((restoreBackup) ? '' : match[4]),
-                        value: match[4],
-                        unit: 'term',
-                        description: ''
-                    });
-
-                    self.eepromDataPID.push({
-                        dataType: 'M301 D',
-                        label: 'Kd',
-                        origValue: ((restoreBackup) ? '' : match[6]),
-                        value: match[6],
-                        unit: 'term',
-                        description: ''
-                    });
-                }
-
-                // M145 Material heatup
-                match = self.eepromM145S0RegEx.exec(line);
-                if (match) {
-                    self.eepromDataMaterialHS0.push({
-                        dataType: 'M145 S0 H',
-                        label: 'S0 Hotend Temperature',
-                        origValue: ((restoreBackup) ? '' : match[2]),
-                        value: match[2],
-                        unit: '',
-                        description: ''
-                    });
-                    self.eepromDataMaterialHS0.push({
-                        dataType: 'M145 S0 B',
-                        label: 'Bed Temperature',
-                        origValue: ((restoreBackup) ? '' : match[4]),
-                        value: match[4],
-                        unit: '',
-                        description: ''
-                    });
-                    self.eepromDataMaterialHS0.push({
-                        dataType: 'M145 S0 F',
-                        label: 'Fan Speed',
-                        origValue: ((restoreBackup) ? '' : match[6]),
-                        value: match[6],
-                        unit: '',
-                        description: ''
-                    });
-                }
-
-                match = self.eepromM145S1RegEx.exec(line);
-                if (match) {
-                    self.eepromDataMaterialHS1.push({
-                        dataType: 'M145 S1 H',
-                        label: 'S1 Hotend Temperature',
-                        origValue: ((restoreBackup) ? '' : match[2]),
-                        value: match[2],
-                        unit: '',
-                        description: ''
-                    });
-                    self.eepromDataMaterialHS1.push({
-                        dataType: 'M145 S1 B',
-                        label: 'Bed Temperature',
-                        origValue: ((restoreBackup) ? '' : match[4]),
-                        value: match[4],
-                        unit: '',
-                        description: ''
-                    });
-                    self.eepromDataMaterialHS1.push({
-                        dataType: 'M145 S1 F',
-                        label: 'Fan Speed',
-                        origValue: ((restoreBackup) ? '' : match[6]),
-                        value: match[6],
-                        unit: '',
-                        description: ''
-                    });
-                }
-
-                match = self.eepromM145S2RegEx.exec(line);
-                if (match) {
-                    self.eepromDataMaterialHS2.push({
-                        dataType: 'M145 S2 H',
-                        label: 'S2 Hotend Temperature',
-                        origValue: ((restoreBackup) ? '' : match[2]),
-                        value: match[2],
-                        unit: '',
-                        description: ''
-                    });
-                    self.eepromDataMaterialHS2.push({
-                        dataType: 'M145 S2 B',
-                        label: 'Bed Temperature',
-                        origValue: ((restoreBackup) ? '' : match[4]),
-                        value: match[4],
-                        unit: '',
-                        description: ''
-                    });
-                    self.eepromDataMaterialHS2.push({
-                        dataType: 'M145 S2 F',
-                        label: 'Fan Speed',
-                        origValue: ((restoreBackup) ? '' : match[6]),
-                        value: match[6],
-                        unit: '',
-                        description: ''
-                    });
-                }
-
-                // M420 Auto-level
-                match = self.eepromM420RegEx.exec(line);
-                if (match) {
-                    self.eepromDataLevel.push({
-                        dataType: 'M420 S',
-                        label: 'Auto Bed Leveling',
-                        origValue: ((restoreBackup) ? '' : match[2]),
-                        value: match[2],
-                        unit: '0/1',
-                        description: ''
-                    });
-
-                    if (match.length >= 3) {
-                        self.eepromDataLevel.push({
-                            dataType: 'M420 Z',
-                            label: 'Fade height',
-                            origValue: ((restoreBackup) ? '' : match[4]),
-                            value: match[4],
-                            unit: 'mm',
-                            description: ''
-                        });
+                advanced.visible = ko.computed(function () {
+                    for (let param in advanced) {
+                        if (param === "visible") {
+                            continue;
+                        }
+                        if (advanced[param]() !== null) {
+                            return true;
+                        }
                     }
-                }
-            } else if (self.firmware_name() == 'Marlin 1.1.0-RC1' || self.firmware_name() == 'Marlin 1.1.0-RC2' || self.firmware_name() == 'Marlin 1.1.0-RC3' || self.firmware_name() == 'Marlin 1.1.0-RC4' || self.firmware_name() == 'Marlin 1.1.0-RC5' || self.firmware_name() == 'Marlin 1.1.0-RC6' || self.firmware_name() == 'Marlin 1.1.0-RC7') {
-                // M205 Advanced variables
-                match = self.eepromM205RegEx.exec(line);
-                if (match) {
-                    self.eepromData1.push({
-                        dataType: 'M205 S',
-                        label: 'Min feedrate',
-                        origValue: ((restoreBackup) ? '' : match[2]),
-                        value: match[2],
-                        unit: 'mm/s',
-                        description: ''
-                    });
-
-                    self.eepromData1.push({
-                        dataType: 'M205 T',
-                        label: 'Min travel',
-                        origValue: ((restoreBackup) ? '' : match[4]),
-                        value: match[4],
-                        unit: 'mm/s',
-                        description: ''
-                    });
-
-                    self.eepromData1.push({
-                        dataType: 'M205 B',
-                        label: 'Min segment',
-                        origValue: ((restoreBackup) ? '' : match[6]),
-                        value: match[6],
-                        unit: 'mm/s',
-                        description: ''
-                    });
-
-                    self.eepromData2.push({
-                        dataType: 'M205 X',
-                        label: 'Max X jerk',
-                        origValue: ((restoreBackup) ? '' : match[8]),
-                        value: match[8],
-                        unit: 'mm/s',
-                        description: ''
-                    });
-
-                    self.eepromData2.push({
-                        dataType: 'M205 Y',
-                        label: 'Max Y jerk',
-                        origValue: ((restoreBackup) ? '' : match[10]),
-                        value: match[10],
-                        unit: 'mm/s',
-                        description: ''
-                    });
-
-                    self.eepromData2.push({
-                        dataType: 'M205 Z',
-                        label: 'Max Z jerk',
-                        origValue: ((restoreBackup) ? '' : match[12]),
-                        value: match[12],
-                        unit: 'mm/s',
-                        description: ''
-                    });
-
-                    self.eepromData2.push({
-                        dataType: 'M205 E',
-                        label: 'Max E jerk',
-                        origValue: ((restoreBackup) ? '' : match[14]),
-                        value: match[14],
-                        unit: 'mm/s',
-                        description: ''
-                    });
-                }
-
-                // M204 Acceleration
-                match = self.eepromM204RegEx.exec(line);
-                if (match) {
-                    self.eepromDataAccel.push({
-                        dataType: 'M204 P',
-                        label: 'Printing moves',
-                        origValue: ((restoreBackup) ? '' : match[2]),
-                        value: match[2],
-                        unit: 'mm/s2',
-                        description: ''
-                    });
-
-                    self.eepromDataAccel.push({
-                        dataType: 'M204 R',
-                        label: 'Retract',
-                        origValue: ((restoreBackup) ? '' : match[4]),
-                        value: match[4],
-                        unit: 'mm/s2',
-                        description: ''
-                    });
-
-                    self.eepromDataAccel.push({
-                        dataType: 'M204 T',
-                        label: 'Travel',
-                        origValue: ((restoreBackup) ? '' : match[6]),
-                        value: match[6],
-                        unit: 'mm/s2',
-                        description: ''
-                    });
-                }
-
-                // M301 PID settings
-                match = self.eepromM301RegEx.exec(line);
-                if (match) {
-                    self.eepromDataPID.push({
-                        dataType: 'M301 P',
-                        label: 'Hotend Kp',
-                        origValue: ((restoreBackup) ? '' : match[2]),
-                        value: match[2],
-                        unit: 'term',
-                        description: ''
-                    });
-
-                    self.eepromDataPID.push({
-                        dataType: 'M301 I',
-                        label: 'Ki',
-                        origValue: ((restoreBackup) ? '' : match[4]),
-                        value: match[4],
-                        unit: 'term',
-                        description: ''
-                    });
-
-                    self.eepromDataPID.push({
-                        dataType: 'M301 D',
-                        label: 'Kd',
-                        origValue: ((restoreBackup) ? '' : match[6]),
-                        value: match[6],
-                        unit: 'term',
-                        description: ''
-                    });
-
-                    self.eepromDataPID.push({
-                        dataType: 'M301 C',
-                        label: 'Kc',
-                        origValue: ((restoreBackup) ? '' : match[8]),
-                        value: match[8],
-                        unit: 'term',
-                        description: ''
-                    });
-
-                    self.eepromDataPID.push({
-                        dataType: 'M301 L',
-                        label: 'LPQ',
-                        origValue: ((restoreBackup) ? '' : match[10]),
-                        value: match[10],
-                        unit: 'len',
-                        description: ''
-                    });
-                }
-
-                // M145 Material heatup
-                match = self.eepromM145S0RegEx.exec(line);
-                if (match) {
-                    self.eepromDataMaterialHS0.push({
-                        dataType: 'M145 M0 H',
-                        label: 'M0 Hotend Temperature',
-                        origValue: ((restoreBackup) ? '' : match[2]),
-                        value: match[2],
-                        unit: '',
-                        description: ''
-                    });
-                    self.eepromDataMaterialHS0.push({
-                        dataType: 'M145 M0 B',
-                        label: 'Bed Temperature',
-                        origValue: ((restoreBackup) ? '' : match[4]),
-                        value: match[4],
-                        unit: '',
-                        description: ''
-                    });
-                    self.eepromDataMaterialHS0.push({
-                        dataType: 'M145 M0 F',
-                        label: 'Fan Speed',
-                        origValue: ((restoreBackup) ? '' : match[6]),
-                        value: match[6],
-                        unit: '',
-                        description: ''
-                    });
-                }
-
-                match = self.eepromM145S1RegEx.exec(line);
-                if (match) {
-                    self.eepromDataMaterialHS1.push({
-                        dataType: 'M145 M1 H',
-                        label: 'M1 Hotend Temperature',
-                        origValue: ((restoreBackup) ? '' : match[2]),
-                        value: match[2],
-                        unit: '',
-                        description: ''
-                    });
-                    self.eepromDataMaterialHS1.push({
-                        dataType: 'M145 M1 B',
-                        label: 'Bed Temperature',
-                        origValue: ((restoreBackup) ? '' : match[4]),
-                        value: match[4],
-                        unit: '',
-                        description: ''
-                    });
-                    self.eepromDataMaterialHS1.push({
-                        dataType: 'M145 M1 F',
-                        label: 'Fan Speed',
-                        origValue: ((restoreBackup) ? '' : match[6]),
-                        value: match[6],
-                        unit: '',
-                        description: ''
-                    });
-                }
-
-                match = self.eepromM145S2RegEx.exec(line);
-                if (match) {
-                    self.eepromDataMaterialHS2.push({
-                        dataType: 'M145 M2 H',
-                        label: 'M2 Hotend Temperature',
-                        origValue: ((restoreBackup) ? '' : match[2]),
-                        value: match[2],
-                        unit: '',
-                        description: ''
-                    });
-                    self.eepromDataMaterialHS2.push({
-                        dataType: 'M145 M2 B',
-                        label: 'Bed Temperature',
-                        origValue: ((restoreBackup) ? '' : match[4]),
-                        value: match[4],
-                        unit: '',
-                        description: ''
-                    });
-                    self.eepromDataMaterialHS2.push({
-                        dataType: 'M145 M2 F',
-                        label: 'Fan Speed',
-                        origValue: ((restoreBackup) ? '' : match[6]),
-                        value: match[6],
-                        unit: '',
-                        description: ''
-                    });
-                }
-            } else if (self.firmware_name() == 'Marlin 1.0.2+' || self.firmware_name() == 'Marlin V1.0.2;' || self.firmware_name() == 'Marlin 1.0.2' || self.firmware_name() == 'Marlin V1;') {
-                // M205 Advanced variables
-                match = self.eepromM205RegEx.exec(line);
-                if (match) {
-                    self.eepromData1.push({
-                        dataType: 'M205 S',
-                        label: 'Min feedrate',
-                        origValue: ((restoreBackup) ? '' : match[2]),
-                        value: match[2],
-                        unit: 'mm/s',
-                        description: ''
-                    });
-
-                    self.eepromData1.push({
-                        dataType: 'M205 T',
-                        label: 'Min travel',
-                        origValue: ((restoreBackup) ? '' : match[4]),
-                        value: match[4],
-                        unit: 'mm/s',
-                        description: ''
-                    });
-
-                    self.eepromData1.push({
-                        dataType: 'M205 B',
-                        label: 'Min segment',
-                        origValue: ((restoreBackup) ? '' : match[6]),
-                        value: match[6],
-                        unit: 'mm/s',
-                        description: ''
-                    });
-
-                    self.eepromData2.push({
-                        dataType: 'M205 X',
-                        label: 'Max X jerk',
-                        origValue: ((restoreBackup) ? '' : match[8]),
-                        value: match[8],
-                        unit: 'mm/s',
-                        description: ''
-                    });
-
-                    self.eepromData2.push({
-                        dataType: 'M205 Z',
-                        label: 'Max Z jerk',
-                        origValue: ((restoreBackup) ? '' : match[10]),
-                        value: match[10],
-                        unit: 'mm/s',
-                        description: ''
-                    });
-
-                    self.eepromData2.push({
-                        dataType: 'M205 E',
-                        label: 'Max E jerk',
-                        origValue: ((restoreBackup) ? '' : match[12]),
-                        value: match[12],
-                        unit: 'mm/s',
-                        description: ''
-                    });
-                }
-
-                // M204 Acceleration
-                match = self.eepromM204RegEx.exec(line);
-                if (match) {
-                    self.eepromDataAccel.push({
-                        dataType: 'M204 S',
-                        label: 'Printing moves',
-                        origValue: ((restoreBackup) ? '' : match[2]),
-                        value: match[2],
-                        unit: 'mm/s2',
-                        description: ''
-                    });
-
-                    self.eepromDataAccel.push({
-                        dataType: 'M204 T',
-                        label: 'Travel',
-                        origValue: ((restoreBackup) ? '' : match[4]),
-                        value: match[4],
-                        unit: 'mm/s2',
-                        description: ''
-                    });
-                }
-
-                // M301 PID settings
-                match = self.eepromM301RegEx.exec(line);
-                if (match) {
-                    self.eepromDataPID.push({
-                        dataType: 'M301 P',
-                        label: 'Hotend Kp',
-                        origValue: ((restoreBackup) ? '' : match[2]),
-                        value: match[2],
-                        unit: 'term',
-                        description: ''
-                    });
-
-                    self.eepromDataPID.push({
-                        dataType: 'M301 I',
-                        label: 'Ki',
-                        origValue: ((restoreBackup) ? '' : match[4]),
-                        value: match[4],
-                        unit: 'term',
-                        description: ''
-                    });
-
-                    self.eepromDataPID.push({
-                        dataType: 'M301 D',
-                        label: 'Kd',
-                        origValue: ((restoreBackup) ? '' : match[6]),
-                        value: match[6],
-                        unit: 'term',
-                        description: ''
-                    });
-                }
-            } else {
-                // M205 Advanced variables
-                match = self.eepromM205RegEx.exec(line);
-                if (match) {
-                    self.eepromData1.push({
-                        dataType: 'M205 S',
-                        label: 'Min feedrate',
-                        origValue: ((restoreBackup) ? '' : match[2]),
-                        value: match[2],
-                        unit: 'mm/s',
-                        description: ''
-                    });
-
-                    self.eepromData1.push({
-                        dataType: 'M205 T',
-                        label: 'Min travel',
-                        origValue: ((restoreBackup) ? '' : match[4]),
-                        value: match[4],
-                        unit: 'mm/s',
-                        description: ''
-                    });
-
-                    self.eepromData1.push({
-                        dataType: 'M205 B',
-                        label: 'Min segment',
-                        origValue: ((restoreBackup) ? '' : match[6]),
-                        value: match[6],
-                        unit: 'mm/s',
-                        description: ''
-                    });
-
-                    self.eepromData2.push({
-                        dataType: 'M205 X',
-                        label: 'Max X jerk',
-                        origValue: ((restoreBackup) ? '' : match[8]),
-                        value: match[8],
-                        unit: 'mm/s',
-                        description: ''
-                    });
-
-                    self.eepromData2.push({
-                        dataType: 'M205 Y',
-                        label: 'Max Y jerk',
-                        origValue: ((restoreBackup) ? '' : match[10]),
-                        value: match[10],
-                        unit: 'mm/s',
-                        description: ''
-                    });
-
-                    self.eepromData2.push({
-                        dataType: 'M205 Z',
-                        label: 'Max Z jerk',
-                        origValue: ((restoreBackup) ? '' : match[12]),
-                        value: match[12],
-                        unit: 'mm/s',
-                        description: ''
-                    });
-
-                    self.eepromData2.push({
-                        dataType: 'M205 E',
-                        label: 'Max E jerk',
-                        origValue: ((restoreBackup) ? '' : match[14]),
-                        value: match[14],
-                        unit: 'mm/s',
-                        description: ''
-                    });
-                }
-
-                // M204 Acceleration
-                match = self.eepromM204RegEx.exec(line);
-                if (match) {
-                    self.eepromDataAccel.push({
-                        dataType: 'M204 P',
-                        label: 'Printing moves',
-                        origValue: ((restoreBackup) ? '' : match[2]),
-                        value: match[2],
-                        unit: 'mm/s2',
-                        description: ''
-                    });
-
-                    self.eepromDataAccel.push({
-                        dataType: 'M204 R',
-                        label: 'Retract',
-                        origValue: ((restoreBackup) ? '' : match[4]),
-                        value: match[4],
-                        unit: 'mm/s2',
-                        description: ''
-                    });
-
-                    self.eepromDataAccel.push({
-                        dataType: 'M204 T',
-                        label: 'Travel',
-                        origValue: ((restoreBackup) ? '' : match[6]),
-                        value: match[6],
-                        unit: 'mm/s2',
-                        description: ''
-                    });
-                }
-
-                // M301 PID settings
-                match = self.eepromM301RegEx.exec(line);
-                if (match) {
-                    self.eepromDataPID.push({
-                        dataType: 'M301 P',
-                        label: 'Hotend Kp',
-                        origValue: ((restoreBackup) ? '' : match[2]),
-                        value: match[2],
-                        unit: 'term',
-                        description: ''
-                    });
-
-                    self.eepromDataPID.push({
-                        dataType: 'M301 I',
-                        label: 'Ki',
-                        origValue: ((restoreBackup) ? '' : match[4]),
-                        value: match[4],
-                        unit: 'term',
-                        description: ''
-                    });
-
-                    self.eepromDataPID.push({
-                        dataType: 'M301 D',
-                        label: 'Kd',
-                        origValue: ((restoreBackup) ? '' : match[6]),
-                        value: match[6],
-                        unit: 'term',
-                        description: ''
-                    });
-                }
-
-                // M145 Material heatup
-                match = self.eepromM145S0RegEx.exec(line);
-                if (match) {
-                    self.eepromDataMaterialHS0.push({
-                        dataType: 'M145 S0 H',
-                        label: 'S0 Hotend Temperature',
-                        origValue: ((restoreBackup) ? '' : match[2]),
-                        value: match[2],
-                        unit: '',
-                        description: ''
-                    });
-                    self.eepromDataMaterialHS0.push({
-                        dataType: 'M145 S0 B',
-                        label: 'Bed Temperature',
-                        origValue: ((restoreBackup) ? '' : match[4]),
-                        value: match[4],
-                        unit: '',
-                        description: ''
-                    });
-                    self.eepromDataMaterialHS0.push({
-                        dataType: 'M145 S0 F',
-                        label: 'Fan Speed',
-                        origValue: ((restoreBackup) ? '' : match[6]),
-                        value: match[6],
-                        unit: '',
-                        description: ''
-                    });
-                }
-
-                match = self.eepromM145S1RegEx.exec(line);
-                if (match) {
-                    self.eepromDataMaterialHS1.push({
-                        dataType: 'M145 S1 H',
-                        label: 'S1 Hotend Temperature',
-                        origValue: ((restoreBackup) ? '' : match[2]),
-                        value: match[2],
-                        unit: '',
-                        description: ''
-                    });
-                    self.eepromDataMaterialHS1.push({
-                        dataType: 'M145 S1 B',
-                        label: 'Bed Temperature',
-                        origValue: ((restoreBackup) ? '' : match[4]),
-                        value: match[4],
-                        unit: '',
-                        description: ''
-                    });
-                    self.eepromDataMaterialHS1.push({
-                        dataType: 'M145 S1 F',
-                        label: 'Fan Speed',
-                        origValue: ((restoreBackup) ? '' : match[6]),
-                        value: match[6],
-                        unit: '',
-                        description: ''
-                    });
-                }
-
-                match = self.eepromM145S2RegEx.exec(line);
-                if (match) {
-                    self.eepromDataMaterialHS2.push({
-                        dataType: 'M145 S2 H',
-                        label: 'S2 Hotend Temperature',
-                        origValue: ((restoreBackup) ? '' : match[2]),
-                        value: match[2],
-                        unit: '',
-                        description: ''
-                    });
-                    self.eepromDataMaterialHS2.push({
-                        dataType: 'M145 S2 B',
-                        label: 'Bed Temperature',
-                        origValue: ((restoreBackup) ? '' : match[4]),
-                        value: match[4],
-                        unit: '',
-                        description: ''
-                    });
-                    self.eepromDataMaterialHS2.push({
-                        dataType: 'M145 S2 F',
-                        label: 'Fan Speed',
-                        origValue: ((restoreBackup) ? '' : match[6]),
-                        value: match[6],
-                        unit: '',
-                        description: ''
-                    });
-                }
-
-                // M420 Auto-level
-                match = self.eepromM420RegEx.exec(line);
-                if (match) {
-                    self.eepromDataLevel.push({
-                        dataType: 'M420 S',
-                        label: 'Auto Bed Leveling',
-                        origValue: ((restoreBackup) ? '' : match[2]),
-                        value: match[2],
-                        unit: '0/1',
-                        description: ''
-                    });
-
-                    if (match.length >= 3) {
-                        self.eepromDataLevel.push({
-                            dataType: 'M420 Z',
-                            label: 'Fade height',
-                            origValue: ((restoreBackup) ? '' : match[4]),
-                            value: match[4],
-                            unit: 'mm',
-                            description: ''
-                        });
-                    }
-                }
-            }
-        };
-
-        self.fromHistoryData = function(data) {
-            _.each(data.logs, function(line) {
-                var match = self.firmwareRegEx.exec(line);
-                if (match !== null) {
-                    var fw_name = match[1] + ' ' + match[2]
-                    self.FIRMWARE_NAME(fw_name.trim());
-                    self.FIRMWARE_INFO(line.replace('Recv: ', '').trim());
-                    self.setRegExVars(self.firmware_name());
-                    console.debug('Firmware: ' + self.firmware_name());
-                    if (self.marlinRegEx.exec(match[0]))
-                    self.isMarlinFirmware(true);
-                }
-
-                var match = self.firmwareCapRegEx.exec(line);
-                if (match !== null) {
-                    self.FIRMWARE_INFO(self.firmware_info().trim() + '\n' + line.replace('Recv: Cap:', ''));
-                }
-            });
-        };
-
-        self.fromCurrentData = function(data) {
-            hasChangedEepromForm = true;
-            if (!self.isMarlinFirmware()) {
-                _.each(data.logs, function (line) {
-                    var match = self.firmwareRegEx.exec(line);
-                    if (match) {
-                        var fw_name = match[1] + ' ' + match[2]
-                        self.FIRMWARE_NAME(fw_name.trim());
-                        self.FIRMWARE_INFO(line.replace('Recv: ', '').trim());
-                        self.setRegExVars(self.firmware_name());
-                        console.debug('Firmware: ' + self.firmware_name());
-                        if (self.marlinRegEx.exec(match[0]))
-                        self.isMarlinFirmware(true);
-                    }
-
-                    var match = self.firmwareCapRegEx.exec(line);
-                    if (match) {
-                        self.FIRMWARE_INFO(self.firmware_info().trim() + '\n' + line.replace('Recv: Cap:', '').trim());
-                        console.debug(line.replace('Recv: ', ''));
-                    }
+                    return false;
                 });
-            }
-            else
-            {
-                match = self.eepromM501RegEx.exec(data.logs);
-                if (match) {
-                    self.startBackup = true;
-                }
-                if (self.execBackup && self.startBackup) {
-                    self.backupConfig += data.logs + "\n";
 
-                    match = self.eepromM851RegEx.exec(self.backupConfig);
-                    matchOK = self.eepromOKRegEx.exec(self.backupConfig);
-                    if (match || matchOK) {
-                        self.execBackup = false;
-                        self.backupConfig = self.backupConfig.replace(/Recv/gi, "\nRecv");
-                        self.backupConfig = self.backupConfig.replace(/,\n/gi, "\n");
+                return advanced;
+            })();
 
-                        console.debug("EEPROM Config: " + self.backupConfig);
-                        var currentBackupDate = new Date();
-                        var backupYear = currentBackupDate.getFullYear();
-                        var backupMonth = currentBackupDate.getMonth() + 1;
-                        if (backupMonth < 10)
-                        backupMonth = '0' + backupMonth;
-                        var backupDay = currentBackupDate.getDate();
-                        if (backupDay < 10)
-                        backupDay = '0' + backupDay;
-                        var backupHours = currentBackupDate.getHours();
-                        if (backupHours < 10)
-                        backupHours = '0' + backupHours;
-                        var backupMinutes = currentBackupDate.getMinutes();
-                        if (backupMinutes < 10)
-                        backupMinutes = '0' + backupMinutes;
-                        var backupSeconds = currentBackupDate.getSeconds();
-                        if (backupSeconds < 10)
-                        backupSeconds = '0' + backupSeconds;
-                        var backupDate = backupYear + '-' + backupMonth + '-' + backupDay + '_' + backupHours + backupMinutes + backupSeconds;
+            eeprom.autolevel = (function () {
+                var autolevel = {};
 
-                        var element = document.createElement('a');
-                        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(self.backupConfig));
-                        element.setAttribute('download', 'eeprom_marlin_' + backupDate + '.cfg');
-                        element.style.display = 'none';
-                        document.body.appendChild(element);
+                autolevel.S = ko.observable();
+                autolevel.Z = ko.observable();
 
-                        element.click();
-
-                        document.body.removeChild(element);
-                        setTimeout(function() {self.setControls(true); }, 2000);
+                autolevel.visible = ko.computed(function () {
+                    for (let param in autolevel) {
+                        if (param === "visible") {
+                            continue;
+                        }
+                        if (autolevel[param]() !== null) {
+                            return true;
+                        }
                     }
-                }
-
-                _.each(data.logs, function (line) {
-                    self.eepromFieldParse(line);
+                    return false;
                 });
-            }
-            hasChangedEepromForm = false;
-        };
 
-        self.eepromDataCount = ko.computed(function() {
-            return (self.eepromData1().length + self.eepromData2().length) > 0;
-        });
+                return autolevel;
+            })();
 
-        self.eepromDataStepsCount = ko.computed(function() {
-            return self.eepromDataSteps().length > 0;
-        });
+            eeprom.bed_pid = (function () {
+                var bed_pid = {};
 
-        self.eepromDataFRatesCount = ko.computed(function() {
-            return self.eepromDataFRates().length > 0;
-        });
+                bed_pid.D = ko.observable();
+                bed_pid.I = ko.observable();
+                bed_pid.P = ko.observable();
 
-        self.eepromDataMaxAccelCount = ko.computed(function() {
-            return self.eepromDataMaxAccel().length > 0;
-        });
+                bed_pid.visible = ko.computed(function () {
+                    for (let param in bed_pid) {
+                        if (param === "visible") {
+                            continue;
+                        }
+                        if (bed_pid[param]() !== null) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
 
-        self.eepromDataAccelCount = ko.computed(function() {
-            return self.eepromDataAccel().length > 0;
-        });
+                return bed_pid;
+            })();
 
-        self.eepromDataPIDCount = ko.computed(function() {
-            return (self.eepromDataPID().length + self.eepromDataPIDB().length) > 0;
-        });
+            eeprom.delta = (function () {
+                var delta = {};
 
-        self.eepromDataHomingCount = ko.computed(function() {
-            return self.eepromDataHoming().length > 0;
-        });
+                delta.B = ko.observable();
+                delta.H = ko.observable();
+                delta.L = ko.observable();
+                delta.R = ko.observable();
+                delta.S = ko.observable();
+                delta.X = ko.observable();
+                delta.Y = ko.observable();
+                delta.Z = ko.observable();
 
-        self.eepromDataMaterialCount = ko.computed(function() {
-            return (self.eepromDataMaterialHS0().length + self.eepromDataMaterialHS1().length + self.eepromDataMaterialHS2().length) > 0;
-        });
+                delta.visible = ko.computed(function () {
+                    for (let param in delta) {
+                        if (param === "visible") {
+                            continue;
+                        }
+                        if (delta[param]() !== null) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
 
-        self.eepromDataFilamentCount = ko.computed(function() {
-            return self.eepromDataFilament().length > 0;
-        });
+                return delta;
+            })();
 
-        self.eepromDataEndstopCount = ko.computed(function() {
-            return self.eepromDataEndstop().length > 0;
-        });
-        self.eepromDataDeltaCount = ko.computed(function() {
-            return (self.eepromDataDelta1().length + self.eepromDataDelta2().length) > 0;
-        });
+            eeprom.endstop = (function () {
+                var endstop = {};
 
-        self.onEventConnected = function() {
-            self._requestFirmwareInfo();
-            // removed for prevent dual Load
-            //setTimeout(function() {self.loadEeprom(); }, 5000);
-        };
+                endstop.X = ko.observable();
+                endstop.Y = ko.observable();
+                endstop.Z = ko.observable();
 
-        self.onStartupComplete = function() {
-            // removed for prevent dual Load
-            //setTimeout(function() {self.loadEeprom(); }, 5000);
-        };
+                endstop.visible = ko.computed(function () {
+                    for (let param in endstop) {
+                        if (param === "visible") {
+                            continue;
+                        }
+                        if (endstop[param]() !== null) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
 
-        self.onEventDisconnected = function() {
-            self.isMarlinFirmware(false);
-        };
+                return endstop;
+            })();
 
-        self.backupEeprom = function() {
-            // prevent dual load
-            self.setControls(false);
+            eeprom.feedrate = (function () {
+                var feedrate = {};
 
-            self.execBackup = true;
-            self.backupConfig = "";
+                feedrate.E = ko.observable();
+                feedrate.X = ko.observable();
+                feedrate.Y = ko.observable();
+                feedrate.Z = ko.observable();
 
-            self.eepromData1([]);
-            self.eepromData2([]);
-            self.eepromDataLevel([]);
-            self.eepromDataSteps([]);
-            self.eepromDataFRates([]);
-            self.eepromDataMaxAccel([]);
-            self.eepromDataAccel([]);
-            self.eepromDataPID([]);
-            self.eepromDataPIDB([]);
-            self.eepromDataHoming([]);
-            self.eepromDataMaterialHS0([]);
-            self.eepromDataMaterialHS1([]);
-            self.eepromDataMaterialHS2([]);
-            self.eepromDataFilament([]);
-            self.eepromDataEndstop([]);
-            self.eepromDataDelta1([]);
-            self.eepromDataDelta2([]);
-            self.eepromDataLinear([]);
+                feedrate.visible = ko.computed(function () {
+                    for (let param in feedrate) {
+                        if (param === "visible") {
+                            continue;
+                        }
+                        if (feedrate[param]() !== null) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
 
-            self._requestEepromData();
-        };
+                return feedrate;
+            })();
 
-        self.restoreEeprom = function() {
-            if (window.File && window.FileReader && window.FileList && window.Blob) {
-                // Great success! All the File APIs are supported.
-            } else {
-                alert('The File APIs are not fully supported in this browser.');
-            }
+            eeprom.filament = (function () {
+                var filament = {};
 
-            document.getElementById('fileBackup').addEventListener('change', self.handleFileSelect, false);
-            document.getElementById('fileBackup').click();
-        };
+                filament.D = ko.observable();
 
-        self.resetEeprom = function() {
-            showConfirmationDialog({
-                message: 'This will reset all EEPROM settings to firmware defaults.',
-                onproceed: function() {
-                    // prevent dual load
-                    self.setControls(false);
+                filament.visible = ko.computed(function () {
+                    for (let param in filament) {
+                        if (param === "visible") {
+                            continue;
+                        }
+                        if (filament[param]() !== null) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
 
-                    self.control.sendCustomCommand({ command: "M502" });
-                    self.control.sendCustomCommand({ command: "M500" });
-                    self.control.sendCustomCommand({ command: "M504" });
+                return filament;
+            })();
 
-                    new PNotify({
-                        title: 'EEPROM Marlin',
-                        text: 'Default settings were restored.',
-                        type: 'success',
-                        hide: true
-                    });
+            eeprom.home_offset = (function () {
+                var home_offset = {};
 
-                    self.loadEeprom();
+                home_offset.X = ko.observable();
+                home_offset.Y = ko.observable();
+                home_offset.Z = ko.observable();
+
+                home_offset.visible = ko.computed(function () {
+                    for (let param in home_offset) {
+                        if (param === "visible") {
+                            continue;
+                        }
+                        if (home_offset[param]() !== null) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+
+                return home_offset;
+            })();
+
+            eeprom.hotend_pid = (function () {
+                var hotend_pid = {};
+
+                hotend_pid.D = ko.observable();
+                hotend_pid.I = ko.observable();
+                hotend_pid.P = ko.observable();
+
+                hotend_pid.visible = ko.computed(function () {
+                    for (let param in hotend_pid) {
+                        if (param === "visible") {
+                            continue;
+                        }
+                        if (hotend_pid[param]() !== null) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+
+                return hotend_pid;
+            })();
+
+            eeprom.linear = (function () {
+                var linear = {};
+
+                linear.K = ko.observable();
+
+                linear.visible = ko.computed(function () {
+                    for (let param in linear) {
+                        if (param === "visible") {
+                            continue;
+                        }
+                        if (linear[param]() !== null) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+
+                return linear;
+            })();
+
+            eeprom.material1 = (function () {
+                var material1 = {};
+
+                material1.B = ko.observable();
+                material1.F = ko.observable();
+                material1.H = ko.observable();
+                material1.S = ko.observable();
+
+                material1.visible = ko.computed(function () {
+                    for (let param in material1) {
+                        if (param === "visible") {
+                            continue;
+                        }
+                        if (material1[param]() !== null) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+
+                return material1;
+            })();
+
+            eeprom.material2 = (function () {
+                var material2 = {};
+
+                material2.B = ko.observable();
+                material2.F = ko.observable();
+                material2.H = ko.observable();
+                material2.S = ko.observable();
+
+                material2.visible = ko.computed(function () {
+                    for (let param in material2) {
+                        if (param === "visible") {
+                            continue;
+                        }
+                        if (material2[param]() !== null) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+
+                return material2;
+            })();
+
+            eeprom.max_acceleration = (function () {
+                var max_acceleration = {};
+
+                max_acceleration.E = ko.observable();
+                max_acceleration.X = ko.observable();
+                max_acceleration.Y = ko.observable();
+                max_acceleration.Z = ko.observable();
+
+                max_acceleration.visible = ko.computed(function () {
+                    for (let param in max_acceleration) {
+                        if (param === "visible") {
+                            continue;
+                        }
+                        if (max_acceleration[param]() !== null) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+
+                return max_acceleration;
+            })();
+
+            eeprom.print_acceleration = (function () {
+                var print_acceleration = {};
+
+                print_acceleration.P = ko.observable();
+                print_acceleration.R = ko.observable();
+                print_acceleration.T = ko.observable();
+
+                print_acceleration.visible = ko.computed(function () {
+                    for (let param in print_acceleration) {
+                        if (param === "visible") {
+                            continue;
+                        }
+                        if (print_acceleration[param]() !== null) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+
+                return print_acceleration;
+            })();
+
+            eeprom.probe_offset = (function () {
+                var probe_offset = {};
+
+                probe_offset.X = ko.observable();
+                probe_offset.Y = ko.observable();
+                probe_offset.Z = ko.observable();
+
+                probe_offset.visible = ko.computed(function () {
+                    for (let param in probe_offset) {
+                        if (param === "visible") {
+                            continue;
+                        }
+                        if (probe_offset[param]() !== null) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+
+                return probe_offset;
+            })();
+
+            eeprom.steps = (function () {
+                var steps = {};
+
+                steps.X = ko.observable();
+                steps.Y = ko.observable();
+                steps.Z = ko.observable();
+                steps.E = ko.observable();
+
+                steps.visible = ko.computed(function () {
+                    for (let param in steps) {
+                        if (param === "visible") {
+                            continue;
+                        }
+                        if (steps[param]() !== null) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+
+                return steps;
+            })();
+
+            return eeprom;
+        })();
+
+        /* Construct the UI here, in text form to save on markup
+         * parameters (all are required):
+         * label: Concise & descriptive
+         * value: observable
+         * units: if applicable, otherwise null
+         */
+        self.UI = {
+            advanced: [
+                {
+                    label: "Minimum segment time",
+                    value: self.eeprom.advanced.B,
+                    units: "µs",
                 },
+                {
+                    label: "E max jerk",
+                    value: self.eeprom.advanced.E,
+                    units: "mm/s",
+                },
+                {
+                    label: "Junction deviation",
+                    value: self.eeprom.advanced.J,
+                    units: null,
+                },
+                {
+                    label: "Minimum feedrate for print moves",
+                    value: self.eeprom.advanced.S,
+                    units: "mm/s",
+                },
+                {
+                    label: "Minimum feedrate for travel moves",
+                    value: self.eeprom.advanced.T,
+                    units: "mms/s",
+                },
+                {
+                    label: "X max jerk",
+                    value: self.eeprom.advanced.X,
+                    units: "mm/s",
+                },
+                {
+                    label: "Y max jerk",
+                    value: self.eeprom.advanced.Y,
+                    units: "mm/s",
+                },
+                {
+                    label: "Z max jerk",
+                    value: self.eeprom.advanced.Z,
+                    units: "mm/s",
+                },
+            ],
+            autolevel: [
+                {
+                    label: "Enabled",
+                    value: self.eeprom.autolevel.S,
+                    units: "0/1",
+                },
+                {
+                    label: "Z fade height",
+                    value: self.eeprom.autolevel.Z,
+                    units: "mm",
+                },
+            ],
+            bed_pid: [
+                {
+                    label: "Bed kP",
+                    value: self.eeprom.bed_pid.P,
+                    units: null,
+                },
+                {
+                    label: "Bed kI",
+                    value: self.eeprom.bed_pid.I,
+                    units: null,
+                },
+                {
+                    label: "Bed kD",
+                    value: self.eeprom.bed_pid.D,
+                    units: null,
+                },
+            ],
+            delta: [
+                {
+                    label: "Calibration radius",
+                    value: self.eeprom.delta.B,
+                    units: null,
+                },
+                {
+                    label: "Delta height",
+                    value: self.eeprom.delta.H,
+                    units: null,
+                },
+                {
+                    label: "Diagonal rod",
+                    value: self.eeprom.delta.L,
+                    units: null,
+                },
+                {
+                    label: "Segments per second",
+                    value: self.eeprom.delta.S,
+                    units: null,
+                },
+                {
+                    label: "Alpha (Tower 1) angle trim",
+                    value: self.eeprom.delta.X,
+                    units: null,
+                },
+                {
+                    label: "Beta (Tower 2) angle trim",
+                    value: self.eeprom.delta.Y,
+                    units: null,
+                },
+                {
+                    label: "Gamma (Tower 3) angle trim",
+                    value: self.eeprom.delta.Z,
+                    units: null,
+                },
+            ],
+            endstop: [
+                {
+                    label: "Adjustment for X",
+                    value: self.eeprom.endstop.X,
+                    units: "mm",
+                },
+                {
+                    label: "Adjustment for Y",
+                    value: self.eeprom.endstop.Y,
+                    units: "mm",
+                },
+                {
+                    label: "Adjustment for Z",
+                    value: self.eeprom.endstop.Z,
+                    units: "mm",
+                },
+            ],
+            feedrate: [
+                {
+                    label: "X axis",
+                    value: self.eeprom.feedrate.X,
+                    units: "mm/s",
+                },
+                {
+                    label: "Y axis",
+                    value: self.eeprom.feedrate.Y,
+                    units: "mm/s",
+                },
+                {
+                    label: "Z axis",
+                    value: self.eeprom.feedrate.Z,
+                    units: "mm/s",
+                },
+                {
+                    label: "E axis",
+                    value: self.eeprom.feedrate.E,
+                    units: "mm/s",
+                },
+            ],
+            filament: [
+                {
+                    label: "Filament Diameter",
+                    value: self.eeprom.filament.D,
+                    units: "mm",
+                },
+            ],
+            home_offset: [
+                {
+                    label: "X home offset",
+                    value: self.eeprom.home_offset.X,
+                    units: "mm",
+                },
+                {
+                    label: "Y home offset",
+                    value: self.eeprom.home_offset.Y,
+                    units: "mm",
+                },
+                {
+                    label: "Z home offset",
+                    value: self.eeprom.home_offset.Z,
+                    units: "mm",
+                },
+            ],
+            hotend_pid: [
+                {
+                    label: "Hotend kP",
+                    value: self.eeprom.hotend_pid.P,
+                    units: null,
+                },
+                {
+                    label: "Hotend kI",
+                    value: self.eeprom.hotend_pid.I,
+                    units: null,
+                },
+                {
+                    label: "Hotend kD",
+                    value: self.eeprom.hotend_pid.D,
+                    units: null,
+                },
+            ],
+            linear: [
+                {
+                    label: "K factor",
+                    value: self.eeprom.linear.K,
+                    units: null,
+                },
+            ],
+            material1: [
+                {
+                    label: "Hotend Temperature",
+                    value: self.eeprom.material1.H,
+                    units: "°C",
+                },
+                {
+                    label: "Bed Temperature",
+                    value: self.eeprom.material1.B,
+                    units: "°C",
+                },
+                {
+                    label: "Fan Speed",
+                    value: self.eeprom.material1.F,
+                    units: "0-255",
+                },
+            ],
+            material2: [
+                {
+                    label: "Hotend Temperature",
+                    value: self.eeprom.material2.H,
+                    units: "°C",
+                },
+                {
+                    label: "Bed Temperature",
+                    value: self.eeprom.material2.B,
+                    units: "°C",
+                },
+                {
+                    label: "Fan Speed",
+                    value: self.eeprom.material2.F,
+                    units: "0-255",
+                },
+            ],
+            max_acceleration: [
+                {
+                    label: "X maximum acceleration",
+                    value: self.eeprom.max_acceleration.X,
+                    units: "mm/s2",
+                },
+                {
+                    label: "Y maximum acceleration",
+                    value: self.eeprom.max_acceleration.Y,
+                    units: "mm/s2",
+                },
+                {
+                    label: "Z maximum acceleration",
+                    value: self.eeprom.max_acceleration.Z,
+                    units: "mm/s2",
+                },
+                {
+                    label: "E maximum acceleration",
+                    value: self.eeprom.max_acceleration.E,
+                    units: "mm/s2",
+                },
+            ],
+            print_acceleration: [
+                {
+                    label: "Printing acceleration",
+                    value: self.eeprom.print_acceleration.P,
+                    units: "mm/s2",
+                },
+                {
+                    label: "Retract acceleration",
+                    value: self.eeprom.print_acceleration.R,
+                    units: "mm/s2",
+                },
+                {
+                    label: "Travel acceleration",
+                    value: self.eeprom.print_acceleration.T,
+                    units: "mm/s2",
+                },
+            ],
+            probe_offset: [
+                {
+                    label: "Z probe X offset",
+                    value: self.eeprom.probe_offset.X,
+                    units: "mm",
+                },
+                {
+                    label: "Z probe Y offset",
+                    value: self.eeprom.probe_offset.Y,
+                    units: "mm",
+                },
+                {
+                    label: "Z probe Z offset",
+                    value: self.eeprom.probe_offset.Z,
+                    units: "mm",
+                },
+            ],
+            steps: [
+                {
+                    label: "X steps",
+                    value: self.eeprom.steps.X,
+                    units: "steps/mm",
+                },
+                {
+                    label: "Y steps",
+                    value: self.eeprom.steps.Y,
+                    units: "steps/mm",
+                },
+                {
+                    label: "Z steps",
+                    value: self.eeprom.steps.Z,
+                    units: "steps/mm",
+                },
+                {
+                    label: "E steps",
+                    value: self.eeprom.steps.E,
+                    units: "steps/mm",
+                },
+            ],
+        };
+
+        self.eeprom_from_json = function (data) {
+            // loops through response and assigns values to observables
+            for (let key in data.eeprom) {
+                let value = data.eeprom[key];
+                for (let param in value.params) {
+                    self.eeprom[key][param](value.params[param]);
+                }
+            }
+            self.unsaved(false);
+        };
+
+        self.eeprom_to_json = function () {
+            // loops through eeprom data, to create a JSON object to POST
+            var eeprom = [];
+            for (let key in self.eeprom) {
+                let data = { name: key, params: {} };
+                let value = self.eeprom[key];
+                for (let param in value) {
+                    if (param !== "visible") {
+                        data.params[param] = value[param]();
+                    }
+                }
+                eeprom.push(data);
+            }
+            return eeprom;
+        };
+
+        self.info = (function () {
+            var info = {};
+
+            info.additional = ko.observableArray([]);
+            info.capabilities = ko.observableArray([]);
+            info.is_marlin = ko.observable(false);
+            info.name = ko.observable();
+            return info;
+        })();
+
+        self.info_from_json = function (data) {
+            self.info.additional([]);
+            for (let additional in data.info.additional) {
+                if (additional === "FIRMWARE_NAME") {
+                    continue;
+                }
+                let value = data.info.additional[additional];
+                let name = capitaliseWords(additional.replace(/_/gi, " "));
+                // format report to more human-readable style
+                self.info.additional.push({
+                    name: name,
+                    val: value,
+                });
+            }
+            self.info.capabilities([]);
+            for (let capability in data.info.capabilities) {
+                let value = data.info.capabilities[capability];
+                let cap = capitaliseWords(capability.replace(/_/gi, " "));
+                // format cap to more human-readable style
+                self.info.capabilities.push({
+                    cap: cap,
+                    val: value,
+                });
+            }
+            self.info.is_marlin(data.info.is_marlin);
+            self.info.name(data.info.name);
+        };
+
+        self.backups = ko.observableArray([]);
+        self.backup_upload_name = ko.observable();
+        self.backup_upload_data = undefined;
+
+        // State bindings
+        self.loading = ko.observable(false);
+        self.initialLoad = ko.observable(true);
+        self.saving = ko.observable(false);
+        self.unsaved = ko.observable(false);
+        self.enable_fields = ko.pureComputed(function () {
+            return (
+                !self.loading() &&
+                !self.saving() &&
+                !self.printerState.isBusy() &&
+                self.printerState.isReady()
+            );
+        });
+        self.enable_buttons = ko.pureComputed(function () {
+            return (
+                !self.loading() &&
+                !self.initialLoad() &&
+                self.info.is_marlin() &&
+                !self.printerState.isBusy() &&
+                self.printerState.isReady()
+            );
+        });
+
+        self.edited = function () {
+            if (!self.initialLoad() && !self.loading()) {
+                self.unsaved(true);
+            }
+        };
+
+        self.backup_open = ko.observable(false);
+
+        // Button bindings
+        self.load_eeprom = function () {
+            self.loading(true);
+            OctoPrint.simpleApiCommand("eeprom_marlin", "load");
+        };
+
+        self.save_eeprom = function () {
+            self.saving(true);
+            OctoPrint.simpleApiCommand("eeprom_marlin", "save", {
+                eeprom_data: self.eeprom_to_json(),
+            }).done(function (response) {
+                self.saving(false);
+                self.unsaved(false);
             });
         };
 
-        self.handleFileSelect = function(evt) {
-            var files = evt.target.files;
+        self.reset_eeprom = function () {
+            showConfirmationDialog(
+                "This will reset the EEPROM settings to factory defaults",
+                function () {
+                    OctoPrint.simpleApiCommand("eeprom_marlin", "reset");
+                },
+                {
+                    proceed: "Reset",
+                }
+            );
+        };
 
-            for (var i = 0, f; f = files[i]; i++) {
-                var reader = new FileReader();
+        self.toggle_backup = function () {
+            if ($("#eeprom_tab_backup").hasClass("in")) {
+                // backup open, close it
+                $("#eeprom_tab_data").collapse("show");
+                $("#eeprom_tab_backup").collapse("hide");
+                self.backup_open(false);
+            } else {
+                // backup closed, open it
+                $("#eeprom_tab_data").collapse("hide");
+                $("#eeprom_tab_backup").collapse("show");
+                self.backup_open(true);
+            }
+        };
 
-                reader.onload = (function(cFile) {
-                    return function(e) {
-                        // prevent dual load
-                        self.setControls(false);
+        self.backups_from_response = function (data) {
+            self.backups(data);
+        };
 
-                        self.backupConfig = e.target.result;
+        self.delete_backup = function (name) {
+            OctoPrint.simpleApiCommand("eeprom_marlin", "delete", {
+                name: name,
+            }).done(function (response) {
+                let success = response.success;
+                if (!success) {
+                    new PNotify({
+                        title: "Error creating a backup",
+                        text: response.error,
+                        type: "error",
+                        hide: false,
+                    });
+                } else {
+                    self.backups_from_response(response.backups);
+                }
+            });
+        };
 
-                        self.eepromData1([]);
-                        self.eepromData2([]);
-                        self.eepromDataLevel([]);
-                        self.eepromDataSteps([]);
-                        self.eepromDataFRates([]);
-                        self.eepromDataMaxAccel([]);
-                        self.eepromDataAccel([]);
-                        self.eepromDataPID([]);
-                        self.eepromDataPIDB([]);
-                        self.eepromDataHoming([]);
-                        self.eepromDataMaterialHS0([]);
-                        self.eepromDataMaterialHS1([]);
-                        self.eepromDataMaterialHS2([]);
-                        self.eepromDataFilament([]);
-                        self.eepromDataEndstop([]);
-                        self.eepromDataDelta1([]);
-                        self.eepromDataDelta2([]);
-                        self.eepromDataLinear([]);
+        self.backup_name = ko.observable();
 
-                        _.each(self.backupConfig.split('\n'), function (line) {
-                            self.eepromFieldParse(line, true);
+        self.new_backup = function () {
+            console.log(
+                self.settingsViewModel.settings.plugins.eeprom_marlin.custom_name()
+            );
+            if (
+                self.settingsViewModel.settings.plugins.eeprom_marlin.custom_name()
+            ) {
+                // Trigger modal with custom name
+                $("#eepromBackupNameModal").modal("show");
+            } else {
+                self.create_backup();
+            }
+        };
+
+        self.create_backup = function () {
+            $("#eepromBackupNameModal").modal("hide");
+
+            var payload = {};
+            if (
+                self.settingsViewModel.settings.plugins.eeprom_marlin.custom_name()
+            ) {
+                payload = { name: self.backup_name() };
+            }
+            self.backup_name("");
+
+            OctoPrint.simpleApiCommand("eeprom_marlin", "backup", payload).done(
+                function (response) {
+                    let success = response.success;
+                    if (!success) {
+                        new PNotify({
+                            title: "Error creating a backup",
+                            text: response.error,
+                            type: "error",
+                            hide: false,
                         });
-                    };
-                })(f);
+                    } else {
+                        new PNotify({
+                            title: "Backup created successfully",
+                            type: "success",
+                            hide: true,
+                            delay: 4000,
+                        });
+                        OctoPrint.simpleApiGet("eeprom_marlin").done(function (
+                            response
+                        ) {
+                            self.backups_from_response(response.backups);
+                        });
+                    }
+                }
+            );
+        };
 
-                reader.readAsText(f);
+        self.restore_backup = function (name) {
+            OctoPrint.simpleApiCommand("eeprom_marlin", "restore", {
+                name: name,
+            }).done(function (response) {
+                let success = response.success;
+                if (!success) {
+                    new PNotify({
+                        title: "Error restoring backup",
+                        text: response.error,
+                        type: "error",
+                        hide: false,
+                    });
+                } else {
+                    new PNotify({
+                        title: "Backup restored successfully",
+                        text: "Restored " + response.name,
+                        type: "success",
+                        hide: true,
+                        delay: 4000,
+                    });
+                    self.eeprom_from_json(response.eeprom);
+                }
+            });
+        };
+
+        $("#plugin_eeprom_marlin_backup_upload").fileupload({
+            dataType: "json",
+            maxNumberOfFiles: 1,
+            autoUpload: false,
+            headers: OctoPrint.getRequestHeaders(),
+            add: function (e, data) {
+                if (data.files.length === 0) {
+                    // no files? ignore
+                    return false;
+                }
+
+                self.backup_upload_name(data.files[0].name);
+                self.backup_upload_data = data;
+            },
+            done: function (e, data) {
+                self.backup_upload_name(undefined);
+                self.backup_upload_name = undefined;
+            },
+        });
+
+        self.restore_from_upload = function () {
+            if (self.backup_upload_data === undefined) return;
+            var input, file, fr;
+
+            if (typeof window.FileReader !== "function") {
+                alert("The file API is not supported on this browser");
+                return;
             }
-            $('#eeprom_marlin_upload').addClass("btn-primary");
-        };
 
-        self.setControls = function(state) {
-            if (self.stateControls != state) {
-                self.stateControls = state;
+            file = self.backup_upload_data.files[0];
+            fr = new FileReader();
+            fr.onload = recievedText;
+            fr.readAsText(file);
 
-                $('#eeprom_marlin_load').prop('disabled', !state);
-                $('#eeprom_marlin_upload').prop('disabled', !state);
-                $('#eeprom_marlin_backup').prop('disabled', !state);
-                $('#eeprom_marlin_restore').prop('disabled', !state);
-                $('#eeprom_marlin_reset').prop('disabled', !state);
-            }
-        };
-
-        self.loadEeprom = function() {
-            // prevent dual load
-            self.setControls(false);
-
-            self.eepromData1([]);
-            self.eepromData2([]);
-            self.eepromDataLevel([]);
-            self.eepromDataSteps([]);
-            self.eepromDataFRates([]);
-            self.eepromDataMaxAccel([]);
-            self.eepromDataAccel([]);
-            self.eepromDataPID([]);
-            self.eepromDataPIDB([]);
-            self.eepromDataHoming([]);
-            self.eepromDataMaterialHS0([]);
-            self.eepromDataMaterialHS1([]);
-            self.eepromDataMaterialHS2([]);
-            self.eepromDataFilament([]);
-            self.eepromDataEndstop([]);
-            self.eepromDataDelta1([]);
-            self.eepromDataDelta2([]);
-            self.eepromDataLinear([]);
-
-            self._requestEepromData();
-
-            $('#eeprom_marlin_upload').removeClass("btn-primary");
-            hasChangedEepromForm = false;
-        };
-
-        self.saveEeprom = function()  {
-            // prevent dual load
-            self.setControls(false);
-
-            var cmd = 'M500';
-            var eepromData = self.eepromData1();
-            _.each(eepromData, function(data) {
-                if (data.origValue != data.value) {
-                    self._requestSaveDataToEeprom(data.dataType, data.value);
-                    data.origValue = data.value;
-                }
-            });
-
-            eepromData = self.eepromData2();
-            _.each(eepromData, function(data) {
-                if (data.origValue != data.value) {
-                    self._requestSaveDataToEeprom(data.dataType, data.value);
-                    data.origValue = data.value;
-                }
-            });
-
-            eepromData = self.eepromDataLevel();
-            _.each(eepromData, function(data) {
-                if (data.origValue != data.value) {
-                    self._requestSaveDataToEeprom(data.dataType, data.value);
-                    data.origValue = data.value;
-                }
-            });
-
-            eepromData = self.eepromDataSteps();
-            _.each(eepromData, function(data) {
-                if (data.origValue != data.value) {
-                    self._requestSaveDataToEeprom(data.dataType, data.value);
-                    data.origValue = data.value;
-                }
-            });
-
-            eepromData = self.eepromDataFRates();
-            _.each(eepromData, function(data) {
-                if (data.origValue != data.value) {
-                    self._requestSaveDataToEeprom(data.dataType, data.value);
-                    data.origValue = data.value;
-                }
-            });
-
-            eepromData = self.eepromDataMaxAccel();
-            _.each(eepromData, function(data) {
-                if (data.origValue != data.value) {
-                    self._requestSaveDataToEeprom(data.dataType, data.value);
-                    data.origValue = data.value;
-                }
-            });
-
-            eepromData = self.eepromDataAccel();
-            _.each(eepromData, function(data) {
-                if (data.origValue != data.value) {
-                    self._requestSaveDataToEeprom(data.dataType, data.value);
-                    data.origValue = data.value;
-                }
-            });
-
-            eepromData = self.eepromDataPID();
-            _.each(eepromData, function(data) {
-                if (data.origValue != data.value) {
-                    self._requestSaveDataToEeprom(data.dataType, data.value);
-                    data.origValue = data.value;
-                }
-            });
-
-            eepromData = self.eepromDataPIDB();
-            _.each(eepromData, function(data) {
-                if (data.origValue != data.value) {
-                    self._requestSaveDataToEeprom(data.dataType, data.value);
-                    data.origValue = data.value;
-                }
-            });
-
-            eepromData = self.eepromDataHoming();
-            _.each(eepromData, function(data) {
-                if (data.origValue != data.value) {
-                    self._requestSaveDataToEeprom(data.dataType, data.value);
-                    data.origValue = data.value;
-                }
-            });
-
-            eepromData = self.eepromDataMaterialHS0();
-            _.each(eepromData, function(data) {
-                if (data.origValue != data.value) {
-                    self._requestSaveDataToEeprom(data.dataType, data.value);
-                    data.origValue = data.value;
-                }
-            });
-
-            eepromData = self.eepromDataMaterialHS1();
-            _.each(eepromData, function(data) {
-                if (data.origValue != data.value) {
-                    self._requestSaveDataToEeprom(data.dataType, data.value);
-                    data.origValue = data.value;
-                }
-            });
-
-            eepromData = self.eepromDataMaterialHS2();
-            _.each(eepromData, function(data) {
-                if (data.origValue != data.value) {
-                    self._requestSaveDataToEeprom(data.dataType, data.value);
-                    data.origValue = data.value;
-                }
-            });
-
-            eepromData = self.eepromDataFilament();
-            _.each(eepromData, function(data) {
-                if (data.origValue != data.value) {
-                    self._requestSaveDataToEeprom(data.dataType, data.value);
-                    data.origValue = data.value;
-                }
-            });
-
-            eepromData = self.eepromDataEndstop();
-            _.each(eepromData, function(data) {
-                if (data.origValue != data.value) {
-                    self._requestSaveDataToEeprom(data.dataType, data.value);
-                    data.origValue = data.value;
-                }
-            });
-
-            eepromData = self.eepromDataDelta1();
-            _.each(eepromData, function(data) {
-                if (data.origValue != data.value) {
-                    self._requestSaveDataToEeprom(data.dataType, data.value);
-                    data.origValue = data.value;
-                }
-            });
-
-            eepromData = self.eepromDataDelta2();
-            _.each(eepromData, function(data) {
-                if (data.origValue != data.value) {
-                    self._requestSaveDataToEeprom(data.dataType, data.value);
-                    data.origValue = data.value;
-                }
-            });
-
-            eepromData = self.eepromDataLinear();
-            _.each(eepromData, function(data) {
-                if (data.origValue != data.value) {
-                    self._requestSaveDataToEeprom(data.dataType, data.value);
-                    data.origValue = data.value;
-                }
-            });
-
-            self.control.sendCustomCommand({ command: cmd });
-
-            $('#eeprom_marlin_upload').removeClass("btn-primary");
-            hasChangedEepromForm = false;
-
-            self.control.sendCustomCommand({ command: "M504" });
-            self.loadEeprom();
-
-            new PNotify({
-                title: 'EEPROM Marlin',
-                text: 'EEPROM data stored.',
-                type: 'success',
-                hide: true
-            });
-        };
-
-        self._requestFirmwareInfo = function() {
-            if (!self.isPrinting()) {
-                self.control.sendCustomCommand({ command: "M115" });
+            function recievedText(e) {
+                let lines = e.target.result;
+                var json_data = JSON.parse(lines);
+                OctoPrint.simpleApiCommand("eeprom_marlin", "upload_restore", {
+                    data: json_data,
+                }).done(function (response) {
+                    let success = response.success;
+                    if (!success) {
+                        new PNotify({
+                            title: "Error restoring backup",
+                            text: response.error,
+                            type: "error",
+                            hide: false,
+                        });
+                    } else {
+                        new PNotify({
+                            title: "Backup restored successfully",
+                            type: "success",
+                            hide: true,
+                            delay: 4000,
+                        });
+                        self.eeprom_from_json(response.eeprom);
+                    }
+                    $("#eepromUploadBackupModal").modal("hide");
+                });
             }
         };
 
-        self._requestEepromData = function() {
-            if (!self.isPrinting()) {
-                self.control.sendCustomCommand({ command: "M504" });
-                self.control.sendCustomCommand({ command: "M501" });
+        // DataUpdater
+        self.onDataUpdaterPluginMessage = function (plugin, data) {
+            if (plugin !== "eeprom_marlin") {
+                return;
+            }
+            if (data.type === "load") {
+                console.log(data);
+                self.eeprom_from_json(data.data);
+                self.info_from_json(data.data);
+                self.loading(false);
             }
         };
 
-        self._requestSaveDataToEeprom = function(data_type, value) {
-            var cmd = data_type + value;
-            self.control.sendCustomCommand({ command: cmd });
+        self.onAllBound = self.onEventConnected = function () {
+            self.loading(true);
+            OctoPrint.simpleApiGet("eeprom_marlin").done(function (response) {
+                self.eeprom_from_json(response);
+                self.info_from_json(response);
+                self.backups_from_response(response.backups);
+                self.loading(false);
+                self.initialLoad(false);
+            });
         };
+
+        // Utilities
+        function capitaliseWords(str) {
+            return str.replace(/\w\S*/g, function (txt) {
+                return (
+                    txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+                );
+            });
+        }
     }
 
-    OCTOPRINT_VIEWMODELS.push([
-        EepromMarlinViewModel,
-        ["controlViewModel", "connectionViewModel"],
-        "#tab_plugin_eeprom_marlin"
-    ]);
+    OCTOPRINT_VIEWMODELS.push({
+        construct: EEPROMMarlinViewModel,
+        dependencies: ["printerStateViewModel", "settingsViewModel"],
+        elements: ["#tab_plugin_eeprom_marlin"],
+    });
 });
-
-changedEepromForm = function() {
-    if (!hasChangedEepromForm) {
-        $('#eeprom_marlin_upload').addClass("btn-primary");
-        hasChangedEepromForm = true;
-    }
-};

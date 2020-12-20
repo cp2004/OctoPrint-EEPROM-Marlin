@@ -1,0 +1,23 @@
+<div data-bind="visible: eeprom.filament.visible">
+    <strong>{{ _("Filament settings") }}</strong>
+    <hr>
+    <!-- ko foreach: UI.filament -->
+    {% include "snippets/single_field.jinja2" %}
+    <!-- /ko -->
+</div>
+<div data-bind="visible: eeprom.material1.visible">
+    <hr>
+    <strong>{{ _("Material Preset (1)") }}</strong>
+    <hr>
+    <!-- ko foreach: UI.material1 -->
+    {% include "snippets/single_field.jinja2" %}
+    <!-- /ko -->
+</div>
+<div data-bind="visible: eeprom.material2.visible">
+    <hr>
+    <strong>{{ _("Material Preset (2)") }}</strong>
+    <hr>
+    <!-- ko foreach: UI.material2 -->
+    {% include "snippets/single_field.jinja2" %}
+    <!-- /ko -->
+</div>

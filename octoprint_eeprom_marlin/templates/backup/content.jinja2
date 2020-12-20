@@ -1,0 +1,37 @@
+<table data-bind="visible: backups().length > 0" class="table table-condensed">
+    <thead>
+        <tr>
+            <th style="width: 50%">
+                Backup Name
+            </th>
+            <th style="width: 25%">
+                Time
+            </th>
+            <th style="width: 25%">
+                Actions
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- ko foreach: backups -->
+        <tr>
+            <td data-bind="text: name"></td>
+            <td data-bind="text: time"></td>
+            <td>
+                <button data-bind="click: function(){ $parent.restore_backup(name) }" class="btn btn-small">
+                    <i class="fas-custom fa-custom-cloud-upload-alt"></i>
+                </button>
+                <button data-bind="click: function(){ $parent.delete_backup(name) }" class="btn btn-small btn-danger">
+                    <i class="fa fa-trash-o"></i>
+                </button>
+                <a data-bind="attr: {href: '/plugin/eeprom_marlin/download/' + name}" class="btn btn-small">
+                    <i class="fa fa-download"></i>
+                </a>
+            </td>
+        </tr>
+        <!-- /ko -->
+    </tbody>
+</table>
+<div class="alert alert-info" data-bind="visible: backups().length <= 0">
+    <strong>Looks like there are no backups stored on the system. Why not create one now?</strong>
+</div>
