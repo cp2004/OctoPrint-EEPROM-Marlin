@@ -26,6 +26,29 @@ It is recommended you install it, but it can also be run as a one-off or as a fi
 * To run against the entire codebase: `pre-commit run --hook-stage manual --all-files`
 * For details of how to set this up with PyCharm Pro, please see the 'File Watcher/Pre-commit' section [OctoPrint documentation](https://docs.octoprint.org/en/master/development/environment.html#pycharm)
 
+#### Adding yourself to the contributors section of the plugin
+
+Make sure you take credit for your contribution! It's easy to add your name, please do so!
+
+In the file [`octoprint_eeprom_marlin/sponsors_contributors.py`](https://github.com/cp2004/OctoPrint-EEPROM-Marlin/blob/master/octoprint_eeprom_marlin/sponsors_contributors.py) there is a list of contributors, that looks like this:
+
+```python
+CONTRIBUTORS = [
+    {"name": "Anderson Silva (Previous maintainer)", "username": "amsbr"},
+]
+```
+
+Add your name as another dictionary to this list, like so:
+```diff
+ CONTRIBUTORS = [
+     {"name": "Anderson Silva (Previous maintainer)", "username": "amsbr"},
++    {"name": "Awesome Contributor", "username": "awesomecontributor"},
+ ]
+```
+
+Your name should then show up under 'Show Contributors' in the plugin's settings pages.
+
+
 #### Other points
 
 * Please make your contributions against the `devel` branch, to make sure it has the latest codebase. Only exceptions are documentation fixes, such as this one.
