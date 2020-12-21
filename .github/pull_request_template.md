@@ -13,4 +13,5 @@
 * [ ] Your PR targets the `devel` branch (No PRs to master please!)
 * [ ] If your changes include stylesheets: You have modified the SCSS source (**Not the compiled CSS**)
 * [ ] You have run the existing unit tests against your plugin and nothing broke
-* [ ] You have added yourself to the contributors section (see `supporters-contributors.py`)
+* [ ] You have read the [Contribution Guidelines](https://github.com/cp2004/OctoPrint-EEPROM-Marlin/blob/master/CONTRIBUTING.md)
+* [ ] You have added yourself to the contributors section :) (see `supporters-contributors.py`)
