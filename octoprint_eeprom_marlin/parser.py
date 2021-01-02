@@ -82,8 +82,8 @@ class Parser:
         try:
             params = data.COMMAND_PARAMS[command]
         except KeyError:
-            self._logger.error("Unrecognised EEPROM output line, could not parse")
-            self._logger.error("Line: {}".format(line))
+            self._logger.warning("Did not recognise EEPROM data, skipping line")
+            self._logger.warning("Line: {}".format(line))
             return
 
         # work out what values we have
@@ -92,10 +92,10 @@ class Parser:
             try:
                 param_match = regexes_parameters["float{}".format(param)].search(line)
             except KeyError:
-                self._logger.error(
-                    "Unrecognised EEPROM command parameter, could not parse"
+                self._logger.warning(
+                    "Did not recognise EEPROM parameter, skipping param"
                 )
-                self._logger.error("Parameter: {}".format(param))
+                self._logger.warning("Parameter: {}".format(param))
                 continue
             if param_match:
                 parameters[param] = float(param_match.group("value"))
