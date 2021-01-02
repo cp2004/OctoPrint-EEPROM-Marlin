@@ -11,6 +11,9 @@ def build_backup_name():
 def construct_command(data):
     command = data["command"]
     for param, value in data["params"].items():
+        # Check that the value exists, avoid M205 [...] JNone
+        if value is None:
+            continue
         value = str(value) if command != "M145" and param != "S" else str(int(value))
         command = command + " " + param + value
     return command
