@@ -1,4 +1,4 @@
-<table class="table table-condensed">
+<table data-bind="visible: backups().length > 0" class="table table-condensed">
     <thead>
         <tr>
             <th style="width: 50%">
@@ -32,3 +32,6 @@
         <!-- /ko -->
     </tbody>
 </table>
+<div class="alert alert-info" data-bind="visible: backups().length <= 0">
+    <strong>Looks like there are no backups stored on the system. Why not create one now?</strong>
+</div>

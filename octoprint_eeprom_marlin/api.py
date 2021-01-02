@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, unicode_literals
 
+__license__ = "GNU Affero General Public License http://www.gnu.org/licenses/agpl.html"
+__copyright__ = (
+    "Copyright (C) 2020 Charlie Powell - Released under terms of the AGPLv3 License"
+)
 from copy import deepcopy
 
 import flask
@@ -89,11 +93,14 @@ class API:
                     commands.append(util.construct_command(new_data))
 
             if commands:
+                self._logger.info("Saving EEPROM data")
+                self._logger.info("Commands to send: {}".format(commands))
                 self._printer.commands(commands)
                 self._printer.commands("M500")
 
     def reset_eeprom(self):
         if self._printer.is_ready():
+            self._logger.info("Resetting EEPROM on API request")
             # Reset, save, load
             self._printer.commands(
                 ["M502", "M500", "M503" if self._settings.get(["use_m503"]) else "M501"]
@@ -105,6 +112,11 @@ class API:
             name = util.build_backup_name()
         else:
             name = util.sanitize(name)
+            if not name:
+                # Name consisted of only symbols or something, no empty names around here
+                name = util.build_backup_name()
+
+        self._logger.info("Creating backup {}".format(name))
 
         eeprom_data = self._eeprom_data.to_dict()
         try:
@@ -114,9 +126,10 @@ class API:
         except BackupNameTakenError:
             success = False
             error = "Backup name is already in use, please use a different name"
+            self._logger.error(error)
         except Exception as e:
             success = False
-            error = "An unknown error occured while creating the backup, consult the log for details"
+            error = "An unknown error occurred while creating the backup, please consult the log for details"
             self._logger.exception(e)
 
         return flask.jsonify({"success": success, "error": error})
@@ -133,6 +146,8 @@ class API:
             return flask.jsonify(
                 {"success": False, "error": "Backup specified does not exist"}
             )
+
+        self._logger.info("Restoring backup from {}".format(name))
 
         eeprom_data = backup_data["data"]
         # convert json dict to a list, for usage of common parsing methods
@@ -154,11 +169,13 @@ class API:
                 "success": False,
                 "error": "The backup specified could not be found",
             }
-        except Exception:
+            self._logger.error("Backup at {} could not be found".format(name))
+        except Exception as e:
             response = {
                 "success": False,
                 "error": "Unknown error occurred, check log for details",
             }
+            self._logger.exception(e)
 
         response.update({"backups": self._backup_handler.get_backups(quick=True)})
 
@@ -166,12 +183,13 @@ class API:
 
     def upload_restore(self, backup_data):
         if not self._backup_handler._perform_validate(backup_data):
-            return flask.jsonify(
-                {"success": False, "error": "Backup is not valid, could not restore it"}
-            )
+            error = "Backup is not valid, could not restore it"
+            self._logger.error(error)
+            return flask.jsonify({"success": False, "error": error})
 
         eeprom_data = backup_data["data"]
         eeprom_list = util.backup_json_to_list(eeprom_data)
 
         self.save_eeprom_data(eeprom_list)
+        self._logger.info("Restored from uploaded backup")
         return flask.jsonify({"success": True, "eeprom": self._eeprom_data.to_dict()})

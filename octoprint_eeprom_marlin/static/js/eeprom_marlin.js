@@ -688,7 +688,7 @@ $(function () {
                     units: "steps/mm",
                 },
                 {
-                    label: "Y steps",
+                    label: "E steps",
                     value: self.eeprom.steps.E,
                     units: "steps/mm",
                 },

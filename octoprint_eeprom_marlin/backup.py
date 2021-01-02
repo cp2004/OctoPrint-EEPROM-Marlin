@@ -1,7 +1,13 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, unicode_literals
+
 """
 Handles backing up, saving, loading, restoring and more related to the backups
 """
+__license__ = "GNU Affero General Public License http://www.gnu.org/licenses/agpl.html"
+__copyright__ = (
+    "Copyright (C) 2020 Charlie Powell - Released under terms of the AGPLv3 License"
+)
 import io
 import json
 import os
@@ -50,10 +56,14 @@ class BackupHandler:
         self._metadata_file_path = os.path.join(self._data_folder, METADATA_FILENAME)
         self.metadata = None
 
+        if not self.test_backup_path():
+            self.create_backup_path()
+
         # Make sure we have the metadata available
         try:
             # Try read from disk
             self.get_backups(quick=False)
+            self._logger.info("Backup metadata initialised")
         except MetadataMissingError as e:
             self._logger.exception(e)
             self._logger.warning("Metadata was missing, re-creating")
@@ -245,6 +255,25 @@ class BackupHandler:
             break
 
         return files
+
+    def test_backup_path(self):
+        """
+        Tests if the path exists
+        :param path: path relative to data folder to test
+        :return: bool: if path is valid
+        """
+        return os.path.exists(os.path.join(self._data_folder, BACKUPS_PATH))
+
+    def create_backup_path(self):
+        """
+        Creates a directory under path, relative to plugin data folder
+        :param path: path relative to data folder to create
+        :return: None
+        """
+        try:
+            os.mkdir(os.path.join(self._data_folder, BACKUPS_PATH))
+        except FileExistsError:
+            self._logger.error("Tried to create backup path but it already existed")
 
 
 class MetaData:

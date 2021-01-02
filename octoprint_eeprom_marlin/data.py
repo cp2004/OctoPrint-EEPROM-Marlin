@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, unicode_literals
 
+__license__ = "GNU Affero General Public License http://www.gnu.org/licenses/agpl.html"
+__copyright__ = (
+    "Copyright (C) 2020 Charlie Powell - Released under terms of the AGPLv3 License"
+)
 try:
     from typing import Dict, Optional
 except ImportError:
@@ -97,7 +101,9 @@ class EEPROMData:
     Holds recieved EEPROM data
     """
 
-    def __init__(self):
+    def __init__(self, plugin):
+        self.plugin = plugin
+
         self.steps = IndividualData("steps", "M92", ["X", "Y", "Z", "E"])
         self.feedrate = IndividualData("feedrate", "M203", ["X", "Y", "Z", "E"])
         self.max_acceleration = IndividualData(
@@ -123,6 +129,8 @@ class EEPROMData:
         self.material1 = IndividualData("material1", "M145", ["S", "B", "H", "F"])
         self.material2 = IndividualData("material2", "M145", ["S", "B", "H", "F"])
 
+        self.plugin._logger.info("EEPROM Data initialised")
+
     def from_list(self, data):
         """
         Parse data from list into class
@@ -147,9 +155,11 @@ class EEPROMData:
                     data_class = self.material2
                 else:
                     # unable to parse again
+                    self.plugin._logger.error("Unable to parse M145 command")
                     return
             except KeyError:
                 # Unable to parse M145
+                self.plugin._logger.error("Unable to parse M145 command")
                 return
         else:
             data_class = getattr(self, data["name"])
@@ -160,6 +170,7 @@ class EEPROMData:
         data = {}
         for command, name in COMMAND_NAMES.items():
             if command == "M145":
+                # Special handling for M145 data
                 cls = getattr(self, name + "1")
                 data[name + "1"] = {"command": command, "params": cls.params}
                 cls2 = getattr(self, name + "2")
@@ -174,7 +185,7 @@ class EEPROMData:
         data = []
         for command, name in COMMAND_NAMES.items():
             if command == "M145":
-                # Needs special handling
+                # Special handling for M145 data
                 params = getattr(self, name + "1").params
                 data.append({"name": name + "1", "command": command, "params": params})
                 params2 = getattr(self, name + "2").params

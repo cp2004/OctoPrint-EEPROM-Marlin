@@ -5,14 +5,14 @@ import versioneer
 ########################################################################################################################
 
 # The plugin's identifier, has to be unique
-plugin_identifier = "eeprom_marlin"
+plugin_identifier = "eeprom_marlin"  # DO NOT CHANGE IN PRODUCTION
 
 # The plugin's python package, should be "octoprint_<plugin identifier>", has to be unique
-plugin_package = "octoprint_eeprom_marlin"
+plugin_package = "octoprint_eeprom_marlin"  # DO NOT CHANGE IN PRODUCTION
 
 # The plugin's human readable name. Can be overwritten within OctoPrint's internal data via __plugin_name__ in the
 # plugin module
-plugin_name = "Marlin EEPROM editor"
+plugin_name = "Marlin EEPROM editor"  # DO NOT CHANGE IN PRODUCTION - use internal data
 
 # The plugin's version. Can be overwritten within OctoPrint's internal data via __plugin_version__ in the plugin module
 plugin_version = versioneer.get_version()
@@ -22,9 +22,8 @@ plugin_cmdclass = versioneer.get_cmdclass()
 # The plugin's description. Can be overwritten within OctoPrint's internal data via __plugin_description__ in the plugin
 # module
 plugin_description = """
-Makes it possible to change the EEPROM values of Marlin Firmware through OctoPrint.
-Plugin previously maintained by Anderson Silva, currently Charlie Powell
-Based on OctoPrint-EEprom-Repetir by Salandora
+Makes it possible to change the EEPROM values of Marlin Firmware through OctoPrint.\n
+Plugin previously maintained by Anderson Silva, currently Charlie Powell\n
 """
 
 # The plugin's author. Can be overwritten within OctoPrint's internal data via __plugin_author__ in the plugin module
@@ -34,13 +33,13 @@ plugin_author = "Charlie Powell, previously Anderson Silva"
 plugin_author_email = "cp2004.github@gmail.com"
 
 # The plugin's homepage URL. Can be overwritten within OctoPrint's internal data via __plugin_url__ in the plugin module
-plugin_url = "https://github.com/cp2004/OctoPrint-EEprom-Marlin"
+plugin_url = "https://github.com/cp2004/OctoPrint-EEPROM-Marlin"
 
 # The plugin's license. Can be overwritten within OctoPrint's internal data via __plugin_license__ in the plugin module
 plugin_license = "AGPLv3"
 
 # Any additional requirements besides OctoPrint should be listed here
-plugin_requires = ["mock"]
+plugin_requires = ["mock"]  # Mock is required for tests, not operation.
 
 # # --------------------------------------------------------------------------------------------------------------------
 # # More advanced options that you usually shouldn't have to touch follow after this point
