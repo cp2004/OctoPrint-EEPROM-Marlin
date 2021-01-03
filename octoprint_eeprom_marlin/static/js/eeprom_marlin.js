@@ -376,6 +376,26 @@ $(function () {
                 return steps;
             })();
 
+            eeprom.filament_change = (function () {
+                var filament_change = {};
+
+                filament_change.L = ko.observable();
+                filament_change.U = ko.observable();
+
+                filament_change.visible = ko.computed(function () {
+                    for (let param in filament_change) {
+                        if (param === "visible") {
+                            continue;
+                        }
+                        if (filament_change[param]() !== null) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+                return filament_change;
+            })();
+
             return eeprom;
         })();
 
@@ -693,6 +713,18 @@ $(function () {
                     units: "steps/mm",
                 },
             ],
+            filament_change: [
+                {
+                    label: "Load length",
+                    value: self.eeprom.filament_change.L,
+                    units: "mm",
+                },
+                {
+                    label: "Unload length",
+                    value: self.eeprom.filament_change.U,
+                    units: "mm",
+                },
+            ],
         };
 
         self.eeprom_from_json = function (data) {
@@ -700,7 +732,12 @@ $(function () {
             for (let key in data.eeprom) {
                 let value = data.eeprom[key];
                 for (let param in value.params) {
-                    self.eeprom[key][param](value.params[param]);
+                    try {
+                        self.eeprom[key][param](value.params[param]);
+                    } catch {
+                        console.log(key);
+                        console.log(param);
+                    }
                 }
             }
             self.unsaved(false);

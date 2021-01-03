@@ -44,6 +44,7 @@ regexes_parameters = {
     "floatR": regex_creator("float", "R"),
     "floatS": regex_creator("float", "S"),
     "floatT": regex_creator("float", "T"),
+    "floatU": regex_creator("float", "U"),
     "floatX": regex_creator("float", "X"),
     "floatY": regex_creator("float", "Y"),
     "floatZ": regex_creator("float", "Z"),
