@@ -3,7 +3,7 @@
         <i class="fa fa-fw fa-plus"></i>
         {{ _(" New backup") }}
     </button>
-    <button class="btn" data-toggle="modal" data-target="#eepromUploadBackupModal">
+    <button class="btn" data-bind="enable: enable_buttons" data-toggle="modal" data-target="#eepromUploadBackupModal">
         <i class="fa fa-upload" aria-hidden="true"></i>
         {{ _(" Upload backup") }}
     </button>
