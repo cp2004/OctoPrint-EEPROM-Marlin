@@ -1,6 +1,11 @@
 $touchUI_icon: "\f14b";
 
 #touch body {
+  // TOUCHUI Specific styles
+  // Yes, it annoys me that TouchUI overrides lots of styles, that make the UI look a little broken
+  // But we will have to deal with it for as long as touchUI exists & people want to use it
+
+  // Touch tab icon
   #tabs,
   #navbar #all_touchui_settings {
     #tab_plugin_eeprom_marlin_link,
@@ -8,6 +13,24 @@ $touchUI_icon: "\f14b";
       a:before {
         content: $touchUI_icon;
       }
+    }
+  }
+  // Override some styles to format things a little better **only** within my plugin
+  // Uses !important to override touch UI styles definitely, we risk chance otherwise.
+  #tab_plugin_eeprom_marlin {
+    // override width of the table to stop it going off screen
+    .table {
+      width: auto !important;
+      min-width: 100% !important;
+    }
+    // bring back custom icons to buttons
+    .fas-custom {
+      font-family: "Font Awesome 5 Free" !important;
+      font-weight: 900 !important;
+    }
+    // apply a *little* bit of margin to separate the button groups, should they be stacked.
+    .btn-group {
+      margin-top: 2px;
     }
   }
 }

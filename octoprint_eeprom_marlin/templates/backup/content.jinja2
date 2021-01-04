@@ -19,13 +19,13 @@
             <td data-bind="text: time"></td>
             <td>
                 <button data-bind="click: function(){ $parent.restore_backup(name) }" class="btn btn-small">
-                    <i class="fas-custom fa-custom-cloud-upload-alt"></i>
+                    <i class="fas-custom fa-fw fa-custom-cloud-upload-alt"></i>
                 </button>
                 <button data-bind="click: function(){ $parent.delete_backup(name) }" class="btn btn-small btn-danger">
-                    <i class="fa fa-trash-o"></i>
+                    <i class="fa fa-fw fa-trash-o"></i>
                 </button>
                 <a data-bind="attr: {href: '/plugin/eeprom_marlin/download/' + name}" class="btn btn-small">
-                    <i class="fa fa-download"></i>
+                    <i class="fa fa-fw fa-download"></i>
                 </a>
             </td>
         </tr>
