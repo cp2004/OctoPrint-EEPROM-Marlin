@@ -10,6 +10,7 @@ try:
 except ImportError:
     # we don't need these, just for typed comments
     # TODO PY3: Type annotations!
+    Dict = Optional = None
     pass
 
 COMMAND_PARAMS = {
@@ -28,6 +29,7 @@ COMMAND_PARAMS = {
     "M205": ["S", "T", "B", "X", "Y", "Z", "E", "J"],
     "M420": ["S", "Z"],
     "M145": ["S", "B", "H", "F"],
+    "M603": ["L", "U"],
 }
 
 COMMAND_NAMES = {
@@ -46,6 +48,7 @@ COMMAND_NAMES = {
     "M205": "advanced",
     "M420": "autolevel",
     "M145": "material",
+    "M603": "filament_change",
 }
 
 
@@ -128,7 +131,11 @@ class EEPROMData:
         self.autolevel = IndividualData("autolevel", "M420", ["S", "Z"])
         self.material1 = IndividualData("material1", "M145", ["S", "B", "H", "F"])
         self.material2 = IndividualData("material2", "M145", ["S", "B", "H", "F"])
+        self.filament_change = IndividualData(
+            "filament_change", "M603", COMMAND_PARAMS["M603"]
+        )
 
+        # noinspection PyProtectedMember
         self.plugin._logger.info("EEPROM Data initialised")
 
     def from_list(self, data):
@@ -155,10 +162,12 @@ class EEPROMData:
                     data_class = self.material2
                 else:
                     # unable to parse again
+                    # noinspection PyProtectedMember
                     self.plugin._logger.error("Unable to parse M145 command")
                     return
             except KeyError:
                 # Unable to parse M145
+                # noinspection PyProtectedMember
                 self.plugin._logger.error("Unable to parse M145 command")
                 return
         else:

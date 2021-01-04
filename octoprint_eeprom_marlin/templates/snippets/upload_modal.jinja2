@@ -5,6 +5,9 @@
     </div>
     <div class="modal-body">
         <p>Select a file to upload and restore</p>
+        <div class="alert" data-bind="visible: enable_buttons">
+            <strong>{{ _("Backup upload is currently disabled while the editor is in read only mode") }}</strong>
+        </div>
         <form class="form-horizontal" onsubmit="return false;">
             <div class="control-group">
                 <label class="control-label">{{ _('Backup file') }}</label>
@@ -22,6 +25,6 @@
     </div>
     <div class="modal-footer">
         <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-        <button class="btn btn-primary" data-bind="click: restore_from_upload">{{ _('Upload & restore') }}</button>
+        <button class="btn btn-primary" data-bind="click: restore_from_upload, enable: enable_buttons">{{ _('Upload & restore') }}</button>
     </div>
 </div>

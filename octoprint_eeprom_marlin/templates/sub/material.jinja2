@@ -5,6 +5,14 @@
     {% include "snippets/single_field.jinja2" %}
     <!-- /ko -->
 </div>
+<div data-bind="visible: eeprom.filament_change.visible">
+    <hr>
+    <strong>{{ _("Filament Change settings") }}</strong>
+    <hr>
+    <!-- ko foreach: UI.filament_change -->
+    {% include "snippets/single_field.jinja2" %}
+    <!-- /ko -->
+</div>
 <div data-bind="visible: eeprom.material1.visible">
     <hr>
     <strong>{{ _("Material Preset (1)") }}</strong>
