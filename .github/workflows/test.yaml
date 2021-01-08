@@ -67,7 +67,7 @@ jobs:
           python-version: 3.7
       - name: 🏗 Set up dev dependencies
         run: |
-          pip install -e octoprint[develop]
+          pip install octoprint[develop]
       - name: 🚀 Run black
         run: |
           pre-commit run --hook-stage manual black --all-files --show-diff-on-failure
@@ -83,7 +83,7 @@ jobs:
           python-version: 3.7
       - name: 🏗 Set up dev dependencies
         run: |
-          pip install -e octoprint[develop]
+          pip install octoprint[develop]
       - name: 🚀 Run prettier
         run: |
           pre-commit run --hook-stage manual prettier --all-files --show-diff-on-failure
