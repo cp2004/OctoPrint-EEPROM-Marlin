@@ -40,7 +40,7 @@ jobs:
     strategy:
       matrix:
         python: ["2.7", "3.7", "3.8", "3.9"]
-        octoprint: [">=1.4.2", ">=1.5.0rc1"]
+        octoprint: [">=1.5.0"]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -55,8 +55,9 @@ jobs:
       - name: 🚀 Run test suite
         run: |
           pytest
-  test-flake8:
-    name: 🧪 Flake8
+          
+  lint-black:
+    name: 🧹 black
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -64,13 +65,60 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: 3.7
-      - name: 🏗 Set up test dependencies
+      - name: 🏗 Set up dev dependencies
         run: |
-          pip install octoprint flake8
-          pip install -e .
-      - name: 🚀 Run test suite
+          pip install -e octoprint[develop]
+      - name: 🚀 Run black
         run: |
-          flake8 octoprint_eeprom_marlin tests setup.py
+          pre-commit run --hook-stage manual black --all-files --show-diff-on-failure
+          
+  lint-prettier:
+    name: 🧹 prettier
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: 🏗 Set up Python 3.7
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+      - name: 🏗 Set up dev dependencies
+        run: |
+          pip install -e octoprint[develop]
+      - name: 🚀 Run prettier
+        run: |
+          pre-commit run --hook-stage manual prettier --all-files --show-diff-on-failure
+          
+  lint-isort:
+    name: 🧹 isort
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: 🏗 Set up Python 3.7
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+      - name: 🏗 Set up dev dependencies
+        run: |
+          pip install octoprint[develop]
+      - name: 🚀 Run isort
+        run: |
+          pre-commit run --hook-stage manual isort --all-files --show-diff-on-failure
+          
+  lint-flake8:
+    name: 🧹 Flake8
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: 🏗 Set up Python 3.7
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+      - name: 🏗 Set up OctoPrint dev dependencies
+        run: |
+          pip install octoprint[develop]
+      - name: 🚀 Run flake8
+        run: |
+          pre-commit run --hook-stage manual flake8 --all-files
 
   test-install:
     name: 🧪 Installation tests
