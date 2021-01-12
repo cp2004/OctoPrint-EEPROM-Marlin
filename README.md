@@ -19,9 +19,9 @@ Be sure to [check out the screenshots](#Screenshots) below for more details!
 
 ## Setup
 
-Install manually using this URL:
+Install via the bundled [plugin manager](https://docs.octoprint.org/en/master/bundledplugins/pluginmanager.html) or manually using this URL:
 
-    https://github.com/cp2004/OctoPrint-EEPROM-Marlin/archive/master.zip
+    https://github.com/cp2004/OctoPrint-EEPROM-Marlin/releases/latest/download/release.zip
 
 ## Firmware requirements
 
