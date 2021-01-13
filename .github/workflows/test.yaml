@@ -55,7 +55,7 @@ jobs:
       - name: 🚀 Run test suite
         run: |
           pytest
-          
+
   lint-black:
     name: 🧹 black
     runs-on: ubuntu-latest
@@ -71,7 +71,7 @@ jobs:
       - name: 🚀 Run black
         run: |
           pre-commit run --hook-stage manual black --all-files --show-diff-on-failure
-          
+
   lint-prettier:
     name: 🧹 prettier
     runs-on: ubuntu-latest
@@ -87,7 +87,7 @@ jobs:
       - name: 🚀 Run prettier
         run: |
           pre-commit run --hook-stage manual prettier --all-files --show-diff-on-failure
-          
+
   lint-isort:
     name: 🧹 isort
     runs-on: ubuntu-latest
@@ -103,7 +103,7 @@ jobs:
       - name: 🚀 Run isort
         run: |
           pre-commit run --hook-stage manual isort --all-files --show-diff-on-failure
-          
+
   lint-flake8:
     name: 🧹 Flake8
     runs-on: ubuntu-latest
