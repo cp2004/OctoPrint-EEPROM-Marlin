@@ -8,11 +8,13 @@ Below are a couple of points to keep in mind while contributing to make the expe
 The plugin's stylesheets are created using SASS. Please **do not modify** just the compiled CSS!
 Otherwise your changes would be overwritten as soon as I clone the repository by the file watcher I have setup.
 
+If it is a small change and you don't want to setup npm, please just modify the sass file and send the PR, I will handle the build.
+
 To compile the CSS (Assuming project root, adjust the path otherwise):
 
-- Install [Sass](https://sass-lang.com/install) using `npm install -g sass`
+- Install [Sass](https://sass-lang.com/install) globally using `npm install -g sass`
 
-- Run `sass octoprint_eeprom_marlin/static/scss/eeprom_marlin.scss octoprint_eeprom_marlin/static/css/eeprom_marlin.css` to compile the CSS.
+- Run `sass octoprint_eeprom_marlin/static/scss/eeprom_marlin.scss octoprint_eeprom_marlin/static/css/eeprom_marlin.css` to compile the CSS once.
 
 Then you can commit _both_ changes to ensure they are not overriden.
 
@@ -25,6 +27,12 @@ It is recommended you install it, but it can also be run as a one-off or as a fi
 - To install: `pre-commit install`
 - To run against the entire codebase: `pre-commit run --hook-stage manual --all-files`
 - For details of how to set this up with PyCharm Pro, please see the 'File Watcher/Pre-commit' section [OctoPrint documentation](https://docs.octoprint.org/en/master/development/environment.html#pycharm)
+
+#### Testing
+
+There's a limited `pytest` test suite, that can be used. Plans to expand this in the future, if you are a python testing guru please get in touch!
+
+* Run the existing tests using `pytest` in the project root. You may need to install Pytest first, it is not a requirement of the plugin.
 
 #### Adding yourself to the contributors section of the plugin
 
@@ -51,5 +59,5 @@ Your name should then show up under 'Show Contributors' in the plugin's settings
 
 #### Other points
 
-- Please make your contributions against the `devel` branch, to make sure it has the latest codebase. Only exceptions are documentation fixes, such as this one.
-- Please fill out the pull request template, to make things easier for me to process. I reply to a lot of things, and may not have the time to do the research myself!
+- Please make your contributions against the `devel` branch, to make sure it has the latest codebase. Documentation fixes, such as this, can be against master.
+- Please fill out the pull request template as much as you can, to make things easier for me to process. I reply to a lot of things, and may not have the time to do the research myself!
