@@ -32,7 +32,7 @@ It is recommended you install it, but it can also be run as a one-off or as a fi
 
 There's a limited `pytest` test suite, that can be used. Plans to expand this in the future, if you are a python testing guru please get in touch!
 
-* Run the existing tests using `pytest` in the project root. You may need to install Pytest first, it is not a requirement of the plugin.
+- Run the existing tests using `pytest` in the project root. You may need to install Pytest first, it is not a requirement of the plugin.
 
 #### Adding yourself to the contributors section of the plugin
 
