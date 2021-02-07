@@ -15,7 +15,7 @@ The Marlin EEPROM editor provides an easy to use, feature-rich UI to edit your m
 
 - Display firmware info, including capability report
 
-Be sure to [check out the screenshots](#Screenshots) below for more details!
+Be sure to [check out the screenshots](#screenshots) below for more details!
 
 ## Setup
 
