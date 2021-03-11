@@ -38,16 +38,23 @@ def backup_json_to_list(eeprom_data):
 
 
 try:
-    # This is available in OP 1.6.0+
-    # TODO decide when to stop supporting 1.5.x and below
+    # OctoPrint>=1.6.0
     from octoprint.util.text import sanitize
 except ImportError:
-    # We are below this version, use backported one instead
+    # OctoPrint<=1.5.x
+    # Use back-ported version
     import re
 
+    # noinspection PyPackageRequirements
     from emoji import demojize
     from octoprint.util import to_unicode
-    from octoprint.vendor.awesome_slugify import Slugify
+
+    try:
+        # OctoPrint>=1.4.1
+        from octoprint.vendor.awesome_slugify import Slugify
+    except ImportError:
+        # OctoPrint<=1.4.0
+        from slugify import Slugify  # noqa
 
     _UNICODE_VARIATIONS = re.compile("[\uFE00-\uFE0F]", re.U)
     _SLUGIFIES = {}
@@ -69,7 +76,7 @@ except ImportError:
         Args:
             text: the text to sanitize
             safe_chars: characters to consider safe and to keep after sanitization
-            emoji: whether to also convert emoji to text
+            demoji: whether to also convert emoji to text
         Returns: the sanitized text
         """
         slugify = _SLUGIFIES.get(safe_chars)
