@@ -8,9 +8,9 @@
         <p>Note that it will be sanitised before use, any illegal characters will be replaced.</p>
         <form class="form-horizontal" onsubmit="return false;">
             <div class="control-group">
-                <label class="control-label">{{ _('Backup Name') }}</label>
+                <label for="eepromBackupNameInput" class="control-label">{{ _('Backup Name') }}</label>
                 <div class="controls">
-                    <input type="text" data-bind="value: backup_name" placeholder="eeprom_backup...">
+                    <input id="eepromBackupNameInput" type="text" data-bind="value: backup_name" placeholder="eeprom_backup...">
                 </div>
             </div>
         </form>

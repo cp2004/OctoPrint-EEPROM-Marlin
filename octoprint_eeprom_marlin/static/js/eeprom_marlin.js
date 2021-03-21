@@ -899,9 +899,6 @@ $(function () {
         self.backup_name = ko.observable();
 
         self.new_backup = function () {
-            console.log(
-                self.settingsViewModel.settings.plugins.eeprom_marlin.custom_name()
-            );
             if (
                 self.settingsViewModel.settings.plugins.eeprom_marlin.custom_name()
             ) {
@@ -911,6 +908,10 @@ $(function () {
                 self.create_backup();
             }
         };
+
+        $("#eepromBackupNameModal").on("shown", function () {
+            $("#eepromBackupNameInput").focus();
+        });
 
         self.create_backup = function () {
             $("#eepromBackupNameModal").modal("hide");

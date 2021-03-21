@@ -16,11 +16,11 @@ rc/.*
 HEAD
 \(detached.*
 
-# here, maintenance is currently the branch for 2.0.1 - hash is of previous tag on this branch
-maintenance 2.0.1 1b19e47fb2098bf3783cd2d41d3caf0c1a495fef pep440-dev
+# here, bugfix is currently the branch for 3.0.2 - hash is of previous tag on this branch
+bugfix 3.0.2 1b19e47fb2098bf3783cd2d41d3caf0c1a495fef pep440-dev
 
-# devel is currently the branch for work towards 2.1.0
-devel 3.0.0 1b19e47fb2098bf3783cd2d41d3caf0c1a495fef pep440-dev
+# devel is currently the branch for work towards 3.1.0
+devel 3.1.0 1b19e47fb2098bf3783cd2d41d3caf0c1a495fef pep440-dev
 
-# Every other branch is also development, so is resolved to 2.1.0 as well for now
-.* 3.0.0 1b19e47fb2098bf3783cd2d41d3caf0c1a495fef pep440-dev
+# Every other branch is also development, so is resolved to 3.1.0 as well for now
+.* 3.1.0 1b19e47fb2098bf3783cd2d41d3caf0c1a495fef pep440-dev
