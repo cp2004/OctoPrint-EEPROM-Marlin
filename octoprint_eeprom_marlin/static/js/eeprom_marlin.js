@@ -10,6 +10,8 @@ $(function () {
 
         self.printerState = parameters[0];
         self.settingsViewModel = parameters[1];
+        self.loginState = parameters[2];
+        self.access = parameters[3];
 
         self.eeprom = (function () {
             var eeprom = {};
@@ -811,7 +813,8 @@ $(function () {
                 !self.loading() &&
                 !self.saving() &&
                 !self.printerState.isBusy() &&
-                self.printerState.isReady()
+                self.printerState.isReady() &&
+                self.loginState.hasPermission(self.access.permissions.PLUGIN_EEPROM_MARLIN_EDIT)
             );
         });
         self.enable_buttons = ko.pureComputed(function () {
@@ -823,6 +826,24 @@ $(function () {
                 self.printerState.isReady()
             );
         });
+
+        self.enableLoad = ko.pureComputed(function() {
+            return (
+                self.loginState.hasPermission(self.access.permissions.PLUGIN_EEPROM_MARLIN_READ) && self.enable_buttons()
+            )
+        })
+
+        self.enableSave = ko.pureComputed(function() {
+            return (
+                self.loginState.hasPermission(self.access.permissions.PLUGIN_EEPROM_MARLIN_EDIT) && self.enable_buttons()
+            )
+        })
+
+        self.enableReset = ko.pureComputed(function() {
+            return (
+                self.loginState.hasPermission(self.access.permissions.PLUGIN_EEPROM_MARLIN_RESET) && self.enable_buttons()
+            )
+        })
 
         self.edited = function () {
             if (!self.initialLoad() && !self.loading()) {
@@ -1052,14 +1073,16 @@ $(function () {
         };
 
         self.onAllBound = self.onEventConnected = function () {
-            self.loading(true);
-            OctoPrint.simpleApiGet("eeprom_marlin").done(function (response) {
-                self.eeprom_from_json(response);
-                self.info_from_json(response);
-                self.backups_from_response(response.backups);
-                self.loading(false);
-                self.initialLoad(false);
-            });
+            if (self.loginState.hasPermission(self.access.permissions.PLUGIN_EEPROM_MARLIN_READ)) {
+                self.loading(true);
+                OctoPrint.simpleApiGet("eeprom_marlin").done(function (response) {
+                    self.eeprom_from_json(response);
+                    self.info_from_json(response);
+                    self.backups_from_response(response.backups);
+                    self.loading(false);
+                    self.initialLoad(false);
+                });
+            }
         };
 
         // Utilities
@@ -1074,7 +1097,7 @@ $(function () {
 
     OCTOPRINT_VIEWMODELS.push({
         construct: EEPROMMarlinViewModel,
-        dependencies: ["printerStateViewModel", "settingsViewModel"],
+        dependencies: ["printerStateViewModel", "settingsViewModel", "loginStateViewModel", "accessViewModel"],
         elements: ["#tab_plugin_eeprom_marlin"],
     });
 });

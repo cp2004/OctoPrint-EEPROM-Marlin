@@ -18,13 +18,13 @@
             <td data-bind="text: name"></td>
             <td data-bind="text: time"></td>
             <td>
-                <button data-bind="click: function(){ $parent.restore_backup(name) }" class="btn btn-small">
+                <button data-bind="click: function(){ $parent.restore_backup(name) }, enable: $root.enableSave" class="btn btn-small">
                     <i class="fas-custom fa-fw fa-custom-cloud-upload-alt"></i>
                 </button>
-                <button data-bind="click: function(){ $parent.delete_backup(name) }" class="btn btn-small btn-danger">
+                <button data-bind="click: function(){ $parent.delete_backup(name) }, enable: $root.enableSave" class="btn btn-small btn-danger">
                     <i class="fa fa-fw fa-trash-o"></i>
                 </button>
-                <a data-bind="attr: {href: '/plugin/eeprom_marlin/download/' + name}" class="btn btn-small">
+                <a data-bind="attr: {href: '/plugin/eeprom_marlin/download/' + name}, visible: $root.loginState.hasPermission($root.access.permissions.PLUGIN_EEPROM_MARLIN_READ)" class="btn btn-small">
                     <i class="fa fa-fw fa-download"></i>
                 </a>
             </td>

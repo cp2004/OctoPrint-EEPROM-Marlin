@@ -1,3 +1,4 @@
+<!-- ko if: loginState.hasPermission(access.permissions.PLUGIN_EEPROM_MARLIN_READ) -->
 <div class="row-fluid eeprom-nav">
     <div class="span3">
         <div class="eeprom-brand">
@@ -7,15 +8,15 @@
     </div>
     <div class="span9">
         <div class="btn-group" data-bind="visible: !backup_open()">
-            <button class="btn" data-bind="click: load_eeprom, enable: enable_buttons">
+            <button class="btn" data-bind="click: load_eeprom, enable: enableLoad">
                 <i class="fa fa-fw fa-refresh" data-bind="css: {'fa-spin': loading()}"></i>
                 {{ _(" Load") }}
             </button>
-            <button class="btn" data-bind="click: save_eeprom, css: {'btn-primary': unsaved()}, enable: enable_buttons" >
+            <button class="btn" data-bind="click: save_eeprom, css: {'btn-primary': unsaved()}, enable: enableSave" >
                 <i class="fas-custom fa-fw" data-bind="css: {'fa-refresh fa-spin': saving(), 'fa-custom-save': !saving()}"></i>
                 {{ _(" Save") }}
             </button>
-            <button class="btn btn-danger" data-bind="click: reset_eeprom, enable: enable_buttons">
+            <button class="btn btn-danger" data-bind="click: reset_eeprom, enable: enableReset">
                 <i class="fa fa-fw fa-eraser"></i>
                 {{ _(" Reset") }}
             </button>
@@ -89,3 +90,11 @@
 {% include "overlays/not_marlin.jinja2" %}
 {% include "overlays/not_connected.jinja2" %}
 </div>
+<!-- /ko -->
+<!-- ko if: !loginState.hasPermission(access.permissions.PLUGIN_EEPROM_MARLIN_READ) -->
+<div class="alert alert-warning">
+    <i class="fa fa-user-times text-error fa-3x pull-left" style="margin-right: 0.5em;"></i>
+    <p>{{ _("Your user account does not have the correct permissions to use this feature.") }}</p>
+    <p>{{ _("You need to ask the administrator of this instance to enable it for you.")}}</p>
+</div>
+<!-- /ko -->

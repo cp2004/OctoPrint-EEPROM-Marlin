@@ -1,7 +1,15 @@
 <div class="alert alert-block" data-bind="visible: !loading() && !saving() && !enable_fields() && !initialLoad() && info.name() && info.is_marlin()">
     <p><strong>Read-only mode</strong></p>
+    <!-- ko if: loginState.hasPermission(access.permissions.PLUGIN_EEPROM_MARLIN_READ) && loginState.hasPermission(access.permissions.PLUGIN_EEPROM_MARLIN_WRITE) -->
     <p>
         {{ _("Printer is currently") }}
         <span data-bind="text: printerState.isBusy() ? '{{ _("printing") }}' : '{{ _("disconnected") }}'"></span>
-        {{ _("so EEPROM configuration is disabled. Editor is in read-only mode") }}</p>
+        {{ _("so EEPROM configuration is disabled. Editor is in read-only mode") }}
+    </p>
+    <!-- /ko -->
+    <!-- ko if loginState.hasPermission(access.permissions.PLUGIN_EEPROM_MARLIN_READ) && !loginState.hasPermission(self.access.permissions.PLUGIN_EEPROM_MARLIN_WRITE) -->
+    <p>
+        {{ _("Your account does not have permission to edit the EEPROM settings.") }}
+    </p>
+    <!-- /ko -->
 </div>

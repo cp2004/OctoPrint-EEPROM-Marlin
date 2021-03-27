@@ -14,6 +14,9 @@ from copy import deepcopy
 import flask
 import octoprint.plugin
 
+from octoprint.access.permissions import Permissions
+from octoprint.access import ADMIN_GROUP, USER_GROUP, READONLY_GROUP
+
 from octoprint_eeprom_marlin import (
     _version,
     api,
@@ -123,6 +126,7 @@ class EEPROMMarlinPlugin(
 
     # BluePrint handling
     @octoprint.plugin.BlueprintPlugin.route("/download/<name>")
+    @Permissions.PLUGIN_EEPROM_MARLIN_READ.require(403)
     def download_backup(self, name):
         try:
             backup_data = self._backup_handler.read_backup(name)
@@ -204,6 +208,34 @@ class EEPROMMarlinPlugin(
 
         return line
 
+    def get_additional_permissions(self, *args, **kwargs):
+        return [
+            {
+                "key": "READ",
+                "name": "Read EEPROM",
+                "description": "Can read EEPROM data",
+                "roles": ["read"],
+                "dangerous": False,
+                "default_groups": [ADMIN_GROUP, USER_GROUP, READONLY_GROUP]
+            },
+            {
+                "key": "EDIT",
+                "name": "Edit EEPROM",
+                "description": "Can edit EEPROM data and save it to the printer",
+                "roles": ["edit"],
+                "dangerous": False,
+                "default_groups": [ADMIN_GROUP, USER_GROUP]
+            },
+            {
+                "key": "RESET",
+                "name": "Reset EEPROM",
+                "description": "Can reset the firmware to factory defaults",
+                "roles": ["reset"],
+                "dangerous": True,
+                "default_groups": [ADMIN_GROUP]
+            }
+        ]
+
     # Update hook
     def get_update_information(self):
         # https://docs.octoprint.org/en/master/bundledplugins/softwareupdate.html#sec-bundledplugins-softwareupdate-hooks-check-config
@@ -257,4 +289,5 @@ def __plugin_load__():
         "octoprint.comm.protocol.firmware.capabilities": plugin.comm_protocol_firmware_cap,
         "octoprint.comm.protocol.gcode.received": plugin.comm_protocol_gcode_received,
         "octoprint.comm.protocol.gcode.sending": plugin.comm_protocol_gcode_sending,
+        "octoprint.access.permissions": plugin.get_additional_permissions,
     }
