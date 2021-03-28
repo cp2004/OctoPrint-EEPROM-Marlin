@@ -21,7 +21,7 @@ COMMAND_PARAMS = {
     "M851": ["X", "Y", "Z"],
     "M206": ["X", "Y", "Z"],
     "M666": ["X", "Y", "Z"],
-    "M665": ["B", "H", "L", "R", "S", "X", "Y", "Z"],
+    "M665": ["L", "R", "H", "S", "X", "Y", "Z", "A", "B", "C"],
     "M900": ["K"],
     "M200": ["D"],
     "M301": ["P", "I", "D"],
@@ -119,7 +119,7 @@ class EEPROMData:
         self.home_offset = IndividualData("home_offset", "M206", ["X", "Y", "Z"])
         self.endstop = IndividualData("endstop", "M666", ["X", "Y", "Z"])
         self.delta = IndividualData(
-            "delta", "M665", ["B", "H", "L", "R", "S", "X", "Y", "Z"]
+            "delta", "M665", ["L", "R", "H", "S", "X", "Y", "Z", "A", "B", "C"]
         )
         self.linear = IndividualData("linear", "M900", ["K"])
         self.filament = IndividualData("filament", "M200", ["D"])

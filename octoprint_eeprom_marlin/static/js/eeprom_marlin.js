@@ -89,14 +89,16 @@ $(function () {
             eeprom.delta = (function () {
                 var delta = {};
 
-                delta.B = ko.observable();
-                delta.H = ko.observable();
                 delta.L = ko.observable();
                 delta.R = ko.observable();
+                delta.H = ko.observable();
                 delta.S = ko.observable();
                 delta.X = ko.observable();
                 delta.Y = ko.observable();
                 delta.Z = ko.observable();
+                delta.A = ko.observable();
+                delta.B = ko.observable();
+                delta.C = ko.observable();
 
                 delta.visible = ko.computed(function () {
                     for (let param in delta) {
@@ -481,18 +483,18 @@ $(function () {
             ],
             delta: [
                 {
-                    label: "Calibration radius",
-                    value: self.eeprom.delta.B,
+                    label: "Diagonal rod",
+                    value: self.eeprom.delta.L,
+                    units: null,
+                },
+                {
+                    label: "Delta radius",
+                    value: self.eeprom.delta.R,
                     units: null,
                 },
                 {
                     label: "Delta height",
                     value: self.eeprom.delta.H,
-                    units: null,
-                },
-                {
-                    label: "Diagonal rod",
-                    value: self.eeprom.delta.L,
                     units: null,
                 },
                 {
@@ -515,6 +517,21 @@ $(function () {
                     value: self.eeprom.delta.Z,
                     units: null,
                 },
+                {
+                    label: "Alpha (Tower 1) diagonal rod trim",
+                    value: self.eeprom.delta.A,
+                    units: null,
+                },
+                {
+                    label: "Beta (Tower 2) diagonal rod trim",
+                    value: self.eeprom.delta.B,
+                    units: null,
+                },
+                {
+                    label: "Gamma (Tower 3) diagonal rod trim",
+                    value: self.eeprom.delta.C,
+                    units: null,
+                }
             ],
             endstop: [
                 {
