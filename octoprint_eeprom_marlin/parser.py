@@ -67,7 +67,6 @@ class Parser:
             "Z": 800.0,
             "E": 90.0
         }
-        :param logger: plugin's logging instance
         :param line: line received from FW
         :return: dict: parsed values
         """
@@ -79,13 +78,16 @@ class Parser:
         else:
             return
 
-        # grab parameters that we can look at
+        # Find the name (ID) of the command to use internally
         try:
-            params = data.COMMAND_PARAMS[command]
-        except KeyError:
-            self._logger.warning("Did not recognise EEPROM data, skipping line")
-            self._logger.warning("Line: {}".format(line))
+            command_name = data.find_name_from_command(command)
+        except ValueError:
+            self._logger.warning("EEPROM output line not recognized, skipped")
+            self._logger.warning("Line: {}".format(line.strip("\r\n ")))
             return
+
+        # grab parameters that we can look at
+        params = data.ALL_DATA_STRUCTURE[command_name]["params"].keys()
 
         # work out what values we have
         parameters = {}
@@ -93,6 +95,7 @@ class Parser:
             try:
                 param_match = regexes_parameters["float{}".format(param)].search(line)
             except KeyError:
+                # This shouldn't happen in production, but if it shows up I did something wrong...
                 self._logger.warning(
                     "Did not recognise EEPROM parameter, skipping param"
                 )
@@ -103,7 +106,7 @@ class Parser:
 
         # construct response
         return {
-            "name": data.COMMAND_NAMES[command],
+            "name": command_name,
             "command": command,
             "params": parameters,
         }

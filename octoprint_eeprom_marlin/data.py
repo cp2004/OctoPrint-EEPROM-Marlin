@@ -13,43 +13,208 @@ except ImportError:
     Dict = Optional = None
     pass
 
-COMMAND_PARAMS = {
-    "M92": ["X", "Y", "Z", "E"],
-    "M203": ["X", "Y", "Z", "E"],
-    "M201": ["X", "Y", "Z", "E"],
-    "M204": ["P", "R", "T"],
-    "M851": ["X", "Y", "Z"],
-    "M206": ["X", "Y", "Z"],
-    "M666": ["X", "Y", "Z"],
-    "M665": ["L", "R", "H", "S", "X", "Y", "Z", "A", "B", "C"],
-    "M900": ["K"],
-    "M200": ["D"],
-    "M301": ["P", "I", "D"],
-    "M304": ["P", "I", "D"],
-    "M205": ["S", "T", "B", "X", "Y", "Z", "E", "J"],
-    "M420": ["S", "Z"],
-    "M145": ["S", "B", "H", "F"],
-    "M603": ["L", "U"],
+
+# This defines the data structure used in both the frontend and the backend. Must be kept in sync with
+# the observables in the viewmodel. UI will update automatically from this structure using the Jinja templates.
+# TODO double check the data types
+# float1: 1 decimal place number input
+# float2: 2 decimal place number input
+# int:    integer input
+# bool:   On or off checkbox, maps to 0/1 to send to printer
+ALL_DATA_STRUCTURE = {
+    "steps": {
+        "command": "M92",
+        "params": {
+            "X": {"type": "float1", "label": "X Steps", "units": "steps/mm"},
+            "Y": {"type": "float1", "label": "Y Steps", "units": "steps/mm"},
+            "Z": {"type": "float1", "label": "Z Steps", "units": "steps/mm"},
+            "E": {"type": "float1", "label": "E Steps", "units": "steps/mm"},
+        },
+        "name": "Steps",
+    },
+    "feedrate": {
+        "command": "M203",
+        "params": {
+            "X": {"type": "float1", "label": "X axis", "units": "mm/s"},
+            "Y": {"type": "float1", "label": "Y axis", "units": "mm/s"},
+            "Z": {"type": "float1", "label": "Z axis", "units": "mm/s"},
+            "E": {"type": "float1", "label": "E axis", "units": "mm/s"},
+        },
+        "name": "Feedrate",
+    },
+    "max_acceleration": {
+        "command": "M201",
+        "params": {
+            "X": {
+                "type": "float1",
+                "label": "X maximum acceleration",
+                "units": "mm/s2",
+            },
+            "Y": {
+                "type": "float1",
+                "label": "Y maximum acceleration",
+                "units": "mm/s2",
+            },
+            "Z": {
+                "type": "float1",
+                "label": "Z maximum acceleration",
+                "units": "mm/s2",
+            },
+            "E": {
+                "type": "float1",
+                "label": "E maximum acceleration",
+                "units": "mm/s2",
+            },
+        },
+        "name": "Maximum Acceleration",
+    },
+    "print_acceleration": {
+        "command": "M204",
+        "params": {
+            "P": {"type": "float1", "label": "Printing acceleration", "units": "mm/s2"},
+            "R": {"type": "float1", "label": "Retract acceleration", "units": "mm/s2"},
+            "T": {"type": "float1", "label": "Retract acceleration", "units": "mm/s2"},
+        },
+        "name": "Print Acceleration",
+    },
+    "probe_offset": {
+        "command": "M851",
+        "params": {
+            "X": {"type": "float2", "label": "Z probe X offset", "units": "mm"},
+            "Y": {"type": "float2", "label": "Z probe Y offset", "units": "mm"},
+            "Z": {"type": "float2", "label": "Z probe Z offset", "units": "mm"},
+        },
+        "name": "Probe Offset",
+    },
+    "home_offset": {
+        "command": "M206",
+        "params": {
+            "X": {"type": "float2", "label": "X home offset", "units": "mm"},
+            "Y": {"type": "float2", "label": "Y home offset", "units": "mm"},
+            "Z": {"type": "float2", "label": "Z home offset", "units": "mm"},
+        },
+        "name": "Home Offset",
+    },
+    "endstop": {
+        "command": "M666",
+        "params": {
+            "X": {"type": "float2", "label": "Adjustment for X", "units": "mm"},
+            "Y": {"type": "float2", "label": "Adjustment for Y", "units": "mm"},
+            "Z": {"type": "float2", "label": "Adjustment for Z", "units": "mm"},
+        },
+        "name": "Endstop Offsets",
+    },
+    "delta": {
+        "command": "M665",
+        "params": {
+            "L": {"type": "float2", "label": "Diagonal rod"},
+            "R": {"type": "float2", "label": "Delta radius"},
+            "H": {"type": "float2", "label": "Delta height"},
+            "S": {"type": "float2", "label": "Segments per second"},
+            "X": {"type": "float2", "label": "Alpha (Tower 1) angle trim"},
+            "Y": {"type": "float2", "label": "Beta (Tower 2) angle trim"},
+            "Z": {"type": "float2", "label": "Gamma (Tower 3) angle trim"},
+            "A": {"type": "float2", "label": "Alpha (Tower 1) diagonal rod trim"},
+            "B": {"type": "float2", "label": "Beta (Tower 2) diagonal rod trim"},
+            "C": {"type": "float2", "label": "Gamma (Tower 3) diagonal rod trim"},
+        },
+        "name": "Delta Configuration",
+    },
+    "linear": {
+        "command": "M900",
+        "params": {"K": {"type": "float2", "label": "K factor"}},
+        "name": "Linear Advance",
+    },
+    "filament": {
+        "command": "M200",
+        "params": {
+            "D": {"type": "float2", "label": "Filament Diameter", "units": "mm"}
+        },
+        "name": "Filament Settings",
+    },
+    "hotend_pid": {
+        "command": "M301",
+        "params": {
+            "P": {"type": "float2", "label": "Hotend kP"},
+            "I": {"type": "float2", "label": "Hotend kI"},
+            "D": {"type": "float2", "label": "Hotend kD"},
+        },
+        "name": "Hotend PID",
+    },
+    "bed_pid": {
+        "command": "M304",
+        "params": {
+            "P": {"type": "float2", "label": "Bed kP"},
+            "I": {"type": "float2", "label": "Bed kI"},
+            "D": {"type": "float2", "label": "Bed kD"},
+        },
+        "name": "Bed PID",
+    },
+    "advanced": {
+        "command": "M205",
+        "params": {
+            "B": {"type": "float2", "label": "Minimum segment time", "units": "µs"},
+            "E": {"type": "float2", "label": "E max jerk", "units": "mm/s"},
+            "J": {"type": "float2", "label": "Junction Deviation"},
+            "S": {
+                "type": "float1",
+                "label": "Minimum feedrate for print moves",
+                "units": "mm/s",
+            },
+            "T": {
+                "type": "float1",
+                "label": "Minimum feedrate for travel moves",
+                "units": "mm/s",
+            },
+            "X": {"type": "float1", "label": "X max jerk", "units": "mm/s"},
+            "Y": {"type": "float1", "label": "Y max jerk", "units": "mm/s"},
+            "Z": {"type": "float1", "label": "Z max jerk", "units": "mm/s"},
+        },
+        "name": "Advanced",
+    },
+    "autolevel": {
+        "command": "M420",
+        "params": {
+            "S": {"type": "bool", "label": "Enabled"},
+            "Z": {"type": "Z fade height", "units": "mm"},
+        },
+        "name": "Autolevel",
+    },
+    "material1": {
+        "command": "M145",
+        "params": {
+            "S": {"type": "float1", "label": "Hotend temperature", "units": "°C"},
+            "B": {"type": "float1", "label": "Bed temperature", "units": "°C"},
+            "F": {"type": "int", "label": "Fan speed", "units": "0-255"},
+        },
+        "name": "Material Preset (1)",
+    },
+    "material2": {
+        "command": "M145",
+        "params": {
+            "S": {"type": "float1", "label": "Hotend temperature", "units": "°C"},
+            "B": {"type": "float1", "label": "Bed temperature", "units": "°C"},
+            "F": {"type": "int", "label": "Fan speed", "units": "0-255"},
+        },
+        "name": "Material Preset (2)",
+    },
+    "filament_change": {
+        "command": "M603",
+        "params": {
+            "L": {"type": "float1", "label": "Load length", "units": "mm"},
+            "U": {"type": "float1", "label": "Unload length", "units": "mm"},
+        },
+        "name": "Filament Change",
+    },
 }
 
-COMMAND_NAMES = {
-    "M92": "steps",
-    "M203": "feedrate",
-    "M201": "max_acceleration",
-    "M204": "print_acceleration",
-    "M851": "probe_offset",
-    "M206": "home_offset",
-    "M666": "endstop",
-    "M665": "delta",
-    "M900": "linear",
-    "M200": "filament",
-    "M301": "hotend_pid",
-    "M304": "bed_pid",
-    "M205": "advanced",
-    "M420": "autolevel",
-    "M145": "material",
-    "M603": "filament_change",
-}
+
+def find_name_from_command(command):
+    for key, data in ALL_DATA_STRUCTURE.items():
+        if command == data["command"]:
+            return key
+    else:
+        raise ValueError
 
 
 class FirmwareInfo:
@@ -89,14 +254,31 @@ class IndividualData:
     def __init__(self, name, command, params):
         self.name = name
         self.command = command
-        self.params = {}  # type: Dict[str, Optional[float]]
-        for param in params:
-            self.params[param] = None
+        self.params = params
+        for param in self.params:
+            self.params[param]["value"] = None
 
     def params_from_dict(self, data):
         for key, value in data.items():
             if value is not None:
-                self.params[key] = float(value)
+                self.params[key]["value"] = float(value)
+
+    def params_to_dict(self):
+        # Ready to send to the UI
+        params = {}
+        for param, data in self.params.items():
+            params[param] = data["value"]
+
+        return params
+
+    def generate_command(self):
+        command = self.command
+        for param, data in self.params.items():
+            if data["value"] is None:
+                continue
+            command += " " + param + data["value"]
+
+        return command
 
 
 class EEPROMData:
@@ -107,36 +289,15 @@ class EEPROMData:
     def __init__(self, plugin):
         self.plugin = plugin
 
-        self.steps = IndividualData("steps", "M92", ["X", "Y", "Z", "E"])
-        self.feedrate = IndividualData("feedrate", "M203", ["X", "Y", "Z", "E"])
-        self.max_acceleration = IndividualData(
-            "max_acceleration", "M201", ["X", "Y", "Z", "E"]
-        )
-        self.print_acceleration = IndividualData(
-            "print_acceleration", "M204", ["P", "R", "T"]
-        )
-        self.probe_offset = IndividualData("probe_offset", "M851", ["X", "Y", "Z"])
-        self.home_offset = IndividualData("home_offset", "M206", ["X", "Y", "Z"])
-        self.endstop = IndividualData("endstop", "M666", ["X", "Y", "Z"])
-        self.delta = IndividualData(
-            "delta", "M665", ["L", "R", "H", "S", "X", "Y", "Z", "A", "B", "C"]
-        )
-        self.linear = IndividualData("linear", "M900", ["K"])
-        self.filament = IndividualData("filament", "M200", ["D"])
-        self.hotend_pid = IndividualData("hotend_pid", "M301", ["P", "I", "D"])
-        self.bed_pid = IndividualData("bed_pid", "M304", ["P", "I", "D"])
-        self.advanced = IndividualData(
-            "advanced", "M205", ["S", "T", "B", "X", "Y", "Z", "E", "J"]
-        )
-        self.autolevel = IndividualData("autolevel", "M420", ["S", "Z"])
-        self.material1 = IndividualData("material1", "M145", ["S", "B", "H", "F"])
-        self.material2 = IndividualData("material2", "M145", ["S", "B", "H", "F"])
-        self.filament_change = IndividualData(
-            "filament_change", "M603", COMMAND_PARAMS["M603"]
-        )
+        for key, data in ALL_DATA_STRUCTURE.items():
+            setattr(self, key, IndividualData(key, data["command"], data["params"]))
 
         # noinspection PyProtectedMember
         self.plugin._logger.info("EEPROM Data initialised")
+
+    def create_data_structure(self):
+        for key, data in ALL_DATA_STRUCTURE.items():
+            setattr(self, key, IndividualData(key, data["command"], data["params"]))
 
     def from_list(self, data):
         """
@@ -161,10 +322,8 @@ class EEPROMData:
                 elif int(data["params"]["S"]) == 1:
                     data_class = self.material2
                 else:
-                    # unable to parse again
-                    # noinspection PyProtectedMember
-                    self.plugin._logger.error("Unable to parse M145 command")
-                    return
+                    # unable to parse again - lazy way of not writing duplicate code
+                    raise KeyError
             except KeyError:
                 # Unable to parse M145
                 # noinspection PyProtectedMember
@@ -172,33 +331,22 @@ class EEPROMData:
                 return
         else:
             data_class = getattr(self, data["name"])
+
         data_class.params_from_dict(data["params"])
 
     def to_dict(self):
         # Wraps all the data up to send it to the UI
-        data = {}
-        for command, name in COMMAND_NAMES.items():
-            if command == "M145":
-                # Special handling for M145 data
-                cls = getattr(self, name + "1")
-                data[name + "1"] = {"command": command, "params": cls.params}
-                cls2 = getattr(self, name + "2")
-                data[name + "2"] = {"command": command, "params": cls2.params}
-            else:
-                cls = getattr(self, name)
-                data[name] = {"command": command, "params": cls.params}
+        result = {}
+        for key, data in ALL_DATA_STRUCTURE.items():
+            params = getattr(self, key).params_to_dict()
+            result[key] = {"command": data["command"], "params": params}
 
-        return data
+        return result
 
     def to_list(self):
-        data = []
-        for command, name in COMMAND_NAMES.items():
-            if command == "M145":
-                # Special handling for M145 data
-                params = getattr(self, name + "1").params
-                data.append({"name": name + "1", "command": command, "params": params})
-                params2 = getattr(self, name + "2").params
-                data.append({"name": name + "2", "command": command, "params": params2})
-            else:
-                params = getattr(self, name).params
-                data.append({"name": name, "command": command, "params": params})
+        result = []
+        for key, data in ALL_DATA_STRUCTURE.items():
+            params = getattr(self, key).params_to_dict()
+            result.append({"name": key, "command": data["command"], "params": params})
+
+        return result
