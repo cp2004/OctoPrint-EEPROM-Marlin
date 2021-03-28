@@ -13,9 +13,8 @@ from copy import deepcopy
 
 import flask
 import octoprint.plugin
-
+from octoprint.access import ADMIN_GROUP, READONLY_GROUP, USER_GROUP
 from octoprint.access.permissions import Permissions
-from octoprint.access import ADMIN_GROUP, USER_GROUP, READONLY_GROUP
 
 from octoprint_eeprom_marlin import (
     _version,
@@ -216,7 +215,7 @@ class EEPROMMarlinPlugin(
                 "description": "Can read EEPROM data",
                 "roles": ["read"],
                 "dangerous": False,
-                "default_groups": [ADMIN_GROUP, USER_GROUP, READONLY_GROUP]
+                "default_groups": [ADMIN_GROUP, USER_GROUP, READONLY_GROUP],
             },
             {
                 "key": "EDIT",
@@ -224,7 +223,7 @@ class EEPROMMarlinPlugin(
                 "description": "Can edit EEPROM data and save it to the printer",
                 "roles": ["edit"],
                 "dangerous": False,
-                "default_groups": [ADMIN_GROUP, USER_GROUP]
+                "default_groups": [ADMIN_GROUP, USER_GROUP],
             },
             {
                 "key": "RESET",
@@ -232,8 +231,8 @@ class EEPROMMarlinPlugin(
                 "description": "Can reset the firmware to factory defaults",
                 "roles": ["reset"],
                 "dangerous": True,
-                "default_groups": [ADMIN_GROUP]
-            }
+                "default_groups": [ADMIN_GROUP],
+            },
         ]
 
     # Update hook

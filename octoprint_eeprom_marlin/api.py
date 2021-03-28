@@ -9,9 +9,7 @@ from copy import deepcopy
 
 import flask
 import octoprint.util
-
 from octoprint.access.permissions import Permissions
-from octoprint.access import ADMIN_GROUP, USER_GROUP, READONLY_GROUP
 
 from octoprint_eeprom_marlin import util
 from octoprint_eeprom_marlin.backup import BackupMissingError, BackupNameTakenError

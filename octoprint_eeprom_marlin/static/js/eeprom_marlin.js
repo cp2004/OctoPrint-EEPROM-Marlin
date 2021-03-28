@@ -531,7 +531,7 @@ $(function () {
                     label: "Gamma (Tower 3) diagonal rod trim",
                     value: self.eeprom.delta.C,
                     units: null,
-                }
+                },
             ],
             endstop: [
                 {
@@ -831,7 +831,9 @@ $(function () {
                 !self.saving() &&
                 !self.printerState.isBusy() &&
                 self.printerState.isReady() &&
-                self.loginState.hasPermission(self.access.permissions.PLUGIN_EEPROM_MARLIN_EDIT)
+                self.loginState.hasPermission(
+                    self.access.permissions.PLUGIN_EEPROM_MARLIN_EDIT
+                )
             );
         });
         self.enable_buttons = ko.pureComputed(function () {
@@ -844,23 +846,29 @@ $(function () {
             );
         });
 
-        self.enableLoad = ko.pureComputed(function() {
+        self.enableLoad = ko.pureComputed(function () {
             return (
-                self.loginState.hasPermission(self.access.permissions.PLUGIN_EEPROM_MARLIN_READ) && self.enable_buttons()
-            )
-        })
+                self.loginState.hasPermission(
+                    self.access.permissions.PLUGIN_EEPROM_MARLIN_READ
+                ) && self.enable_buttons()
+            );
+        });
 
-        self.enableSave = ko.pureComputed(function() {
+        self.enableSave = ko.pureComputed(function () {
             return (
-                self.loginState.hasPermission(self.access.permissions.PLUGIN_EEPROM_MARLIN_EDIT) && self.enable_buttons()
-            )
-        })
+                self.loginState.hasPermission(
+                    self.access.permissions.PLUGIN_EEPROM_MARLIN_EDIT
+                ) && self.enable_buttons()
+            );
+        });
 
-        self.enableReset = ko.pureComputed(function() {
+        self.enableReset = ko.pureComputed(function () {
             return (
-                self.loginState.hasPermission(self.access.permissions.PLUGIN_EEPROM_MARLIN_RESET) && self.enable_buttons()
-            )
-        })
+                self.loginState.hasPermission(
+                    self.access.permissions.PLUGIN_EEPROM_MARLIN_RESET
+                ) && self.enable_buttons()
+            );
+        });
 
         self.edited = function () {
             if (!self.initialLoad() && !self.loading()) {
@@ -1090,9 +1098,15 @@ $(function () {
         };
 
         self.onAllBound = self.onEventConnected = function () {
-            if (self.loginState.hasPermission(self.access.permissions.PLUGIN_EEPROM_MARLIN_READ)) {
+            if (
+                self.loginState.hasPermission(
+                    self.access.permissions.PLUGIN_EEPROM_MARLIN_READ
+                )
+            ) {
                 self.loading(true);
-                OctoPrint.simpleApiGet("eeprom_marlin").done(function (response) {
+                OctoPrint.simpleApiGet("eeprom_marlin").done(function (
+                    response
+                ) {
                     self.eeprom_from_json(response);
                     self.info_from_json(response);
                     self.backups_from_response(response.backups);
@@ -1114,7 +1128,12 @@ $(function () {
 
     OCTOPRINT_VIEWMODELS.push({
         construct: EEPROMMarlinViewModel,
-        dependencies: ["printerStateViewModel", "settingsViewModel", "loginStateViewModel", "accessViewModel"],
+        dependencies: [
+            "printerStateViewModel",
+            "settingsViewModel",
+            "loginStateViewModel",
+            "accessViewModel",
+        ],
         elements: ["#tab_plugin_eeprom_marlin"],
     });
 });
