@@ -19,10 +19,6 @@ jobs:
               case 'edited': {
                 if (context.payload.issue.title.match(/\[request\]|feature request/i)) {
                   labels.push('request');
-                  if (!labels.includes("solved")) {
-                    labels.push('needs review');
-                    setLabels = true;
-                  }
                 }
                 if (context.payload.issue.title.match(/bug/i)) {
                   if (!labels.includes("confirmed bug")){
