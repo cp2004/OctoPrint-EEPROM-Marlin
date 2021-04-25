@@ -27,9 +27,9 @@ Install via the bundled [plugin manager](https://docs.octoprint.org/en/master/bu
 
 This plugin requires three things:
 
- - `EEPROM_CHITCHAT` function - make sure you have `#define EEPROM_CHITCHAT` in the config
- - The `M503` command enabled - do not uncomment disabling it, leave it as `//#define DISABLE_M503`
- - Of course, EEPROM to be enabled 🙂
+- `EEPROM_CHITCHAT` function - make sure you have `#define EEPROM_CHITCHAT` in the config
+- The `M503` command enabled - do not uncomment disabling it, leave it as `//#define DISABLE_M503`
+- Of course, EEPROM to be enabled 🙂
 
 ## New in Marlin EEPROM Editor V3.0.0
 
