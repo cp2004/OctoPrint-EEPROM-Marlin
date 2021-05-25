@@ -400,6 +400,27 @@ $(function () {
                 return filament_change;
             })();
 
+            eeprom.filament_runout = (function () {
+                var filament_runout = {};
+
+                filament_runout.D = ko.observable();
+                filament_runout.H = ko.observable();
+                filament_runout.S = ko.observable();
+
+                filament_runout.visible = ko.computed(function () {
+                    for (let param in filament_runout) {
+                        if (param === "visible") {
+                            continue;
+                        }
+                        if (filament_runout[param]() !== null) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+                return filament_runout;
+            })();
+
             return eeprom;
         })();
 

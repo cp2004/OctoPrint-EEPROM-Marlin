@@ -206,6 +206,14 @@ ALL_DATA_STRUCTURE = {
         },
         "name": "Filament Change",
     },
+    "filament_runout": {
+        "command": "M412",
+        "params": {
+            "D": {"type": "float2", "label": "Runout Distance", "units": "mm"},
+            "H": {"type": "bool", "label": "Enable host handling of filament runout"},
+            "S": {"type": "bool", "label": "Enable filament runout sensor"},
+        },
+    },
 }
 
 
