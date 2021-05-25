@@ -1,14 +1,10 @@
 <h4>Marlin EEPROM Editor</h4>
-<div class="alert alert-info">
-    <h3><i class="fas-custom fa-custom-hand-point-right text-warning"></i> The EEPROM editor has moved</h3>
-    <p>You can now find it in its own tab in the main web UI.</p>
-</div>
 
 <form class="form-horizontal" onsubmit="return false;">
     <div class="control-group">
-        <label class="control-label">{{ _('Use M503') }}</label>
+        <label for="eeprom_m503" class="control-label">{{ _('Use M503') }}</label>
         <div class="controls">
-            <input type="checkbox" class="inline" data-bind="checked: settings.plugins.eeprom_marlin.use_m503">
+            <input id="eeprom_m503" type="checkbox" class="inline" data-bind="checked: settings.plugins.eeprom_marlin.use_m503">
             <p class="help-block">
                 If disabled, the plugin will fall back on M501.
             </p>
@@ -17,9 +13,9 @@
     </div>
     <br>
     <div class="control-group">
-        <label class="control-label">{{ _("Use custom backup names") }}</label>
+        <label for="backup_name" class="control-label">{{ _("Use custom backup names") }}</label>
         <div class="controls">
-            <input type="checkbox" class="inline" data-bind="checked: settings.plugins.eeprom_marlin.custom_name">
+            <input id="backup_name" type="checkbox" class="inline" data-bind="checked: settings.plugins.eeprom_marlin.custom_name">
             <p class="help-block">
                 If enabled, a popup box will be shown to allow you to name the backup. Otherwise auto-generated.
             </p>
@@ -37,7 +33,7 @@
 <div>
 <hr>
 <p>
-    Marlin EEPROM Editor by <a href="https:github.com/cp2004">Charlie Powell</a> | <i class="fa fa-tag text-success"></i> Version {{ plugin_eeprom_marlin_version }} - <a href="https://github.com/cp2004/OctoPrint-EEPROM-Marlin/releases" target="_blank">Release Notes</a>
+    Marlin EEPROM Editor by <a href="https://github.com/cp2004" target="_blank">Charlie Powell</a> | <i class="fa fa-tag text-success"></i> Version {{ plugin_eeprom_marlin_version }} - <a href="https://github.com/cp2004/OctoPrint-EEPROM-Marlin/releases" target="_blank">Release Notes</a>
 </p>
 </div>
 <!-- Sponsors & Contributor modals -->
