@@ -84,5 +84,7 @@
   #tab_plugin_eeprom_marlin .eeprom-backup p .text-bold,
   #tab_plugin_eeprom_marlin .eeprom-backup i .text-bold {
     font-weight: bolder; }
+#tab_plugin_eeprom_marlin .eeprom-checkbox {
+  margin-top: -3px; }
 
 /*# sourceMappingURL=eeprom_marlin.css.map */

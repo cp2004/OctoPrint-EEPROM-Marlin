@@ -261,7 +261,7 @@ class IndividualData:
     def params_from_dict(self, data):
         for key, value in data.items():
             if value is not None:
-                self.params[key]["value"] = float(value)
+                self.params[key]["value"] = value
 
     def params_to_dict(self):
         # Ready to send to the UI

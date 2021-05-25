@@ -122,7 +122,7 @@ class API:
                 new_data = new_eeprom[name]
                 diff = octoprint.util.dict_minimal_mergediff(data, new_data)
                 if diff:
-                    commands.append(util.construct_command(new_data))
+                    commands.append(util.construct_command(new_data, name))
 
             if commands:
                 self._logger.info("Saving EEPROM data")

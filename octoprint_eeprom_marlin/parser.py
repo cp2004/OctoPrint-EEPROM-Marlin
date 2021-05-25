@@ -87,22 +87,18 @@ class Parser:
             return
 
         # grab parameters that we can look at
-        params = data.ALL_DATA_STRUCTURE[command_name]["params"].keys()
+        params = data.ALL_DATA_STRUCTURE[command_name]["params"]
 
         # work out what values we have
         parameters = {}
-        for param in params:
-            try:
-                param_match = regexes_parameters["float{}".format(param)].search(line)
-            except KeyError:
-                # This shouldn't happen in production, but if it shows up I did something wrong...
-                self._logger.warning(
-                    "Did not recognise EEPROM parameter, skipping param"
-                )
-                self._logger.warning("Parameter: {}".format(param))
-                continue
+        for param, param_value in params:
+            param_match = regexes_parameters["float{}".format(param)].search(line)
             if param_match:
-                parameters[param] = float(param_match.group("value"))
+                value = float(param_match.group("value"))
+                if param_value["type"] == "bool":
+                    value = True if int(value) == 1 else False
+
+                parameters[param] = value
 
         # construct response
         return {

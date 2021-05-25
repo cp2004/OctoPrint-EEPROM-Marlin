@@ -33,7 +33,7 @@ eeprom.{{ key }}.{{ value }}
                 <input id="{{ name }}-{{ key }}" type="number" class="input-small" step="{{ step }}" data-bind="value: {{ data_binding(name, key) }}, enable: enable_fields(), event: {keyup: edited()}">
             {% endif %}
         {% else %}
-        bool
+        <input id="{{ name }}-{{ key }}" type="checkbox" class="eeprom-checkbox" data-bind="checked: {{ data_binding(name, key) }}, enable: enable_fields(), event: {change: edited()}">
         {% endif %}
     </div>
 </div>
