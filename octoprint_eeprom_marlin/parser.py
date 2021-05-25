@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, unicode_literals
 
+import copy
+
 """
 Provide methods for parsing printer communication, specific to this plugin
 """
@@ -87,7 +89,16 @@ class Parser:
             return
 
         # grab parameters that we can look at
-        params = data.ALL_DATA_STRUCTURE[command_name]["params"]
+        # COPY so we don't break it
+        params = copy.deepcopy(data.ALL_DATA_STRUCTURE[command_name]["params"])
+
+        # If we're looking at materials, add in the S parameter
+        if command_name.startswith("material"):
+            params.update(
+                {
+                    "S": {"type": "int"},
+                }
+            )
 
         # work out what values we have
         parameters = {}

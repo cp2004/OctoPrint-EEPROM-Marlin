@@ -136,14 +136,14 @@ class ParserTestCase(unittest.TestCase):
             },
             "echo:; Material heatup parameters:": None,
             "echo: M145 S0 B60.0 F255.0 H199.0": {
-                "name": "material1",
+                "name": "material1",  # This step of the process does not differentiate between materials
                 "command": "M145",
-                "params": {"B": 60.0, "H": 199.0, "F": 255.0},
+                "params": {"S": 0.0, "B": 60.0, "H": 199.0, "F": 255.0},
             },
             "echo: M145 S1 B75.0 F0.0 H240.0": {
-                "name": "material2",
+                "name": "material1",  # This step of the process does not differentiate between materials
                 "command": "M145",
-                "params": {"B": 75.0, "H": 240.0, "F": 0.0},
+                "params": {"S": 1.0, "B": 75.0, "H": 240.0, "F": 0.0},
             },
             "echo:; Hotend PID settings:": None,
             "echo: M301 P30.5 I2.51 D73.09": {

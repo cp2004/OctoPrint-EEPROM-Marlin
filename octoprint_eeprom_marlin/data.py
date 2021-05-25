@@ -183,7 +183,7 @@ ALL_DATA_STRUCTURE = {
     "material1": {
         "command": "M145",
         "params": {
-            "S": {"type": "float1", "label": "Hotend temperature", "units": "°C"},
+            "H": {"type": "float1", "label": "Hotend temperature", "units": "°C"},
             "B": {"type": "float1", "label": "Bed temperature", "units": "°C"},
             "F": {"type": "int", "label": "Fan speed", "units": "0-255"},
         },
@@ -192,7 +192,7 @@ ALL_DATA_STRUCTURE = {
     "material2": {
         "command": "M145",
         "params": {
-            "S": {"type": "float1", "label": "Hotend temperature", "units": "°C"},
+            "H": {"type": "float1", "label": "Hotend temperature", "units": "°C"},
             "B": {"type": "float1", "label": "Bed temperature", "units": "°C"},
             "F": {"type": "int", "label": "Fan speed", "units": "0-255"},
         },
@@ -261,13 +261,20 @@ class IndividualData:
     def params_from_dict(self, data):
         for key, value in data.items():
             if value is not None:
+                if key not in self.params:
+                    self.params[key] = {}
                 self.params[key]["value"] = value
 
     def params_to_dict(self):
         # Ready to send to the UI
         params = {}
         for param, data in self.params.items():
-            params[param] = data["value"]
+            try:
+                params[param] = data["value"]
+            except Exception:
+                # This is hit in the case of materials, where the S value is not stored
+                # Safely ignored (not pretty I know)
+                continue
 
         return params
 
