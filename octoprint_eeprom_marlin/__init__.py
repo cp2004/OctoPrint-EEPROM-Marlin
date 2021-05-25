@@ -105,6 +105,7 @@ class EEPROMMarlinPlugin(
     def get_template_vars(self):
         return {
             "version": self._plugin_version,
+            "DATA_STRUCTURE": data.ALL_DATA_STRUCTURE,
             "SPONSORS": sponsors_contributors.export_sponsors(),
             "CONTRIBUTORS": sponsors_contributors.export_contributors(),
         }

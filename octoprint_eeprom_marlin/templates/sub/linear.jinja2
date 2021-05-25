@@ -1,7 +1,9 @@
+{% import "snippets/single_field.jinja2" as field %}
+
 <div data-bind="visible: eeprom.linear.visible">
     <strong>{{ _("Linear Advance") }}</strong>
     <hr>
-    <!-- ko foreach: UI.linear -->
-    {% include "snippets/single_field.jinja2" %}
-    <!-- /ko -->
+    {% for key, value in plugin_eeprom_marlin_DATA_STRUCTURE.linear.params.items() %}
+    {{ field.single_field("linear", key, value) }}
+    {% endfor %}
 </div>

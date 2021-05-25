@@ -73,7 +73,7 @@ ALL_DATA_STRUCTURE = {
         "params": {
             "P": {"type": "float1", "label": "Printing acceleration", "units": "mm/s2"},
             "R": {"type": "float1", "label": "Retract acceleration", "units": "mm/s2"},
-            "T": {"type": "float1", "label": "Retract acceleration", "units": "mm/s2"},
+            "T": {"type": "float1", "label": "Travel acceleration", "units": "mm/s2"},
         },
         "name": "Print Acceleration",
     },
@@ -176,7 +176,7 @@ ALL_DATA_STRUCTURE = {
         "command": "M420",
         "params": {
             "S": {"type": "bool", "label": "Enabled"},
-            "Z": {"type": "Z fade height", "units": "mm"},
+            "Z": {"type": "float1", "label": "Z fade height", "units": "mm"},
         },
         "name": "Autolevel",
     },

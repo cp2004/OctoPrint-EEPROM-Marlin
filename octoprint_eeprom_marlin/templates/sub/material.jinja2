@@ -1,31 +1,33 @@
+{% import "snippets/single_field.jinja2" as field %}
+
 <div data-bind="visible: eeprom.filament.visible">
     <strong>{{ _("Filament settings") }}</strong>
     <hr>
-    <!-- ko foreach: UI.filament -->
-    {% include "snippets/single_field.jinja2" %}
-    <!-- /ko -->
+    {% for key, value in plugin_eeprom_marlin_DATA_STRUCTURE.filament.params.items() %}
+    {{ field.single_field("filament", key, value) }}
+    {% endfor %}
 </div>
 <div data-bind="visible: eeprom.filament_change.visible">
     <hr>
     <strong>{{ _("Filament Change settings") }}</strong>
     <hr>
-    <!-- ko foreach: UI.filament_change -->
-    {% include "snippets/single_field.jinja2" %}
-    <!-- /ko -->
+    {% for key, value in plugin_eeprom_marlin_DATA_STRUCTURE.filament_change.params.items() %}
+    {{ field.single_field("filament_change", key, value) }}
+    {% endfor %}
 </div>
 <div data-bind="visible: eeprom.material1.visible">
     <hr>
     <strong>{{ _("Material Preset (1)") }}</strong>
     <hr>
-    <!-- ko foreach: UI.material1 -->
-    {% include "snippets/single_field.jinja2" %}
-    <!-- /ko -->
+    {% for key, value in plugin_eeprom_marlin_DATA_STRUCTURE.material1.params.items() %}
+    {{ field.single_field("material1", key, value) }}
+    {% endfor %}
 </div>
 <div data-bind="visible: eeprom.material2.visible">
     <hr>
     <strong>{{ _("Material Preset (2)") }}</strong>
     <hr>
-    <!-- ko foreach: UI.material2 -->
-    {% include "snippets/single_field.jinja2" %}
-    <!-- /ko -->
+    {% for key, value in plugin_eeprom_marlin_DATA_STRUCTURE.material2.params.items() %}
+    {{ field.single_field("material2", key, value) }}
+    {% endfor %}
 </div>

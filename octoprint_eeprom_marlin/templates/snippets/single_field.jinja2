@@ -1,16 +1,40 @@
-<div class="row-fluid" data-bind="visible: value() !== null">
+{% macro data_binding(key, value) %}
+eeprom.{{ key }}.{{ value }}
+{% endmacro %}
+
+{% macro single_field(name, key, data) %}
+<div class="row-fluid" data-bind="visible: {{ data_binding(name, key) }}() !== null">
     <div class="span6">
-        <label class="pull-right" data-bind="text: label"></label>
+        <label for="{{ name }}-{{ key }}" class="pull-right">
+            {{ data["label"] }}
+        </label>
     </div>
     <div class="span6">
-        <!-- ko if: units -->
-        <div class="input-append">
-            <input type="number" class="input-small" step="0.01" data-bind="value: value, enable: $root.enable_fields(), event: {keyup: $root.edited()}">
-            <span class="add-on" data-bind="text: units"></span>
-        </div>
-        <!-- /ko -->
-        <!-- ko ifnot: units -->
-        <input type="number" class="input-small" step="0.01" data-bind="value: value, enable: $root.enable_fields(), event: {keyup: $root.edited()}">
-        <!-- /ko -->
+        {% if data["type"] != "bool" %}
+            {% if data["type"] == "float1" %}
+                {% set step = "0.1" %}
+            {% elif data["type"] == "float2" %}
+                {% set step = "0.01" %}
+            {% elif data["type"] == "int" %}
+                {% set step = "1" %}
+            {% endif %}
+            {% if "units" in data %}
+                <div class="input-append">
+                    <input
+                            type="number"
+                            id="{{ name }}-{{ key }}"
+                            class="input-small"
+                            step="{{ step }}"
+                            data-bind="value: {{ data_binding(name, key) }}, enable: enable_fields, event: {keyup: edited}"
+                    >
+                    <span class="add-on">{{ data.units }}</span>
+                </div>
+            {% else %}
+                <input id="{{ name }}-{{ key }}" type="number" class="input-small" step="{{ step }}" data-bind="value: {{ data_binding(name, key) }}, enable: enable_fields(), event: {keyup: edited()}">
+            {% endif %}
+        {% else %}
+        bool
+        {% endif %}
     </div>
 </div>
+{% endmacro %}
