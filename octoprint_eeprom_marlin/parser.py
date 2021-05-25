@@ -91,7 +91,7 @@ class Parser:
 
         # work out what values we have
         parameters = {}
-        for param, param_value in params:
+        for param, param_value in params.items():
             param_match = regexes_parameters["float{}".format(param)].search(line)
             if param_match:
                 value = float(param_match.group("value"))
