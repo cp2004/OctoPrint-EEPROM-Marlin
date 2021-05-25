@@ -38,46 +38,11 @@
 <div id="eeprom_tab_data" class="collapse in" data-bind="visible: !initialLoad() && info.is_marlin() && info.name().length > 0">
     <div class="row-fluid">
         <div class="span3">
-            {% include "snippets/sidebar.jinja2" %}
+            {% include "sub/tab-sidebar.jinja2" %}
         </div>
         <div class="span9 eeprom-content">
             <div class="tab-content">
-                <div id="eeprom_info" class="tab-pane active">
-                    {% include 'sub/info.jinja2' %}
-                </div>
-                <div id="eeprom_acceleration" class="tab-pane">
-                    {% include 'sub/acceleration.jinja2' %}
-                </div>
-                <div id="eeprom_advanced" class="tab-pane">
-                    {% include 'sub/advanced.jinja2' %}
-                </div>
-                <div id="eeprom_autolevel" class="tab-pane">
-                    {% include 'sub/autolevel.jinja2' %}
-                </div>
-                <div id="eeprom_delta" class="tab-pane">
-                    {% include 'sub/delta.jinja2' %}
-                </div>
-                <div id="eeprom_endstop" class="tab-pane">
-                    {% include 'sub/endstop.jinja2' %}
-                </div>
-                <div id="eeprom_feedrate" class="tab-pane">
-                    {% include 'sub/feedrate.jinja2' %}
-                </div>
-                <div id="eeprom_linear" class="tab-pane">
-                    {% include 'sub/linear.jinja2' %}
-                </div>
-                <div id="eeprom_material" class="tab-pane">
-                    {% include 'sub/material.jinja2' %}
-                </div>
-                <div id="eeprom_offset" class="tab-pane">
-                    {% include 'sub/offset.jinja2' %}
-                </div>
-                <div id="eeprom_pid" class="tab-pane">
-                    {% include 'sub/pid.jinja2' %}
-                </div>
-                <div id="eeprom_steps" class="tab-pane">
-                    {% include 'sub/steps.jinja2' %}
-                </div>
+                {% include "sub/tab-content.jinja2" %}
             </div>
         </div>
     </div>

@@ -1,9 +1,0 @@
-{% import "snippets/single_field.jinja2" as field %}
-
-<div data-bind="visible: eeprom.autolevel.visible">
-    <strong>{{ _("Autolevel") }}</strong>
-    <hr>
-    {% for key, value in plugin_eeprom_marlin_DATA_STRUCTURE.autolevel.params.items() %}
-    {{ field.single_field("autolevel", key, value) }}
-    {% endfor %}
-</div>

@@ -1,9 +1,0 @@
-{% import "snippets/single_field.jinja2" as field %}
-
-<div data-bind="visible: eeprom.delta.visible">
-    <strong>{{ _("Delta Configuration") }}</strong>
-    <hr>
-    {% for key, value in plugin_eeprom_marlin_DATA_STRUCTURE.delta.params.items() %}
-    {{ field.single_field("delta", key, value) }}
-    {% endfor %}
-</div>

@@ -1,0 +1,54 @@
+{% import "snippets/single_field.jinja2" as field %}
+
+{% macro section(name, id) %}
+<div data-bind="visible: eeprom.{{ id }}.visible">
+    <strong>{{ _(name) }}</strong>
+    <hr>
+    {% for key, value in plugin_eeprom_marlin_DATA_STRUCTURE[id].params.items() %}
+    {{ field.single_field(id, key, value) }}
+    {% endfor %}
+</div>
+{% endmacro %}
+
+<div id="eeprom_info" class="tab-pane active">
+    {% include 'sub/info.jinja2' %}
+</div>
+<div id="eeprom_acceleration" class="tab-pane">
+    {{ section("Print Acceleration", "print_acceleration") }}
+    {{ section("Maximum Acceleration", "max_acceleration") }}
+</div>
+<div id="eeprom_advanced" class="tab-pane">
+    {{ section("Advanced", "advanced") }}
+</div>
+<div id="eeprom_autolevel" class="tab-pane">
+    {{ section("Autolevel", "autolevel") }}
+</div>
+<div id="eeprom_delta" class="tab-pane">
+    {{ section("Delta Configuration", "delta") }}
+</div>
+<div id="eeprom_endstop" class="tab-pane">
+    {{ section("Endstop Offsets", "endstop") }}
+</div>
+<div id="eeprom_feedrate" class="tab-pane">
+    {{ section("Feedrate", "feedrate") }}
+</div>
+<div id="eeprom_linear" class="tab-pane">
+    {{ section("Linear Advance", "linear") }}
+</div>
+<div id="eeprom_material" class="tab-pane">
+    {{ section("Filament Settings", "filament") }}
+    {{ section("Filament Change Settings", "filament_change") }}
+    {{ section("Material Preset (1)", "material1") }}
+    {{ section("Material Preset (2)", "material2") }}
+</div>
+<div id="eeprom_offset" class="tab-pane">
+    {{ section("Home Offset", "home_offset") }}
+    {{ section("Probe Offset", "probe_offset") }}
+</div>
+<div id="eeprom_pid" class="tab-pane">
+    {{ section("Hotend PID", "hotend_pid") }}
+    {{ section("Bed PID", "bed_pid") }}
+</div>
+<div id="eeprom_steps" class="tab-pane">
+    {{ section("Steps", "steps") }}
+</div>
