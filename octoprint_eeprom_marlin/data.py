@@ -5,6 +5,9 @@ __license__ = "GNU Affero General Public License http://www.gnu.org/licenses/agp
 __copyright__ = (
     "Copyright (C) 2020 Charlie Powell - Released under terms of the AGPLv3 License"
 )
+
+import copy
+
 try:
     from typing import Dict, Optional
 except ImportError:
@@ -305,14 +308,11 @@ class EEPROMData:
         self.plugin = plugin
 
         for key, data in ALL_DATA_STRUCTURE.items():
+            data = copy.deepcopy(data)  # Avoid modifiying the constant
             setattr(self, key, IndividualData(key, data["command"], data["params"]))
 
         # noinspection PyProtectedMember
         self.plugin._logger.info("EEPROM Data initialised")
-
-    def create_data_structure(self):
-        for key, data in ALL_DATA_STRUCTURE.items():
-            setattr(self, key, IndividualData(key, data["command"], data["params"]))
 
     def from_list(self, data):
         """
