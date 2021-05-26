@@ -4,6 +4,27 @@
  * This file no longer contains any work of previous contributors as of version 3.0
  */
 
+function create_eeprom_observables(params) {
+    var result = {};
+
+    params.forEach(function (param) {
+        result[param] = ko.observable();
+    });
+
+    result["visible"] = ko.computed(function () {
+        for (let param in result) {
+            if (param === "visible") {
+                continue;
+            }
+            if (result[param]() !== null) {
+                return true;
+            }
+        }
+        return false;
+    });
+    return result;
+}
+
 $(function () {
     function EEPROMMarlinViewModel(parameters) {
         var self = this;
@@ -16,410 +37,70 @@ $(function () {
         self.eeprom = (function () {
             var eeprom = {};
 
-            eeprom.advanced = (function () {
-                var advanced = {};
-
-                advanced.B = ko.observable();
-                advanced.E = ko.observable();
-                advanced.J = ko.observable();
-                advanced.S = ko.observable();
-                advanced.T = ko.observable();
-                advanced.X = ko.observable();
-                advanced.Y = ko.observable();
-                advanced.Z = ko.observable();
-
-                advanced.visible = ko.computed(function () {
-                    for (let param in advanced) {
-                        if (param === "visible") {
-                            continue;
-                        }
-                        if (advanced[param]() !== null) {
-                            return true;
-                        }
-                    }
-                    return false;
-                });
-
-                return advanced;
-            })();
-
-            eeprom.autolevel = (function () {
-                var autolevel = {};
-
-                autolevel.S = ko.observable();
-                autolevel.Z = ko.observable();
-
-                autolevel.visible = ko.computed(function () {
-                    for (let param in autolevel) {
-                        if (param === "visible") {
-                            continue;
-                        }
-                        if (autolevel[param]() !== null) {
-                            return true;
-                        }
-                    }
-                    return false;
-                });
-
-                return autolevel;
-            })();
-
-            eeprom.bed_pid = (function () {
-                var bed_pid = {};
-
-                bed_pid.D = ko.observable();
-                bed_pid.I = ko.observable();
-                bed_pid.P = ko.observable();
-
-                bed_pid.visible = ko.computed(function () {
-                    for (let param in bed_pid) {
-                        if (param === "visible") {
-                            continue;
-                        }
-                        if (bed_pid[param]() !== null) {
-                            return true;
-                        }
-                    }
-                    return false;
-                });
-
-                return bed_pid;
-            })();
-
-            eeprom.delta = (function () {
-                var delta = {};
-
-                delta.L = ko.observable();
-                delta.R = ko.observable();
-                delta.H = ko.observable();
-                delta.S = ko.observable();
-                delta.X = ko.observable();
-                delta.Y = ko.observable();
-                delta.Z = ko.observable();
-                delta.A = ko.observable();
-                delta.B = ko.observable();
-                delta.C = ko.observable();
-
-                delta.visible = ko.computed(function () {
-                    for (let param in delta) {
-                        if (param === "visible") {
-                            continue;
-                        }
-                        if (delta[param]() !== null) {
-                            return true;
-                        }
-                    }
-                    return false;
-                });
-
-                return delta;
-            })();
-
-            eeprom.endstop = (function () {
-                var endstop = {};
-
-                endstop.X = ko.observable();
-                endstop.Y = ko.observable();
-                endstop.Z = ko.observable();
-
-                endstop.visible = ko.computed(function () {
-                    for (let param in endstop) {
-                        if (param === "visible") {
-                            continue;
-                        }
-                        if (endstop[param]() !== null) {
-                            return true;
-                        }
-                    }
-                    return false;
-                });
-
-                return endstop;
-            })();
-
-            eeprom.feedrate = (function () {
-                var feedrate = {};
-
-                feedrate.E = ko.observable();
-                feedrate.X = ko.observable();
-                feedrate.Y = ko.observable();
-                feedrate.Z = ko.observable();
-
-                feedrate.visible = ko.computed(function () {
-                    for (let param in feedrate) {
-                        if (param === "visible") {
-                            continue;
-                        }
-                        if (feedrate[param]() !== null) {
-                            return true;
-                        }
-                    }
-                    return false;
-                });
-
-                return feedrate;
-            })();
-
-            eeprom.filament = (function () {
-                var filament = {};
-
-                filament.D = ko.observable();
-
-                filament.visible = ko.computed(function () {
-                    for (let param in filament) {
-                        if (param === "visible") {
-                            continue;
-                        }
-                        if (filament[param]() !== null) {
-                            return true;
-                        }
-                    }
-                    return false;
-                });
-
-                return filament;
-            })();
-
-            eeprom.home_offset = (function () {
-                var home_offset = {};
-
-                home_offset.X = ko.observable();
-                home_offset.Y = ko.observable();
-                home_offset.Z = ko.observable();
-
-                home_offset.visible = ko.computed(function () {
-                    for (let param in home_offset) {
-                        if (param === "visible") {
-                            continue;
-                        }
-                        if (home_offset[param]() !== null) {
-                            return true;
-                        }
-                    }
-                    return false;
-                });
-
-                return home_offset;
-            })();
-
-            eeprom.hotend_pid = (function () {
-                var hotend_pid = {};
-
-                hotend_pid.D = ko.observable();
-                hotend_pid.I = ko.observable();
-                hotend_pid.P = ko.observable();
-
-                hotend_pid.visible = ko.computed(function () {
-                    for (let param in hotend_pid) {
-                        if (param === "visible") {
-                            continue;
-                        }
-                        if (hotend_pid[param]() !== null) {
-                            return true;
-                        }
-                    }
-                    return false;
-                });
-
-                return hotend_pid;
-            })();
-
-            eeprom.linear = (function () {
-                var linear = {};
-
-                linear.K = ko.observable();
-
-                linear.visible = ko.computed(function () {
-                    for (let param in linear) {
-                        if (param === "visible") {
-                            continue;
-                        }
-                        if (linear[param]() !== null) {
-                            return true;
-                        }
-                    }
-                    return false;
-                });
-
-                return linear;
-            })();
-
-            eeprom.material1 = (function () {
-                var material1 = {};
-
-                material1.B = ko.observable();
-                material1.F = ko.observable();
-                material1.H = ko.observable();
-                material1.S = ko.observable();
-
-                material1.visible = ko.computed(function () {
-                    for (let param in material1) {
-                        if (param === "visible") {
-                            continue;
-                        }
-                        if (material1[param]() !== null) {
-                            return true;
-                        }
-                    }
-                    return false;
-                });
-
-                return material1;
-            })();
-
-            eeprom.material2 = (function () {
-                var material2 = {};
-
-                material2.B = ko.observable();
-                material2.F = ko.observable();
-                material2.H = ko.observable();
-                material2.S = ko.observable();
-
-                material2.visible = ko.computed(function () {
-                    for (let param in material2) {
-                        if (param === "visible") {
-                            continue;
-                        }
-                        if (material2[param]() !== null) {
-                            return true;
-                        }
-                    }
-                    return false;
-                });
-
-                return material2;
-            })();
-
-            eeprom.max_acceleration = (function () {
-                var max_acceleration = {};
-
-                max_acceleration.E = ko.observable();
-                max_acceleration.X = ko.observable();
-                max_acceleration.Y = ko.observable();
-                max_acceleration.Z = ko.observable();
-
-                max_acceleration.visible = ko.computed(function () {
-                    for (let param in max_acceleration) {
-                        if (param === "visible") {
-                            continue;
-                        }
-                        if (max_acceleration[param]() !== null) {
-                            return true;
-                        }
-                    }
-                    return false;
-                });
-
-                return max_acceleration;
-            })();
-
-            eeprom.print_acceleration = (function () {
-                var print_acceleration = {};
-
-                print_acceleration.P = ko.observable();
-                print_acceleration.R = ko.observable();
-                print_acceleration.T = ko.observable();
-
-                print_acceleration.visible = ko.computed(function () {
-                    for (let param in print_acceleration) {
-                        if (param === "visible") {
-                            continue;
-                        }
-                        if (print_acceleration[param]() !== null) {
-                            return true;
-                        }
-                    }
-                    return false;
-                });
-
-                return print_acceleration;
-            })();
-
-            eeprom.probe_offset = (function () {
-                var probe_offset = {};
-
-                probe_offset.X = ko.observable();
-                probe_offset.Y = ko.observable();
-                probe_offset.Z = ko.observable();
-
-                probe_offset.visible = ko.computed(function () {
-                    for (let param in probe_offset) {
-                        if (param === "visible") {
-                            continue;
-                        }
-                        if (probe_offset[param]() !== null) {
-                            return true;
-                        }
-                    }
-                    return false;
-                });
-
-                return probe_offset;
-            })();
-
-            eeprom.steps = (function () {
-                var steps = {};
-
-                steps.X = ko.observable();
-                steps.Y = ko.observable();
-                steps.Z = ko.observable();
-                steps.E = ko.observable();
-
-                steps.visible = ko.computed(function () {
-                    for (let param in steps) {
-                        if (param === "visible") {
-                            continue;
-                        }
-                        if (steps[param]() !== null) {
-                            return true;
-                        }
-                    }
-                    return false;
-                });
-
-                return steps;
-            })();
-
-            eeprom.filament_change = (function () {
-                var filament_change = {};
-
-                filament_change.L = ko.observable();
-                filament_change.U = ko.observable();
-
-                filament_change.visible = ko.computed(function () {
-                    for (let param in filament_change) {
-                        if (param === "visible") {
-                            continue;
-                        }
-                        if (filament_change[param]() !== null) {
-                            return true;
-                        }
-                    }
-                    return false;
-                });
-                return filament_change;
-            })();
-
-            eeprom.filament_runout = (function () {
-                var filament_runout = {};
-
-                filament_runout.D = ko.observable();
-                filament_runout.H = ko.observable();
-                filament_runout.S = ko.observable();
-
-                filament_runout.visible = ko.computed(function () {
-                    for (let param in filament_runout) {
-                        if (param === "visible") {
-                            continue;
-                        }
-                        if (filament_runout[param]() !== null) {
-                            return true;
-                        }
-                    }
-                    return false;
-                });
-                return filament_runout;
-            })();
+            eeprom.advanced = create_eeprom_observables([
+                "B",
+                "E",
+                "J",
+                "S",
+                "T",
+                "X",
+                "Y",
+                "Z",
+            ]);
+
+            eeprom.autolevel = create_eeprom_observables(["S", "Z"]);
+
+            eeprom.bed_pid = create_eeprom_observables(["D", "I", "P"]);
+
+            eeprom.delta = create_eeprom_observables([
+                "L",
+                "R",
+                "H",
+                "S",
+                "X",
+                "Y",
+                "Z",
+                "A",
+                "B",
+                "C",
+            ]);
+
+            eeprom.endstop = create_eeprom_observables(["X", "Y", "Z"]);
+
+            eeprom.feedrate = create_eeprom_observables(["X", "Y", "Z", "E"]);
+
+            eeprom.filament = create_eeprom_observables(["D"]);
+
+            eeprom.home_offset = create_eeprom_observables(["X", "Y", "Z"]);
+
+            eeprom.hotend_pid = create_eeprom_observables(["P", "I", "D"]);
+
+            eeprom.linear = create_eeprom_observables(["K"]);
+
+            eeprom.material1 = create_eeprom_observables(["B", "F", "H"]);
+
+            eeprom.material2 = create_eeprom_observables(["B", "F", "H"]);
+
+            eeprom.max_acceleration = create_eeprom_observables([
+                "E",
+                "X",
+                "Y",
+                "Z",
+            ]);
+
+            eeprom.print_acceleration = create_eeprom_observables([
+                "P",
+                "R",
+                "T",
+            ]);
+
+            eeprom.probe_offset = create_eeprom_observables(["X", "Y", "Z"]);
+
+            eeprom.steps = create_eeprom_observables(["E", "X", "Y", "Z"]);
+
+            eeprom.filament_change = create_eeprom_observables(["L", "U"]);
+
+            eeprom.filament_runout = create_eeprom_observables(["D", "H", "S"]);
 
             return eeprom;
         })();
