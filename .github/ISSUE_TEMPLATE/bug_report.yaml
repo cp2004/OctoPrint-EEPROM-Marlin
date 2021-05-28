@@ -41,3 +41,7 @@ body:
     attributes:
       label: API Response
       render: json
+  - type: textarea
+    attributes:
+      label: OctoPrint logs
+      description: Please upload the entire `octoprint.log` file here.
