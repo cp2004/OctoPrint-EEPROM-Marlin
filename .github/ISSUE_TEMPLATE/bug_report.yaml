@@ -30,6 +30,7 @@ body:
   - type: markdown
     attributes:
       value: |
+        ## Additional Data and logs
         Please send an M503 command to your printer, and capture the full communication from OctoPrint's terminal, as well as open your browser to the
         API endpoint `/api/plugin/eeprom_marlin` on your OctoPrint install. This helps me to work out what stage of the process the bug is in. Thank you!
   - type: textarea
