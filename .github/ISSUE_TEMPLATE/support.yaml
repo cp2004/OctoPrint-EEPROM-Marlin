@@ -1,0 +1,25 @@
+name: Support
+description: Need help using the plugin? Ask away!
+title: "[Request]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### Is your issue actually a bug?
+        Please make sure you are using the right template. If you think something is wrong, then please use the bug report template.
+  - type: textarea
+    attributes:
+      label: What do you need help with?
+      placeholder: Eg. I'm struggling with...
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        To help me to help you, if you are asking about editing the data then please send an `M503` command to your printer, 
+        and capture the full communication from OctoPrint's terminal.
+  - type: textarea
+    attributes:
+      label: M503 Response
+      render: gcode
+        
