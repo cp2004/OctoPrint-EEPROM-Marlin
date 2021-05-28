@@ -1,0 +1,25 @@
+name: Feature Request
+description: Want a new feature implemented? Request improvements here.
+title: "[Request]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+      **For all requests of new commands to be processed and editable**, you **must** be available to test 
+      implementations as I dp not have all the required hardware for all Marlin features. Thanks!
+  - type: textarea
+    attributes:
+      label: What would you like implemented?
+      description: Please provide a brief description of what you want implemented.
+      placeholder: It would be great if...
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        Please send an `M503` command to your printer, and capture the full communication from OctoPrint's terminal.
+  - type: textarea
+    attributes:
+      label: M503 Response:
+      render: gcode
+        
