@@ -1,0 +1,53 @@
+name: Bug Report
+description: Found something wrong? Report it!
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: Reporting an issue is easy! Please fill out as much of the information below as possible, to make your experience easier.
+  - type: textarea
+    attributes:
+      label: Description of the bug
+      description: Please provide a brief description of what you think went wrong
+      placeholder: It broke when I did...
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        Make sure you are up-to-date on the latest versions of all software involved.
+        **What versions are you running?**
+  - type: input
+    attributes:
+      label: Plugin version
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: OctoPrint version
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        ## Additional Data and logs
+        Please send an M503 command to your printer, and capture the full communication from OctoPrint's terminal, as well as open your browser to the
+        API endpoint `/api/plugin/eeprom_marlin` on your OctoPrint install. This helps me to work out what stage of the process the bug is in. Thank you!
+  - type: textarea
+    attributes:
+      label: M503 Response
+      render: gcode
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: API Response
+      render: json
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: OctoPrint logs
+      description: Please upload the entire `octoprint.log` file here.
+    validations:
+      required: true
