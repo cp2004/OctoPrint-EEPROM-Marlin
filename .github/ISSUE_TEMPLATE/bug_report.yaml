@@ -37,14 +37,17 @@ body:
     attributes:
       label: M503 Response
       render: gcode
+    validations:
       required: true
   - type: textarea
     attributes:
       label: API Response
       render: json
+    validations:
       required: true
   - type: textarea
     attributes:
       label: OctoPrint logs
       description: Please upload the entire `octoprint.log` file here.
+    validations:
       required: true
