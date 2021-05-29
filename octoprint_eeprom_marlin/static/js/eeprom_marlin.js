@@ -93,6 +93,10 @@ $(function () {
 
       eeprom.filament_runout = create_eeprom_observables(["D", "H", "S"]);
 
+      eeprom.tmc_current = create_eeprom_observables(["E", "X", "Y", "Z"]);
+
+      eeprom.tmc_hybrid = create_eeprom_observables(["E", "X", "Y", "Z"]);
+
       return eeprom;
     })();
 

@@ -29,6 +29,9 @@
     <li data-bind="visible: eeprom.autolevel.visible">
         <a data-toggle="tab" href="#eeprom_autolevel">Autolevel</a>
     </li>
+    <li data-bind="visible: eeprom.tmc_current.visible() || eeprom.tmc_hybrid.visible()">
+        <a data-toggle="tab" href="#eeprom_tmc">TMC Drivers</a>
+    </li>
     <li data-bind="visible: eeprom.linear.visible">
         <a data-toggle="tab" href="#eeprom_linear">Linear Advance</a>
     </li>

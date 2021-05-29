@@ -157,6 +157,11 @@ class ParserTestCase(unittest.TestCase):
                 "command": "M304",
                 "params": {"P": 131.06, "I": 11.79, "D": 971.23},
             },
+            "echo: M900 T1 K1.50": {
+                "name": "linear",
+                "command": "M900",
+                "params": {"K": 1.5},
+            },
         }
 
         eeprom_parser = parser.Parser(logger)

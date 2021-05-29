@@ -216,6 +216,25 @@ ALL_DATA_STRUCTURE = {
             "H": {"type": "bool", "label": "Enable host handling of filament runout"},
             "S": {"type": "bool", "label": "Enable filament runout sensor"},
         },
+        "name": "Filament Runout Sensor",
+    },
+    "tmc_current": {
+        "command": "M906",
+        "params": {
+            "E": {"type": "float2", "label": "Current for E0 Stepper", "units": "mA"},
+            "X": {"type": "float2", "label": "Current for X Stepper", "units": "mA"},
+            "Y": {"type": "float2", "label": "Current for Y Stepper", "units": "mA"},
+            "Z": {"type": "float2", "label": "Current for Z Stepper", "units": "mA"},
+        },
+    },
+    "tmc_hybrid": {
+        "command": "M913",
+        "params": {
+            "X": {"type": "float2", "label": "Hybrid Threshold for X axis"},
+            "Y": {"type": "float2", "label": "Hybrid Threshold for Y axis"},
+            "Z": {"type": "float2", "label": "Hybrid Threshold for Z axis"},
+            "E": {"type": "float2", "label": "Hybrid Threshold for E axis"},
+        },
     },
 }
 
