@@ -182,7 +182,6 @@ class EEPROMMarlinPlugin(
         **kwargs
     ):
         # https://docs.octoprint.org/en/master/plugins/hooks.html#protocol_gcodephase_hook
-        self._logger.debug(cmd)
         if cmd == "M501" or cmd == "M503":
             self._logger.info("{} detected, collecting data".format(cmd))
             self.collecting_eeprom = True
@@ -207,6 +206,14 @@ class EEPROMMarlinPlugin(
                     self._eeprom_data.from_dict(parsed, ui=False)
 
         return line
+
+    def comm_protocol_atcommand_sending(
+        self, comm, phase, cmd, params, tags=None, *args, **kwargs
+    ):
+        if cmd.upper() == "EEPROM_DEBUG":
+            # Trigger data collection manually using @EEPROM_DEBUG, for sending test files at the parser
+            # Useful for virtual printer testing, where the responses are not implemented.
+            self.collecting_eeprom = True
 
     def get_additional_permissions(self, *args, **kwargs):
         return [
@@ -290,5 +297,6 @@ def __plugin_load__():
         "octoprint.comm.protocol.firmware.capabilities": plugin.comm_protocol_firmware_cap,
         "octoprint.comm.protocol.gcode.received": plugin.comm_protocol_gcode_received,
         "octoprint.comm.protocol.gcode.sending": plugin.comm_protocol_gcode_sending,
+        "octoprint.comm.protocol.atcommand.sending": plugin.comm_protocol_atcommand_sending,
         "octoprint.access.permissions": plugin.get_additional_permissions,
     }
