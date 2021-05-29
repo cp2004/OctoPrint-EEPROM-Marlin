@@ -16,10 +16,9 @@ body:
   - type: markdown
     attributes:
       value: |
-        To help me to help you, if you are asking about editing the data then please send an `M503` command to your printer, 
+        To help me to help you, if you are asking about editing the data then please send an `M503` command to your printer,
         and capture the full communication from OctoPrint's terminal.
   - type: textarea
     attributes:
       label: M503 Response
       render: gcode
-        

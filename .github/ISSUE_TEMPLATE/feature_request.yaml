@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        **For all requests of new commands to be processed and editable**, you **must** be available to test 
+        **For all requests of new commands to be processed and editable**, you **must** be available to test
         implementations as I dp not have all the required hardware for all Marlin features. Thanks!
   - type: textarea
     attributes:
@@ -22,4 +22,3 @@ body:
     attributes:
       label: M503 Response
       render: gcode
-        
