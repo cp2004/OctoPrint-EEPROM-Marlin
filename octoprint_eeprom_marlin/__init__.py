@@ -21,7 +21,6 @@ from octoprint_eeprom_marlin import (
     api,
     backup,
     data,
-    events,
     parser,
     settings,
     sponsors_contributors,
@@ -38,7 +37,6 @@ class EEPROMMarlinPlugin(
     octoprint.plugin.WizardPlugin,
     octoprint.plugin.SettingsPlugin,
     octoprint.plugin.SimpleApiPlugin,
-    octoprint.plugin.EventHandlerPlugin,
     octoprint.plugin.BlueprintPlugin,
 ):
     # Data models
@@ -69,7 +67,6 @@ class EEPROMMarlinPlugin(
         self._backup_handler = backup.BackupHandler(self)
         self._parser = parser.Parser(self._logger)
         self._api = api.API(self)
-        self._event_reactor = events.EventHandler(self)
 
         self._logger.info("All EEPROM editor modules loaded")
 
@@ -141,10 +138,6 @@ class EEPROMMarlinPlugin(
                 "Content-Disposition": 'attachment; filename="{}.json"'.format(name)
             },
         )
-
-    # Event handling
-    def on_event(self, event, payload):
-        self._event_reactor.on_event(event, payload)
 
     # Websocket communication
     def send_message(self, type, data):
