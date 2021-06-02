@@ -172,7 +172,6 @@ $(function () {
 
     self.backups = ko.observableArray([]);
     self.backup_upload_name = ko.observable();
-    self.backup_upload_data = undefined;
 
     // State bindings
     self.loading = ko.observable(false);
@@ -370,37 +369,24 @@ $(function () {
       });
     };
 
-    $("#plugin_eeprom_marlin_backup_upload").fileupload({
-      dataType: "json",
-      maxNumberOfFiles: 1,
-      autoUpload: false,
-      headers: OctoPrint.getRequestHeaders(),
-      add: function (e, data) {
-        if (data.files.length === 0) {
-          // no files? ignore
-          return false;
-        }
-
-        self.backup_upload_name(data.files[0].name);
-        self.backup_upload_data = data;
-      },
-      done: function (e, data) {
-        self.backup_upload_name(undefined);
-        self.backup_upload_name = undefined;
-      },
-    });
+    self.onBackupUpload = function (data, event) {
+      self.backup_upload_name(event.target.files[0].name);
+    };
 
     self.restore_from_upload = function () {
-      if (self.backup_upload_data === undefined) return;
-      var input, file, fr;
+      var fileInput = document.getElementById(
+        "plugin_eeprom_marlin_backup_upload"
+      );
+      var files = fileInput.files;
 
-      if (typeof window.FileReader !== "function") {
-        alert("The file API is not supported on this browser");
+      if (!fileInput.files.length) {
+        // No files selected, no backup for you
         return;
       }
 
-      file = self.backup_upload_data.files[0];
-      fr = new FileReader();
+      var file = files.item(0);
+
+      var fr = new FileReader();
       fr.onload = recievedText;
       fr.readAsText(file);
 
@@ -427,6 +413,7 @@ $(function () {
             });
             self.eeprom_from_json(response.eeprom);
           }
+          self.backup_upload_name("");
           $("#eepromUploadBackupModal").modal("hide");
         });
       }

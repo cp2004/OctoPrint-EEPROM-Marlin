@@ -112,4 +112,8 @@
   margin-top: -3px;
 }
 
+#plugin_eeprom_marlin_backup_upload {
+  display: none;
+}
+
 /*# sourceMappingURL=eeprom_marlin.css.map */
