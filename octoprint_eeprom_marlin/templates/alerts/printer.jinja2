@@ -7,7 +7,7 @@
         {{ _("so EEPROM configuration is disabled. Editor is in read-only mode") }}
     </p>
     <!-- /ko -->
-    <!-- ko if loginState.hasPermission(access.permissions.PLUGIN_EEPROM_MARLIN_READ) && !loginState.hasPermission(self.access.permissions.PLUGIN_EEPROM_MARLIN_WRITE) -->
+    <!-- ko if loginState.hasPermission(access.permissions.PLUGIN_EEPROM_MARLIN_READ) && !loginState.hasPermission(access.permissions.PLUGIN_EEPROM_MARLIN_WRITE) -->
     <p>
         {{ _("Your account does not have permission to edit the EEPROM settings.") }}
     </p>
