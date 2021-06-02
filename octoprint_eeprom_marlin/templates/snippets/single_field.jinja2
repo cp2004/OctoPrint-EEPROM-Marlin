@@ -3,6 +3,7 @@ eeprom.{{ key }}.{{ value }}
 {% endmacro %}
 
 {% macro single_field(name, key, data) %}
+{% if not ("should_show" in data and data["should_show"] == False)  %}
 <div class="row-fluid" data-bind="visible: {{ data_binding(name, key) }}() !== null">
     <div class="span6">
         <label for="{{ name }}-{{ key }}" class="pull-right">
@@ -37,4 +38,5 @@ eeprom.{{ key }}.{{ value }}
         {% endif %}
     </div>
 </div>
+{% endif %}
 {% endmacro %}

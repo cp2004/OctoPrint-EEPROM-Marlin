@@ -91,6 +91,7 @@ class Parser:
         # grab parameters that we can look at
         # COPY so we don't break it
         params = copy.deepcopy(data.ALL_DATA_STRUCTURE[command_name]["params"])
+        # TODO this should no longer be required, but I will touch it after the release
 
         # If we're looking at materials, add in the S parameter
         if command_name.startswith("material"):

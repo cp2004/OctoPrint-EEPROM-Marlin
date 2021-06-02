@@ -189,6 +189,11 @@ ALL_DATA_STRUCTURE = {
             "H": {"type": "float1", "label": "Hotend temperature", "units": "°C"},
             "B": {"type": "float1", "label": "Bed temperature", "units": "°C"},
             "F": {"type": "int", "label": "Fan speed", "units": "0-255"},
+            "S": {
+                "type": "int",
+                "label": "Material number",
+                "should_show": False,
+            },  # This should NOT be in the UI
         },
         "name": "Material Preset (1)",
     },
@@ -198,6 +203,11 @@ ALL_DATA_STRUCTURE = {
             "H": {"type": "float1", "label": "Hotend temperature", "units": "°C"},
             "B": {"type": "float1", "label": "Bed temperature", "units": "°C"},
             "F": {"type": "int", "label": "Fan speed", "units": "0-255"},
+            "S": {
+                "type": "int",
+                "label": "Material number",
+                "should_show": False,
+            },  # This should NOT be in the UI
         },
         "name": "Material Preset (2)",
     },
@@ -364,7 +374,13 @@ class EEPROMData:
                 self.plugin._logger.error("Unable to parse M145 command")
                 return
         else:
-            data_class = getattr(self, data["name"])
+            try:
+                data_class = getattr(self, data["name"])
+            except AttributeError:
+                self._logger.error(
+                    "Could not parse data, name was {}".format(data["name"])
+                )
+                return
 
         data_class.params_from_dict(data["params"])
 
