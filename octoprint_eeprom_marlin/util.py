@@ -7,18 +7,28 @@ __copyright__ = (
 )
 import time
 
+from octoprint_eeprom_marlin.data import ALL_DATA_STRUCTURE as DATA
+
 
 def build_backup_name():
     return "eeprom_backup-{}".format(time.strftime("%Y%m%d-%H%M%S"))
 
 
-def construct_command(data):
+def construct_command(data, name):
     command = data["command"]
     for param, value in data["params"].items():
         # Check that the value exists, avoid M205 [...] JNone
         if value is None:
             continue
-        value = str(value) if command != "M145" and param != "S" else str(int(value))
+
+        # Check the command type, and map boolean back to 0/1
+        if DATA[name]["params"][param]["type"] == "bool":
+            value = "1" if value is True else "0"
+        else:
+            value = (
+                str(value) if command != "M145" and param != "S" else str(int(value))
+            )
+
         command = command + " " + param + value
     return command
 

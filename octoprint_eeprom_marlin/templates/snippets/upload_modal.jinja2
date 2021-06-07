@@ -5,20 +5,24 @@
     </div>
     <div class="modal-body">
         <p>Select a file to upload and restore</p>
-        <div class="alert" data-bind="visible: enable_buttons">
+        <div class="alert" data-bind="visible: !enable_buttons()">
             <strong>{{ _("Backup upload is currently disabled while the editor is in read only mode") }}</strong>
         </div>
         <form class="form-horizontal" onsubmit="return false;">
             <div class="control-group">
                 <label class="control-label">{{ _('Backup file') }}</label>
                 <div class="controls">
-                    <div class="input-prepend">
-                        <span class="btn fileinput-button">
-                            <span>{{ _('Browse...') }}</span>
-                            <input id="plugin_eeprom_marlin_backup_upload" type="file" name="file" accept=".json">
-                        </span>
-                        <span class="add-on" data-bind="text: backup_upload_name"></span>
-                    </div>
+                    <label for="plugin_eeprom_marlin_backup_upload" class="btn">
+                        <i class="fa fa-cloud-upload"></i> {{ _("Select File") }}
+                    </label>
+                    <input
+                            data-bind="enable: enable_buttons, event: { change: onBackupUpload }"
+                            id="plugin_eeprom_marlin_backup_upload"
+                            type="file"
+                            name="file"
+                            accept=".json"
+                    >
+                    <p class="help-block" data-bind="text: backup_upload_name"></p>
                 </div>
             </div>
         </form>

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, unicode_literals
 
+import copy
+
 """
 Provide methods for parsing printer communication, specific to this plugin
 """
@@ -67,7 +69,6 @@ class Parser:
             "Z": 800.0,
             "E": 90.0
         }
-        :param logger: plugin's logging instance
         :param line: line received from FW
         :return: dict: parsed values
         """
@@ -79,31 +80,41 @@ class Parser:
         else:
             return
 
-        # grab parameters that we can look at
+        # Find the name (ID) of the command to use internally
         try:
-            params = data.COMMAND_PARAMS[command]
-        except KeyError:
-            self._logger.warning("Did not recognise EEPROM data, skipping line")
-            self._logger.warning("Line: {}".format(line))
+            command_name = data.find_name_from_command(command)
+        except ValueError:
+            self._logger.warning("EEPROM output line not recognized, skipped")
+            self._logger.warning("Line: {}".format(line.strip("\r\n ")))
             return
+
+        # grab parameters that we can look at
+        # COPY so we don't break it
+        params = copy.deepcopy(data.ALL_DATA_STRUCTURE[command_name]["params"])
+        # TODO this should no longer be required, but I will touch it after the release
+
+        # If we're looking at materials, add in the S parameter
+        if command_name.startswith("material"):
+            params.update(
+                {
+                    "S": {"type": "int"},
+                }
+            )
 
         # work out what values we have
         parameters = {}
-        for param in params:
-            try:
-                param_match = regexes_parameters["float{}".format(param)].search(line)
-            except KeyError:
-                self._logger.warning(
-                    "Did not recognise EEPROM parameter, skipping param"
-                )
-                self._logger.warning("Parameter: {}".format(param))
-                continue
+        for param, param_value in params.items():
+            param_match = regexes_parameters["float{}".format(param)].search(line)
             if param_match:
-                parameters[param] = float(param_match.group("value"))
+                value = float(param_match.group("value"))
+                if param_value["type"] == "bool":
+                    value = True if int(value) == 1 else False
+
+                parameters[param] = value
 
         # construct response
         return {
-            "name": data.COMMAND_NAMES[command],
+            "name": command_name,
             "command": command,
             "params": parameters,
         }

@@ -9,6 +9,7 @@ from copy import deepcopy
 
 import flask
 import octoprint.util
+from octoprint.access.permissions import Permissions
 
 from octoprint_eeprom_marlin import util
 from octoprint_eeprom_marlin.backup import BackupMissingError, BackupNameTakenError
@@ -24,12 +25,12 @@ CMD_UPLOAD_RESTORE = "upload_restore"
 
 class API:
     def __init__(self, plugin):
-        self._settings = plugin._settings
-        self._logger = plugin._logger
-        self._printer = plugin._printer
-        self._firmware_info = plugin._firmware_info
-        self._eeprom_data = plugin._eeprom_data
-        self._backup_handler = plugin._backup_handler
+        self._settings = plugin._settings  # noqa
+        self._logger = plugin._logger  # noqa
+        self._printer = plugin._printer  # noqa
+        self._firmware_info = plugin._firmware_info  # noqa
+        self._eeprom_data = plugin._eeprom_data  # noqa
+        self._backup_handler = plugin._backup_handler  # noqa
         self._plugin = plugin
 
     @staticmethod
@@ -46,32 +47,63 @@ class API:
 
     def on_api_command(self, command, data):
         if command == CMD_LOAD:
+            if not Permissions.PLUGIN_EEPROM_MARLIN_READ.can():
+                # Insufficient rights
+                flask.abort(403)
+
             # Get data from printer
             if self._printer.is_ready():
                 self._printer.commands(
                     "M503" if self._settings.get(["use_m503"]) else "M501"
                 )
         elif command == CMD_SAVE:
+            if not Permissions.PLUGIN_EEPROM_MARLIN_EDIT.can():
+                # Insufficient rights
+                flask.abort(403)
+
             # Send changed data to printer
             self.save_eeprom_data(data.get("eeprom_data"))
 
         elif command == CMD_BACKUP:
+            if not Permissions.PLUGIN_EEPROM_MARLIN_EDIT.can():
+                # Insufficient rights
+                flask.abort(403)
+
             # Execute a backup
             return self.create_backup(data.get("name"))
         elif command == CMD_RESTORE:
+            if not Permissions.PLUGIN_EEPROM_MARLIN_EDIT.can():
+                # Insufficient rights
+                flask.abort(403)
+
             # Restore the backup
             return self.restore_backup(data.get("name"))
         elif command == CMD_DELETE:
+            if not Permissions.PLUGIN_EEPROM_MARLIN_EDIT.can():
+                # Insufficient rights
+                flask.abort(403)
+
             # Delete the backup
             return self.delete_backup(data.get("name"))
         elif command == CMD_UPLOAD_RESTORE:
+            if not Permissions.PLUGIN_EEPROM_MARLIN_EDIT.can():
+                # Insufficient rights
+                flask.abort(403)
+
             # Restore backup from upload
             return self.upload_restore(data.get("data"))
         elif command == CMD_RESET:
+            if not Permissions.PLUGIN_EEPROM_MARLIN_RESET.can():
+                # Insufficient rights
+                flask.abort(403)
+
             # Reset (M502)
             return self.reset_eeprom()
 
     def on_api_get(self, request):
+        if not Permissions.PLUGIN_EEPROM_MARLIN_READ.can():
+            flask.abort(403)
+
         return flask.jsonify(
             {
                 "info": self._firmware_info.to_dict(),
@@ -90,7 +122,7 @@ class API:
                 new_data = new_eeprom[name]
                 diff = octoprint.util.dict_minimal_mergediff(data, new_data)
                 if diff:
-                    commands.append(util.construct_command(new_data))
+                    commands.append(util.construct_command(new_data, name))
 
             if commands:
                 self._logger.info("Saving EEPROM data")

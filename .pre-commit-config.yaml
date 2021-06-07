@@ -39,3 +39,4 @@ repos:
     rev: master
     hooks:
       - id: prettier
+        args: ["--tab-width", "2"]

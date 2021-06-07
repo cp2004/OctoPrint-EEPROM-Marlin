@@ -1,3 +1,4 @@
+<!-- ko if: loginState.hasPermission(access.permissions.PLUGIN_EEPROM_MARLIN_READ) -->
 <div class="row-fluid eeprom-nav">
     <div class="span3">
         <div class="eeprom-brand">
@@ -7,15 +8,15 @@
     </div>
     <div class="span9">
         <div class="btn-group" data-bind="visible: !backup_open()">
-            <button class="btn" data-bind="click: load_eeprom, enable: enable_buttons">
+            <button class="btn" data-bind="click: load_eeprom, enable: enableLoad">
                 <i class="fa fa-fw fa-refresh" data-bind="css: {'fa-spin': loading()}"></i>
                 {{ _(" Load") }}
             </button>
-            <button class="btn" data-bind="click: save_eeprom, css: {'btn-primary': unsaved()}, enable: enable_buttons" >
+            <button class="btn" data-bind="click: save_eeprom, css: {'btn-primary': unsaved()}, enable: enableSave" >
                 <i class="fas-custom fa-fw" data-bind="css: {'fa-refresh fa-spin': saving(), 'fa-custom-save': !saving()}"></i>
                 {{ _(" Save") }}
             </button>
-            <button class="btn btn-danger" data-bind="click: reset_eeprom, enable: enable_buttons">
+            <button class="btn btn-danger" data-bind="click: reset_eeprom, enable: enableReset">
                 <i class="fa fa-fw fa-eraser"></i>
                 {{ _(" Reset") }}
             </button>
@@ -37,46 +38,11 @@
 <div id="eeprom_tab_data" class="collapse in" data-bind="visible: !initialLoad() && info.is_marlin() && info.name().length > 0">
     <div class="row-fluid">
         <div class="span3">
-            {% include "snippets/sidebar.jinja2" %}
+            {% include "sub/tab-sidebar.jinja2" %}
         </div>
         <div class="span9 eeprom-content">
             <div class="tab-content">
-                <div id="eeprom_info" class="tab-pane active">
-                    {% include 'sub/info.jinja2' %}
-                </div>
-                <div id="eeprom_acceleration" class="tab-pane">
-                    {% include 'sub/acceleration.jinja2' %}
-                </div>
-                <div id="eeprom_advanced" class="tab-pane">
-                    {% include 'sub/advanced.jinja2' %}
-                </div>
-                <div id="eeprom_autolevel" class="tab-pane">
-                    {% include 'sub/autolevel.jinja2' %}
-                </div>
-                <div id="eeprom_delta" class="tab-pane">
-                    {% include 'sub/delta.jinja2' %}
-                </div>
-                <div id="eeprom_endstop" class="tab-pane">
-                    {% include 'sub/endstop.jinja2' %}
-                </div>
-                <div id="eeprom_feedrate" class="tab-pane">
-                    {% include 'sub/feedrate.jinja2' %}
-                </div>
-                <div id="eeprom_linear" class="tab-pane">
-                    {% include 'sub/linear.jinja2' %}
-                </div>
-                <div id="eeprom_material" class="tab-pane">
-                    {% include 'sub/material.jinja2' %}
-                </div>
-                <div id="eeprom_offset" class="tab-pane">
-                    {% include 'sub/offset.jinja2' %}
-                </div>
-                <div id="eeprom_pid" class="tab-pane">
-                    {% include 'sub/pid.jinja2' %}
-                </div>
-                <div id="eeprom_steps" class="tab-pane">
-                    {% include 'sub/steps.jinja2' %}
-                </div>
+                {% include "sub/tab-content.jinja2" %}
             </div>
         </div>
     </div>
@@ -89,3 +55,11 @@
 {% include "overlays/not_marlin.jinja2" %}
 {% include "overlays/not_connected.jinja2" %}
 </div>
+<!-- /ko -->
+<!-- ko if: !loginState.hasPermission(access.permissions.PLUGIN_EEPROM_MARLIN_READ) -->
+<div class="alert alert-warning">
+    <i class="fa fa-user-times text-error fa-3x pull-left" style="margin-right: 0.5em;"></i>
+    <p>{{ _("Your user account does not have the correct permissions to use this feature.") }}</p>
+    <p>{{ _("You need to ask the administrator of this instance to enable it for you.")}}</p>
+</div>
+<!-- /ko -->

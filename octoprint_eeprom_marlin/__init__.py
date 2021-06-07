@@ -13,13 +13,14 @@ from copy import deepcopy
 
 import flask
 import octoprint.plugin
+from octoprint.access import ADMIN_GROUP, READONLY_GROUP, USER_GROUP
+from octoprint.access.permissions import Permissions
 
 from octoprint_eeprom_marlin import (
     _version,
     api,
     backup,
     data,
-    events,
     parser,
     settings,
     sponsors_contributors,
@@ -36,7 +37,6 @@ class EEPROMMarlinPlugin(
     octoprint.plugin.WizardPlugin,
     octoprint.plugin.SettingsPlugin,
     octoprint.plugin.SimpleApiPlugin,
-    octoprint.plugin.EventHandlerPlugin,
     octoprint.plugin.BlueprintPlugin,
 ):
     # Data models
@@ -67,7 +67,6 @@ class EEPROMMarlinPlugin(
         self._backup_handler = backup.BackupHandler(self)
         self._parser = parser.Parser(self._logger)
         self._api = api.API(self)
-        self._event_reactor = events.EventHandler(self)
 
         self._logger.info("All EEPROM editor modules loaded")
 
@@ -103,6 +102,7 @@ class EEPROMMarlinPlugin(
     def get_template_vars(self):
         return {
             "version": self._plugin_version,
+            "DATA_STRUCTURE": data.ALL_DATA_STRUCTURE,
             "SPONSORS": sponsors_contributors.export_sponsors(),
             "CONTRIBUTORS": sponsors_contributors.export_contributors(),
         }
@@ -123,6 +123,7 @@ class EEPROMMarlinPlugin(
 
     # BluePrint handling
     @octoprint.plugin.BlueprintPlugin.route("/download/<name>")
+    @Permissions.PLUGIN_EEPROM_MARLIN_READ.require(403)
     def download_backup(self, name):
         try:
             backup_data = self._backup_handler.read_backup(name)
@@ -137,10 +138,6 @@ class EEPROMMarlinPlugin(
                 "Content-Disposition": 'attachment; filename="{}.json"'.format(name)
             },
         )
-
-    # Event handling
-    def on_event(self, event, payload):
-        self._event_reactor.on_event(event, payload)
 
     # Websocket communication
     def send_message(self, type, data):
@@ -178,7 +175,6 @@ class EEPROMMarlinPlugin(
         **kwargs
     ):
         # https://docs.octoprint.org/en/master/plugins/hooks.html#protocol_gcodephase_hook
-        self._logger.debug(cmd)
         if cmd == "M501" or cmd == "M503":
             self._logger.info("{} detected, collecting data".format(cmd))
             self.collecting_eeprom = True
@@ -203,6 +199,42 @@ class EEPROMMarlinPlugin(
                     self._eeprom_data.from_dict(parsed, ui=False)
 
         return line
+
+    def comm_protocol_atcommand_sending(
+        self, comm, phase, cmd, params, tags=None, *args, **kwargs
+    ):
+        if cmd.upper() == "EEPROM_DEBUG":
+            # Trigger data collection manually using @EEPROM_DEBUG, for sending test files at the parser
+            # Useful for virtual printer testing, where the responses are not implemented.
+            self.collecting_eeprom = True
+
+    def get_additional_permissions(self, *args, **kwargs):
+        return [
+            {
+                "key": "READ",
+                "name": "Read EEPROM",
+                "description": "Can read EEPROM data",
+                "roles": ["read"],
+                "dangerous": False,
+                "default_groups": [ADMIN_GROUP, USER_GROUP, READONLY_GROUP],
+            },
+            {
+                "key": "EDIT",
+                "name": "Edit EEPROM",
+                "description": "Can edit EEPROM data and save it to the printer",
+                "roles": ["edit"],
+                "dangerous": False,
+                "default_groups": [ADMIN_GROUP, USER_GROUP],
+            },
+            {
+                "key": "RESET",
+                "name": "Reset EEPROM",
+                "description": "Can reset the firmware to factory defaults",
+                "roles": ["reset"],
+                "dangerous": True,
+                "default_groups": [ADMIN_GROUP],
+            },
+        ]
 
     # Update hook
     def get_update_information(self):
@@ -241,6 +273,7 @@ __plugin_description__ = """
     """
 __plugin_author__ = "Charlie Powell"
 __plugin_license__ = "AGPLv3"
+__plugin_url__ = "https://github.com/cp2004/OctoPrint-EEPROM-Marlin."
 __plugin_pythoncompat__ = ">=2.7,<4"
 __plugin_version__ = __version__
 
@@ -257,4 +290,6 @@ def __plugin_load__():
         "octoprint.comm.protocol.firmware.capabilities": plugin.comm_protocol_firmware_cap,
         "octoprint.comm.protocol.gcode.received": plugin.comm_protocol_gcode_received,
         "octoprint.comm.protocol.gcode.sending": plugin.comm_protocol_gcode_sending,
+        "octoprint.comm.protocol.atcommand.sending": plugin.comm_protocol_atcommand_sending,
+        "octoprint.access.permissions": plugin.get_additional_permissions,
     }

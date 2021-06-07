@@ -111,7 +111,7 @@ class ParserTestCase(unittest.TestCase):
             "echo: M420 S1.0 Z0.0": {
                 "name": "autolevel",
                 "command": "M420",
-                "params": {"S": 1.0, "Z": 0.0},
+                "params": {"S": True, "Z": 0.0},
             },
             "echo:; Linear Advance:": None,
             "echo: M900 K0.01": {
@@ -136,12 +136,12 @@ class ParserTestCase(unittest.TestCase):
             },
             "echo:; Material heatup parameters:": None,
             "echo: M145 S0 B60.0 F255.0 H199.0": {
-                "name": "material",
+                "name": "material1",  # This step of the process does not differentiate between materials
                 "command": "M145",
                 "params": {"S": 0.0, "B": 60.0, "H": 199.0, "F": 255.0},
             },
             "echo: M145 S1 B75.0 F0.0 H240.0": {
-                "name": "material",
+                "name": "material1",  # This step of the process does not differentiate between materials
                 "command": "M145",
                 "params": {"S": 1.0, "B": 75.0, "H": 240.0, "F": 0.0},
             },
@@ -156,6 +156,11 @@ class ParserTestCase(unittest.TestCase):
                 "name": "bed_pid",
                 "command": "M304",
                 "params": {"P": 131.06, "I": 11.79, "D": 971.23},
+            },
+            "echo: M900 T1 K1.50": {
+                "name": "linear",
+                "command": "M900",
+                "params": {"K": 1.5},
             },
         }
 
