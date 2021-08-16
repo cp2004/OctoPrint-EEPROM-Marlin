@@ -273,7 +273,7 @@ __plugin_description__ = """
     """
 __plugin_author__ = "Charlie Powell"
 __plugin_license__ = "AGPLv3"
-__plugin_url__ = "https://github.com/cp2004/OctoPrint-EEPROM-Marlin."
+__plugin_url__ = "https://github.com/cp2004/OctoPrint-EEPROM-Marlin"
 __plugin_pythoncompat__ = ">=2.7,<4"
 __plugin_version__ = __version__
 
