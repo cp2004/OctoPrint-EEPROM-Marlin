@@ -52,3 +52,9 @@ Configuration editor
 
 Backup feature
 ![Backup feature](assets/backup.png)
+
+## Sponsor
+
+* Sponsor
+
+## ✏️ 🔧
