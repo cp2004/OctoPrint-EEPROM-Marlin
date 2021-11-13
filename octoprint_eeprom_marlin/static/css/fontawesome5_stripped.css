@@ -8,12 +8,12 @@
  * I have also renamed them from the FA defaults.
  */
 
-.fa-custom,
-.fas-custom,
-.far-custom,
-.fal-custom,
-.fad-custom,
-.fab-custom {
+fa,
+.fas,
+.far,
+.fal,
+.fad,
+.fab {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   display: inline-block;
@@ -24,25 +24,25 @@
 
 /* Font Awesome uses the Unicode Private Use Area (PUA) to ensure screen
 readers do not read off random characters that represent icons */
-.fa-custom-bahai:before {  /* Star shape */
+.fa-bahai:before {  /* Star shape */
   content: "\f666";
 }
-.fa-custom-hand-point-right:before {
+.fa-hand-point-right:before {
   content: "\f0a4";
 }
-.fa-custom-save:before {
+.fa-save:before {
   content: "\f0c7"
 }
-.fa-custom-cloud-download-alt:before {
+.fa-cloud-download-alt:before {
   content: "\f381";
 }
-.fa-custom-edit:before {
+.fa-edit:before {
   content: "\f044";
 }
-.fa-custom-plug:before {
+.fa-plug:before {
   content: "\f1e6";
 }
-.fa-custom-cloud-upload-alt:before {
+.fa-cloud-upload-alt:before {
   content: "\f382";
 }
 
@@ -54,7 +54,7 @@ readers do not read off random characters that represent icons */
   src: url("../webfonts/fa-brands-400.eot");
   src: url("../webfonts/fa-brands-400.eot?#iefix") format("embedded-opentype"), url("../webfonts/fa-brands-400.woff2") format("woff2"), url("../webfonts/fa-brands-400.woff") format("woff"), url("../webfonts/fa-brands-400.ttf") format("truetype"), url("../webfonts/fa-brands-400.svg#fontawesome") format("svg"); }
 
-.fab-custom {
+.fab {
   font-family: 'Font Awesome 5 Brands';
   font-weight: 400; }
 @font-face {
@@ -65,7 +65,7 @@ readers do not read off random characters that represent icons */
   src: url("../webfonts/fa-regular-400.eot");
   src: url("../webfonts/fa-regular-400.eot?#iefix") format("embedded-opentype"), url("../webfonts/fa-regular-400.woff2") format("woff2"), url("../webfonts/fa-regular-400.woff") format("woff"), url("../webfonts/fa-regular-400.ttf") format("truetype"), url("../webfonts/fa-regular-400.svg#fontawesome") format("svg"); }
 
-.far-custom {
+.far {
   font-family: 'Font Awesome 5 Free';
   font-weight: 400; }
 @font-face {
@@ -76,7 +76,7 @@ readers do not read off random characters that represent icons */
   src: url("../webfonts/fa-solid-900.eot");
   src: url("../webfonts/fa-solid-900.eot?#iefix") format("embedded-opentype"), url("../webfonts/fa-solid-900.woff2") format("woff2"), url("../webfonts/fa-solid-900.woff") format("woff"), url("../webfonts/fa-solid-900.ttf") format("truetype"), url("../webfonts/fa-solid-900.svg#fontawesome") format("svg"); }
 
-.fa-custom,
-.fas-custom {
+.fa,
+.fas {
   font-family: 'Font Awesome 5 Free';
   font-weight: 900; }

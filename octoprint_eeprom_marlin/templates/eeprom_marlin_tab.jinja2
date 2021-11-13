@@ -2,7 +2,7 @@
 <div class="row-fluid eeprom-nav">
     <div class="span3">
         <div class="eeprom-brand">
-            <i class="fas-custom fa-2x fa-custom-edit text-success pull-right"></i>
+            <i class="fas fa-2x fa-edit text-success pull-right"></i>
             <p>EEPROM <br>Editor</p>
         </div>
     </div>
@@ -13,7 +13,7 @@
                 {{ _(" Load") }}
             </button>
             <button class="btn" data-bind="click: save_eeprom, css: {'btn-primary': unsaved()}, enable: enableSave" >
-                <i class="fas-custom fa-fw" data-bind="css: {'fa-refresh fa-spin': saving(), 'fa-custom-save': !saving()}"></i>
+                <i class="fas fa-fw" data-bind="css: {'fa-refresh fa-spin': saving(), 'fa-save': !saving()}"></i>
                 {{ _(" Save") }}
             </button>
             <button class="btn btn-danger" data-bind="click: reset_eeprom, enable: enableReset">
@@ -24,7 +24,7 @@
         {% include "backup/controls.jinja2" %}
         <div class="btn-group pull-right">
             <button class="btn" data-bind="click: toggle_backup">
-                <i class="fas-custom fa-fw" data-bind="css: {'fa-custom-cloud-download-alt': !backup_open(), 'fa-custom-edit': backup_open()}"></i>
+                <i class="fas fa-fw" data-bind="css: {'fa-cloud-download-alt': !backup_open(), 'fa-edit': backup_open()}"></i>
                 <span data-bind="text: backup_open() ? '{{ _("EEPROM") }}' : '{{ _("Backup") }}'"></span>
             </button>
         </div>
