@@ -9,6 +9,41 @@
         </p>
         <!-- /ko -->
     </div>
+    <!-- ko if: settingsViewModel.settings.plugins.eeprom_marlin.m78 -->
+    <div class="card">
+        <p><strong>Printer Stats (M78)</strong></p>
+        <!-- ko if: stats.prints -->
+        <p>
+            <strong>{{ _("Total Prints:") }}</strong> <span data-bind="text: stats.prints"></span>
+        </p>
+        <!-- /ko -->
+        <!-- ko if: stats.finished -->
+        <p>
+            <strong>{{ _("Finished Prints:") }}</strong> <span data-bind="text: stats.finished"></span>
+        </p>
+        <!-- /ko -->
+        <!-- ko if: stats.failed -->
+        <p>
+            <strong>{{ _("Failed Prints:") }}</strong> <span data-bind="text: stats.failed"></span>
+        </p>
+        <!-- /ko -->
+        <!-- ko if: stats.total_time -->
+        <p>
+            <strong>{{ _("Total Print Time:") }}</strong> <span data-bind="text: stats.total_time"></span>
+        </p>
+        <!-- /ko -->
+        <!-- ko if: stats.longest -->
+        <p>
+            <strong>{{ _("Longest Print:") }}</strong> <span data-bind="text: stats.longest"></span>
+        </p>
+        <!-- /ko -->
+        <!-- ko if: stats.filament -->
+        <p>
+            <strong>{{ _("Filament used:") }}</strong> <span data-bind="text: stats.filament"></span>
+        </p>
+        <!-- /ko -->
+    </div>
+    <!-- /ko -->
     <div class="eeprom-capabilities">
         <table class="table table-hover">
             <thead class="thead-light">
@@ -30,4 +65,5 @@
             </tbody>
         </table>
     </div>
+
 </div>

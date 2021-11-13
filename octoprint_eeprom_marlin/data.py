@@ -16,6 +16,7 @@ except ImportError:
     Dict = Optional = None
     pass
 
+from octoprint.util import dict_merge
 
 # This defines the data structure used in both the frontend and the backend. Must be kept in sync with
 # the observables in the viewmodel. UI will update automatically from this structure using the Jinja templates.
@@ -400,3 +401,24 @@ class EEPROMData:
             result.append({"name": key, "command": data["command"], "params": params})
 
         return result
+
+
+class FirmwareStats:
+    def __init__(self):
+        self.stats = copy.deepcopy(blank_stats)
+
+    def update_stats(self, new_stats):
+        self.stats = dict_merge(self.stats, new_stats)
+
+    def get_stats(self):
+        return self.stats
+
+
+blank_stats = {
+    "prints": 0,
+    "finished": 0,
+    "failed": 0,
+    "total_time": "",
+    "longest": "",
+    "filament": "",
+}

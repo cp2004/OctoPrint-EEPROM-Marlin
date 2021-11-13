@@ -21,6 +21,15 @@
             </p>
         </div>
     </div>
+    <div class="control-group">
+        <label for="enable_m78" class="control-label">{{ _("Enable viewing printer stats (M78)") }}</label>
+        <div class="controls">
+            <input id="enable_m78" type="checkbox" class="inline" data-bind="checked: settings.plugins.eeprom_marlin.m78">
+            <p class="help-block">
+                If enabled, the plugin will collect the printer statistics from the M78 command to display in the info tab.
+            </p>
+        </div>
+    </div>
 </form>
 
 <p>Enjoying the plugin? <strong>Support it's development!</strong> I work on all of my plugins in my spare time, if you think this was worth it please consider supporting my work below:</p>

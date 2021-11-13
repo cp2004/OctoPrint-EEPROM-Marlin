@@ -53,6 +53,7 @@ class EEPROMMarlinPlugin(
 
     # Flags
     collecting_eeprom = False
+    collecting_stats = False
 
     def initialize(self):
         # Initialise is called when all injections are complete
@@ -61,6 +62,7 @@ class EEPROMMarlinPlugin(
 
         # Data models
         self._firmware_info = data.FirmwareInfo()
+        self._firmware_stats = data.FirmwareStats()
         self._eeprom_data = data.EEPROMData(self)
 
         # Useful classes - watch the inheritance order:
@@ -153,9 +155,11 @@ class EEPROMMarlinPlugin(
         old_is_marlin = deepcopy(self._firmware_info.is_marlin)
         self._firmware_info.is_marlin = self._parser.is_marlin(name)
         if not old_is_marlin and self._firmware_info.is_marlin:
-            # Connected and need to send M503
-            command = "M503" if self._settings.get_boolean(["use_m503"]) else "M501"
-            self._printer.commands(command)
+            # Connected and need to send M503 (& optionally M78)
+            commands = ["M503" if self._settings.get(["use_m503"]) else "M501"]
+            if self._settings.get_boolean(["m78"]):
+                commands += ["M78"]
+            self._printer.commands(commands)
         self._firmware_info.name = name
         self._firmware_info.additional_info_from_dict(fw_data)
 
@@ -182,9 +186,13 @@ class EEPROMMarlinPlugin(
             self._logger.info("{} detected, collecting data".format(cmd))
             self.collecting_eeprom = True
 
+        if cmd == "M78":
+            self._logger.info("M87 detected, collecting stats")
+            self.collecting_stats = True
+
     def comm_protocol_gcode_received(self, comm, line, *args, **kwargs):
         # https://docs.octoprint.org/en/master/plugins/hooks.html#octoprint-comm-protocol-gcode-received
-        if self.collecting_eeprom:
+        if self.collecting_eeprom or self.collecting_stats:
             if "ok" in line.lower():
                 # Send the new data to the UI to be reloaded
                 self._logger.info("Finished data collection, updating UI")
@@ -193,13 +201,20 @@ class EEPROMMarlinPlugin(
                     {
                         "eeprom": self._eeprom_data.to_dict(),
                         "info": self._firmware_info.to_dict(),
+                        "stats": self._firmware_stats.get_stats(),
                     },
                 )
                 self.collecting_eeprom = False
-            else:
-                parsed = self._parser.parse_eeprom_data(line)
-                if parsed:
-                    self._eeprom_data.from_dict(parsed, ui=False)
+                self.collecting_stats = False
+
+        if self.collecting_eeprom:
+            parsed = self._parser.parse_eeprom_data(line)
+            if parsed:
+                self._eeprom_data.from_dict(parsed, ui=False)
+        elif self.collecting_stats:
+            stats = self._parser.parse_stats_line(line)
+            if stats:
+                self._firmware_stats.update_stats(stats)
 
         return line
 
@@ -210,6 +225,11 @@ class EEPROMMarlinPlugin(
             # Trigger data collection manually using @EEPROM_DEBUG, for sending test files at the parser
             # Useful for virtual printer testing, where the responses are not implemented.
             self.collecting_eeprom = True
+
+        if cmd.upper() == "EEPROM_STATS_DEBUG":
+            # Trigger stats data collection manually using @EEPROM_STATS_DEBUG, for sending test files at the parser
+            # Useful for virtual printer testing, where the responses are not implemented.
+            self.collecting_stats = True
 
     def get_additional_permissions(self, *args, **kwargs):
         return [

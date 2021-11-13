@@ -172,6 +172,29 @@ $(function () {
       self.info.name(data.info.name);
     };
 
+    self.stats = (function () {
+      var stats = {};
+
+      stats.prints = ko.observable("");
+      stats.finished = ko.observable("");
+      stats.failed = ko.observable("");
+      stats.total_time = ko.observable("");
+      stats.longest = ko.observable("");
+      stats.filament = ko.observable("");
+
+      return stats;
+    })();
+
+    self.stats_from_json = function (data) {
+      console.log(data);
+      self.stats.prints(data.prints);
+      self.stats.finished(data.finished);
+      self.stats.failed(data.failed);
+      self.stats.total_time(data.total_time);
+      self.stats.longest(data.longest);
+      self.stats.filament(data.filament);
+    };
+
     self.backups = ko.observableArray([]);
     self.backup_upload_name = ko.observable();
 
@@ -429,6 +452,7 @@ $(function () {
       if (data.type === "load") {
         self.eeprom_from_json(data.data);
         self.info_from_json(data.data);
+        self.stats_from_json(data.data.stats);
         self.loading(false);
       }
     };
@@ -444,6 +468,7 @@ $(function () {
           self.eeprom_from_json(response);
           self.info_from_json(response);
           self.backups_from_response(response.backups);
+          self.stats_from_json(response.stats);
           self.loading(false);
           self.initialLoad(false);
         });
