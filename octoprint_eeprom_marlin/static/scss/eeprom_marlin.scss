@@ -158,6 +158,12 @@ $touchUI_icon: "\f14b";
   .eeprom-checkbox {
     margin-top: -3px;
   }
+
+  .eeprom-locked {
+    p {
+      text-align: center;
+    }
+  }
 }
 
 #plugin_eeprom_marlin_backup_upload {

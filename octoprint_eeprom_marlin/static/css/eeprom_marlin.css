@@ -114,6 +114,9 @@
 #tab_plugin_eeprom_marlin .eeprom-checkbox {
   margin-top: -3px;
 }
+#tab_plugin_eeprom_marlin .eeprom-locked p {
+  text-align: center;
+}
 
 #plugin_eeprom_marlin_backup_upload {
   display: none;

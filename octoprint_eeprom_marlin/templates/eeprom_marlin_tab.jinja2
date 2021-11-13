@@ -33,6 +33,7 @@
 <div class="row-fluid eeprom-alerts">
     <div class="span12">
         {% include "alerts/printer.jinja2" %}
+        {% include "alerts/printer_locked.jinja2" %}
     </div>
 </div>
 <div id="eeprom_tab_data" class="collapse in" data-bind="visible: !initialLoad() && info.is_marlin() && info.name().length > 0">

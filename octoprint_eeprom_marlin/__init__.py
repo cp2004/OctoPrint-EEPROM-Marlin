@@ -207,6 +207,12 @@ class EEPROMMarlinPlugin(
                 self.collecting_eeprom = False
                 self.collecting_stats = False
 
+            elif "printer locked" in line.lower():
+                self._logger.info("Printer locked, aborting data collection")
+                self.send_message("locked", {})
+                self.collecting_eeprom = False
+                self.collecting_stats = False
+
         if self.collecting_eeprom:
             parsed = self._parser.parse_eeprom_data(line)
             if parsed:

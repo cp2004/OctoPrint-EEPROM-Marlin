@@ -204,6 +204,9 @@ $(function () {
     self.initialLoad = ko.observable(true);
     self.saving = ko.observable(false);
     self.unsaved = ko.observable(false);
+
+    self.printer_locked = ko.observable(false);
+
     self.enable_fields = ko.pureComputed(function () {
       return (
         !self.loading() &&
@@ -455,6 +458,11 @@ $(function () {
         self.info_from_json(data.data);
         self.stats_from_json(data.data.stats);
         self.loading(false);
+        self.printer_locked(false);
+      }
+      if (data.type === "locked") {
+        self.loading(false);
+        self.printer_locked(true);
       }
     };
 
