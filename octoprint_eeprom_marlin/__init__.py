@@ -15,6 +15,7 @@ import flask
 import octoprint.plugin
 from octoprint.access import ADMIN_GROUP, READONLY_GROUP, USER_GROUP
 from octoprint.access.permissions import Permissions
+from octoprint.util.version import is_octoprint_compatible
 
 from octoprint_eeprom_marlin import (
     _version,
@@ -75,10 +76,12 @@ class EEPROMMarlinPlugin(
 
     # Registering UI components
     def get_assets(self):
-        return {
-            "js": ["js/eeprom_marlin.js"],
-            "css": ["css/fontawesome5_stripped.css", "css/eeprom_marlin.css"],
-        }
+        # OctoPrint 1.5.0+ bundles FontAwesome 5, earlier versions do not
+        css_assets = ["css/eeprom_marlin.css"]
+        if is_octoprint_compatible("<1.5.0"):
+            css_assets += ["css/fontawesome5_stripped.css"]
+
+        return {"js": ["js/eeprom_marlin.js"], "css": css_assets}
 
     def is_wizard_required(self):
         return False
