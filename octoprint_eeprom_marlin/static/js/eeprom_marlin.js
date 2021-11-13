@@ -108,8 +108,7 @@ $(function () {
           try {
             self.eeprom[key][param](value.params[param]);
           } catch {
-            console.log(key);
-            console.log(param);
+            console.log("unable to parse response - " + key + ": " + param);
           }
         }
       }
@@ -157,15 +156,18 @@ $(function () {
         });
       }
       self.info.capabilities([]);
-      for (let capability in data.info.capabilities) {
-        let value = data.info.capabilities[capability];
-        let cap = capitaliseWords(capability.replace(/_/gi, " "));
-        // format cap to more human-readable style
-        self.info.capabilities.push({
-          cap: cap,
-          val: value,
-        });
-      }
+
+      const capabilities = stableSort(
+        Object.keys(data.info.capabilities),
+        ascendingComparator
+      );
+      self.info.capabilities(
+        capabilities.map((capability) => ({
+          cap: capitaliseWords(capability.replace(/_/gi, " ")),
+          val: data.info.capabilities[capability],
+        }))
+      );
+
       self.info.is_marlin(data.info.is_marlin);
       self.info.name(data.info.name);
     };
@@ -467,3 +469,23 @@ $(function () {
     elements: ["#tab_plugin_eeprom_marlin"],
   });
 });
+
+function ascendingComparator(a, b) {
+  if (b > a) {
+    return -1;
+  }
+  if (b < a) {
+    return 0;
+  }
+  return 0;
+}
+
+function stableSort(array, comparator) {
+  const stabilizedThis = array.map((el, index) => [el, index]);
+  stabilizedThis.sort((a, b) => {
+    const order = comparator(a[0], b[0]);
+    if (order !== 0) return order;
+    return a[1] - b[1];
+  });
+  return stabilizedThis.map((el) => el[0]);
+}
