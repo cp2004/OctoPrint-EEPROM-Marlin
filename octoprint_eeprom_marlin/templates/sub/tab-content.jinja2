@@ -3,6 +3,7 @@
 {% macro section(name, id) %}
 <div data-bind="visible: eeprom.{{ id }}.visible">
     <strong>{{ _(name) }}</strong>
+    <a href="{{ plugin_eeprom_marlin_DATA_STRUCTURE[id].link }}" target="_blank" class="pull-right">Marlin Docs</a>
     <hr>
     {% for key, value in plugin_eeprom_marlin_DATA_STRUCTURE[id].params.items() %}
     {{ field.single_field(id, key, value) }}

@@ -165,6 +165,7 @@ $(function () {
         capabilities.map((capability) => ({
           cap: capitaliseWords(capability.replace(/_/gi, " ")),
           val: data.info.capabilities[capability],
+          link: link_for_cap(capability),
         }))
       );
 
@@ -513,4 +514,71 @@ function stableSort(array, comparator) {
     return a[1] - b[1];
   });
   return stabilizedThis.map((el) => el[0]);
+}
+
+const KNOWN_CAPABILITIES = {
+  /*
+   * These are known capabililties, retrieved from the Marlin source (11/21) and some docs links found.
+   */
+  PAREN_COMMENTS:
+    "https://marlinfw.org/docs/configuration/configuration.html#cnc-g-code-options",
+  // "QUOTED_STRINGS": "",
+  SERIAL_XON_XOFF:
+    "https://marlinfw.org/docs/configuration/configuration.html#host-receive-buffer",
+  BINARY_FILE_TRANSFER:
+    "https://marlinfw.org/docs/configuration/configuration.html#binary-file-transfer",
+  EEPROM: "https://marlinfw.org/docs/configuration/configuration.html#eeprom",
+  VOLUMETRIC:
+    "https://marlinfw.org/docs/configuration/configuration.html#volumetric-mode-default",
+  AUTOREPORT_POS: "https://marlinfw.org/docs/gcode/M154.html",
+  AUTOREPORT_TEMP:
+    "https://marlinfw.org/docs/configuration/configuration.html#temperature-auto-report",
+  // "PROGRESS": "",  // Seems to have no options associated
+  PRINT_JOB: "https://marlinfw.org/docs/gcode/M075.html",
+  AUTOLEVEL: "https://marlinfw.org/docs/features/auto_bed_leveling.html",
+  RUNOUT:
+    "https://marlinfw.org/docs/configuration/configuration.html#filament-runout-sensor",
+  Z_PROBE: "https://marlinfw.org/docs/features/auto_bed_leveling.html",
+  LEVELING_DATA: "https://marlinfw.org/docs/gcode/M420.html",
+  BUILD_PERCENT:
+    "https://marlinfw.org/docs/configuration/configuration.html#set-print-progress",
+  SOFTWARE_POWER:
+    "https://marlinfw.org/docs/configuration/configuration.html#power-supply",
+  TOGGLE_LIGHTS:
+    "https://marlinfw.org/docs/configuration/configuration.html#case-light",
+  CASE_LIGHT_BRIGHTNESS:
+    "https://marlinfw.org/docs/configuration/configuration.html#case-light",
+  EMERGENCY_PARSER:
+    "https://marlinfw.org/docs/configuration/configuration.html#emergency-parser",
+  HOST_ACTION_COMMANDS:
+    "https://marlinfw.org/docs/configuration/configuration.html#host-action-commands",
+  "PROMPT-SUPPORT":
+    "https://marlinfw.org/docs/configuration/configuration.html#host-action-commands",
+  SDCARD: "https://marlinfw.org/docs/configuration/configuration.html#sd-card",
+  REPEAT: "https://marlinfw.org/docs/gcode/M808.html",
+  SD_WRITE:
+    "https://marlinfw.org/docs/configuration/configuration.html#sd-card-support",
+  AUTOREPORT_SD_STATUS:
+    "https://marlinfw.org/docs/configuration/configuration.html#auto-report-sd-status",
+  LONG_FILENAME:
+    "https://marlinfw.org/docs/configuration/configuration.html#long-filenames",
+  THERMAL_PROTECTION:
+    "https://marlinfw.org/docs/configuration/configuration.html#safety",
+  MOTION_MODES:
+    "https://marlinfw.org/docs/configuration/configuration.html#cnc-g-code-options",
+  ARCS:
+    "https://marlinfw.org/docs/configuration/configuration.html#g2/g3-arc-support",
+  BABYSTEPPING:
+    "https://marlinfw.org/docs/configuration/configuration.html#babystepping",
+  CHAMBER_TEMPERATURE:
+    "https://marlinfw.org/docs/configuration/configuration.html#heated-chamber",
+  COOLER_TEMPERATURE: "https://marlinfw.org/docs/gcode/M143.html",
+  // "MEATPACK": "",
+};
+
+function link_for_cap(cap) {
+  if (KNOWN_CAPABILITIES[cap]) {
+    return KNOWN_CAPABILITIES[cap];
+  }
+  return "";
 }
