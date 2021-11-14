@@ -77,9 +77,9 @@ $(function () {
 
       eeprom.linear = create_eeprom_observables(["K"]);
 
-      eeprom.material1 = create_eeprom_observables(["B", "F", "H"]);
+      eeprom.material1 = create_eeprom_observables(["B", "F", "H", "S"]);
 
-      eeprom.material2 = create_eeprom_observables(["B", "F", "H"]);
+      eeprom.material2 = create_eeprom_observables(["B", "F", "H", "S"]);
 
       eeprom.max_acceleration = create_eeprom_observables(["E", "X", "Y", "Z"]);
 
@@ -187,7 +187,6 @@ $(function () {
     })();
 
     self.stats_from_json = function (data) {
-      console.log(data);
       self.stats.prints(data.prints);
       self.stats.finished(data.finished);
       self.stats.failed(data.failed);
