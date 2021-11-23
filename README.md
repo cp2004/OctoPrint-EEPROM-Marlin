@@ -53,7 +53,7 @@ Configuration editor
 Backup feature
 ![Backup feature](assets/backup.png)
 
-## Sponsor
+## Sponsors
 
 * Sponsor
 
