@@ -35,6 +35,7 @@ CONTRIBUTORS = [
     {"name": "Dan Pasanen", "username": "invisiblek"},
     {"name": "@Desterly", "username": "Desterly"},
     {"name": "@gddeen", "username": "gddeen"},
+    {"name": "Archie C", "username": "Sonosus"},
 ]
 
 
