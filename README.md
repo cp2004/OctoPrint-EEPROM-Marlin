@@ -42,7 +42,7 @@ Featuring:
 - Brand new UI, written from the ground up.
 - All-new backup feature, allowing naming and storing of backups, so you can quickly swap between profiles and more.
 
-## Screenhots
+## Screenshots
 
 Firmware info overview
 ![Firmware Info](assets/firmware_info.png)
