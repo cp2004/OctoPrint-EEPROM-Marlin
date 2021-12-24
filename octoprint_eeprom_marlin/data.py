@@ -287,6 +287,7 @@ class FirmwareInfo:
     is_marlin = False  # type: bool
     additional_info = {}  # type: dict
     capabilities = {}  # type: dict
+    locked = False
 
     def additional_info_from_dict(self, data):
         self.additional_info = {}
@@ -304,6 +305,7 @@ class FirmwareInfo:
             "is_marlin": self.is_marlin,
             "additional": self.additional_info,
             "capabilities": self.capabilities,
+            "locked": self.locked,
         }
 
 

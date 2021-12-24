@@ -57,6 +57,12 @@ class API:
                 commands = ["M503" if self._settings.get(["use_m503"]) else "M501"]
                 if self._settings.get_boolean(["m78"]):
                     commands += ["M78"]
+                if self._firmware_info.locked:
+                    # If the printer was locked on startup, we will need to check the name using M115 first.
+                    commands = ["M115"] + commands
+                    # Assume the user unlocked the printer - if they didn't, the locked state will return as soon as we
+                    # send these commands.
+                    self._firmware_info.locked = False
                 self._printer.commands(commands)
 
         elif command == CMD_SAVE:
