@@ -16,6 +16,7 @@ except ImportError:
     Dict = Optional = None
     pass
 
+from octoprint.util import dict_merge
 
 # This defines the data structure used in both the frontend and the backend. Must be kept in sync with
 # the observables in the viewmodel. UI will update automatically from this structure using the Jinja templates.
@@ -34,6 +35,7 @@ ALL_DATA_STRUCTURE = {
             "E": {"type": "float1", "label": "E Steps", "units": "steps/mm"},
         },
         "name": "Steps",
+        "link": "https://marlinfw.org/docs/gcode/M092.html",
     },
     "feedrate": {
         "command": "M203",
@@ -44,6 +46,7 @@ ALL_DATA_STRUCTURE = {
             "E": {"type": "float1", "label": "E axis", "units": "mm/s"},
         },
         "name": "Feedrate",
+        "link": "https://marlinfw.org/docs/gcode/M203.html",
     },
     "max_acceleration": {
         "command": "M201",
@@ -70,6 +73,7 @@ ALL_DATA_STRUCTURE = {
             },
         },
         "name": "Maximum Acceleration",
+        "link": "https://marlinfw.org/docs/gcode/M201.html",
     },
     "print_acceleration": {
         "command": "M204",
@@ -79,6 +83,7 @@ ALL_DATA_STRUCTURE = {
             "T": {"type": "float1", "label": "Travel acceleration", "units": "mm/s2"},
         },
         "name": "Print Acceleration",
+        "link": "https://marlinfw.org/docs/gcode/M204.html",
     },
     "probe_offset": {
         "command": "M851",
@@ -88,6 +93,7 @@ ALL_DATA_STRUCTURE = {
             "Z": {"type": "float2", "label": "Z probe Z offset", "units": "mm"},
         },
         "name": "Probe Offset",
+        "link": "https://marlinfw.org/docs/gcode/M851.html",
     },
     "home_offset": {
         "command": "M206",
@@ -97,6 +103,7 @@ ALL_DATA_STRUCTURE = {
             "Z": {"type": "float2", "label": "Z home offset", "units": "mm"},
         },
         "name": "Home Offset",
+        "link": "https://marlinfw.org/docs/gcode/M206.html",
     },
     "endstop": {
         "command": "M666",
@@ -106,6 +113,7 @@ ALL_DATA_STRUCTURE = {
             "Z": {"type": "float2", "label": "Adjustment for Z", "units": "mm"},
         },
         "name": "Endstop Offsets",
+        "link": "https://marlinfw.org/docs/gcode/M666.html",
     },
     "delta": {
         "command": "M665",
@@ -122,11 +130,13 @@ ALL_DATA_STRUCTURE = {
             "C": {"type": "float2", "label": "Gamma (Tower 3) diagonal rod trim"},
         },
         "name": "Delta Configuration",
+        "link": "https://marlinfw.org/docs/gcode/M665.html",
     },
     "linear": {
         "command": "M900",
         "params": {"K": {"type": "float2", "label": "K factor"}},
         "name": "Linear Advance",
+        "link": "https://marlinfw.org/docs/gcode/M900.html",
     },
     "filament": {
         "command": "M200",
@@ -134,6 +144,7 @@ ALL_DATA_STRUCTURE = {
             "D": {"type": "float2", "label": "Filament Diameter", "units": "mm"}
         },
         "name": "Filament Settings",
+        "link": "https://marlinfw.org/docs/gcode/M200.html",
     },
     "hotend_pid": {
         "command": "M301",
@@ -143,6 +154,7 @@ ALL_DATA_STRUCTURE = {
             "D": {"type": "float2", "label": "Hotend kD"},
         },
         "name": "Hotend PID",
+        "link": "https://marlinfw.org/docs/gcode/M301.html",
     },
     "bed_pid": {
         "command": "M304",
@@ -152,6 +164,7 @@ ALL_DATA_STRUCTURE = {
             "D": {"type": "float2", "label": "Bed kD"},
         },
         "name": "Bed PID",
+        "link": "https://marlinfw.org/docs/gcode/M304.html",
     },
     "advanced": {
         "command": "M205",
@@ -174,6 +187,7 @@ ALL_DATA_STRUCTURE = {
             "Z": {"type": "float1", "label": "Z max jerk", "units": "mm/s"},
         },
         "name": "Advanced",
+        "link": "https://marlinfw.org/docs/gcode/M205.html",
     },
     "autolevel": {
         "command": "M420",
@@ -182,6 +196,7 @@ ALL_DATA_STRUCTURE = {
             "Z": {"type": "float1", "label": "Z fade height", "units": "mm"},
         },
         "name": "Autolevel",
+        "link": "https://marlinfw.org/docs/gcode/M420.html",
     },
     "material1": {
         "command": "M145",
@@ -196,6 +211,7 @@ ALL_DATA_STRUCTURE = {
             },  # This should NOT be in the UI
         },
         "name": "Material Preset (1)",
+        "link": "https://marlinfw.org/docs/gcode/M145.html",
     },
     "material2": {
         "command": "M145",
@@ -210,6 +226,7 @@ ALL_DATA_STRUCTURE = {
             },  # This should NOT be in the UI
         },
         "name": "Material Preset (2)",
+        "link": "https://marlinfw.org/docs/gcode/M145.html",
     },
     "filament_change": {
         "command": "M603",
@@ -218,6 +235,7 @@ ALL_DATA_STRUCTURE = {
             "U": {"type": "float1", "label": "Unload length", "units": "mm"},
         },
         "name": "Filament Change",
+        "link": "https://marlinfw.org/docs/gcode/M603.html",
     },
     "filament_runout": {
         "command": "M412",
@@ -227,6 +245,7 @@ ALL_DATA_STRUCTURE = {
             "S": {"type": "bool", "label": "Enable filament runout sensor"},
         },
         "name": "Filament Runout Sensor",
+        "link": "https://marlinfw.org/docs/gcode/M412.html",
     },
     "tmc_current": {
         "command": "M906",
@@ -236,6 +255,7 @@ ALL_DATA_STRUCTURE = {
             "Y": {"type": "float2", "label": "Current for Y Stepper", "units": "mA"},
             "Z": {"type": "float2", "label": "Current for Z Stepper", "units": "mA"},
         },
+        "link": "https://marlinfw.org/docs/gcode/M906.html",
     },
     "tmc_hybrid": {
         "command": "M913",
@@ -245,6 +265,7 @@ ALL_DATA_STRUCTURE = {
             "Z": {"type": "float2", "label": "Hybrid Threshold for Z axis"},
             "E": {"type": "float2", "label": "Hybrid Threshold for E axis"},
         },
+        "link": "https://marlinfw.org/docs/gcode/M913.html",
     },
 }
 
@@ -266,6 +287,7 @@ class FirmwareInfo:
     is_marlin = False  # type: bool
     additional_info = {}  # type: dict
     capabilities = {}  # type: dict
+    locked = False
 
     def additional_info_from_dict(self, data):
         self.additional_info = {}
@@ -283,6 +305,7 @@ class FirmwareInfo:
             "is_marlin": self.is_marlin,
             "additional": self.additional_info,
             "capabilities": self.capabilities,
+            "locked": self.locked,
         }
 
 
@@ -400,3 +423,24 @@ class EEPROMData:
             result.append({"name": key, "command": data["command"], "params": params})
 
         return result
+
+
+class FirmwareStats:
+    def __init__(self):
+        self.stats = copy.deepcopy(blank_stats)
+
+    def update_stats(self, new_stats):
+        self.stats = dict_merge(self.stats, new_stats)
+
+    def get_stats(self):
+        return self.stats
+
+
+blank_stats = {
+    "prints": 0,
+    "finished": 0,
+    "failed": 0,
+    "total_time": "",
+    "longest": "",
+    "filament": "",
+}

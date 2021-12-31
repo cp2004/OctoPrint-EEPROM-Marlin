@@ -93,12 +93,16 @@ $touchUI_icon: "\f14b";
         }
 
         thead tr {
+          th.icon {
+            width: 5%;
+          }
+
           th.capability {
             width: 60%;
           }
 
           th.value {
-            width: 40%;
+            width: 35%;
           }
         }
       }
@@ -153,6 +157,12 @@ $touchUI_icon: "\f14b";
 
   .eeprom-checkbox {
     margin-top: -3px;
+  }
+
+  .eeprom-locked {
+    p {
+      text-align: center;
+    }
   }
 }
 

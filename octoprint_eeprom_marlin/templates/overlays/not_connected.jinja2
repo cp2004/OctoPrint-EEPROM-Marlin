@@ -1,8 +1,8 @@
 
-<div class="eeprom-notconnected" data-bind="visible: !initialLoad() && !(info.name().length > 0)">
+<div class="eeprom-notconnected" data-bind="visible: !initialLoad() && !(info.name().length > 0) && !printer_locked()">
     <p>
         <span class="fa-stack fa-3x">
-            <i class="fas-custom fa-custom-plug fa-stack-2x text-info"></i>
+            <i class="fas fa-plug fa-stack-2x text-info"></i>
             <i class="fa fa-times fa-stack-2x text-error"></i>
         </span>
     </p>
@@ -12,6 +12,6 @@
         </strong>
     </p>
     <p>
-        {{ ("Connect to the printer to edit it's configuration.") }}
+        {{ _("Connect to the printer to edit it's configuration.") }}
     </p>
 </div>

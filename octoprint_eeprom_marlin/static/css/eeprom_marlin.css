@@ -60,11 +60,14 @@
   background-color: #e9ecef;
   border-color: #dee2e6;
 }
+#tab_plugin_eeprom_marlin .eeprom-info .eeprom-capabilities .table thead tr th.icon {
+  width: 5%;
+}
 #tab_plugin_eeprom_marlin .eeprom-info .eeprom-capabilities .table thead tr th.capability {
   width: 60%;
 }
 #tab_plugin_eeprom_marlin .eeprom-info .eeprom-capabilities .table thead tr th.value {
-  width: 40%;
+  width: 35%;
 }
 #tab_plugin_eeprom_marlin .eeprom-brand {
   text-align: center;
@@ -110,6 +113,9 @@
 }
 #tab_plugin_eeprom_marlin .eeprom-checkbox {
   margin-top: -3px;
+}
+#tab_plugin_eeprom_marlin .eeprom-locked p {
+  text-align: center;
 }
 
 #plugin_eeprom_marlin_backup_upload {

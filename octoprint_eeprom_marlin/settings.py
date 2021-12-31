@@ -9,4 +9,4 @@ __copyright__ = (
     "Copyright (C) 2020 Charlie Powell - Released under terms of the AGPLv3 License"
 )
 
-defaults = {"use_m503": True, "custom_name": False}
+defaults = {"use_m503": True, "custom_name": False, "m78": False}

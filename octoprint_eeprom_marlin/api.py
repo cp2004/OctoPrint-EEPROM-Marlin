@@ -29,6 +29,7 @@ class API:
         self._logger = plugin._logger  # noqa
         self._printer = plugin._printer  # noqa
         self._firmware_info = plugin._firmware_info  # noqa
+        self._firmware_stats = plugin._firmware_stats  # noqa
         self._eeprom_data = plugin._eeprom_data  # noqa
         self._backup_handler = plugin._backup_handler  # noqa
         self._plugin = plugin
@@ -53,9 +54,17 @@ class API:
 
             # Get data from printer
             if self._printer.is_ready():
-                self._printer.commands(
-                    "M503" if self._settings.get(["use_m503"]) else "M501"
-                )
+                commands = ["M503" if self._settings.get(["use_m503"]) else "M501"]
+                if self._settings.get_boolean(["m78"]):
+                    commands += ["M78"]
+                if self._firmware_info.locked:
+                    # If the printer was locked on startup, we will need to check the name using M115 first.
+                    commands = ["M115"] + commands
+                    # Assume the user unlocked the printer - if they didn't, the locked state will return as soon as we
+                    # send these commands.
+                    self._firmware_info.locked = False
+                self._printer.commands(commands)
+
         elif command == CMD_SAVE:
             if not Permissions.PLUGIN_EEPROM_MARLIN_EDIT.can():
                 # Insufficient rights
@@ -107,6 +116,7 @@ class API:
         return flask.jsonify(
             {
                 "info": self._firmware_info.to_dict(),
+                "stats": self._firmware_stats.get_stats(),
                 "eeprom": self._eeprom_data.to_dict(),
                 "backups": self._backup_handler.get_backups(quick=True),
             }

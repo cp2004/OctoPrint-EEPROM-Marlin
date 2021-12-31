@@ -54,6 +54,15 @@ regexes_parameters = {
 
 regex_command = re.compile(r"echo:\s*(?P<gcode>M(?P<value>\d{1,3}))")
 
+regex_stats = {
+    "prints": re.compile(r"Prints: (\d*)"),
+    "finished": re.compile(r"Finished: (\d*)"),
+    "failed": re.compile(r"Failed: (\d*)"),
+    "total_time": re.compile(r"Total time: (.*),"),
+    "longest": re.compile(r"Longest job: (.*)"),
+    "filament": re.compile(r"Filament used: (.*m)"),
+}
+
 
 class Parser:
     def __init__(self, logger):
@@ -122,3 +131,14 @@ class Parser:
     @staticmethod
     def is_marlin(name):
         return "marlin" in name.lower()
+
+    @staticmethod
+    def parse_stats_line(line):
+        # Run all the regexes against the line to grab the params
+        stats = {}
+        for key, regex in regex_stats.items():
+            match = regex.search(line)
+            if match:
+                stats[key] = match.group(1)
+
+        return stats

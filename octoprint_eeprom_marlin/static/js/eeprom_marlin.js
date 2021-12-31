@@ -77,9 +77,9 @@ $(function () {
 
       eeprom.linear = create_eeprom_observables(["K"]);
 
-      eeprom.material1 = create_eeprom_observables(["B", "F", "H"]);
+      eeprom.material1 = create_eeprom_observables(["B", "F", "H", "S"]);
 
-      eeprom.material2 = create_eeprom_observables(["B", "F", "H"]);
+      eeprom.material2 = create_eeprom_observables(["B", "F", "H", "S"]);
 
       eeprom.max_acceleration = create_eeprom_observables(["E", "X", "Y", "Z"]);
 
@@ -108,8 +108,7 @@ $(function () {
           try {
             self.eeprom[key][param](value.params[param]);
           } catch {
-            console.log(key);
-            console.log(param);
+            console.log("unable to parse response - " + key + ": " + param);
           }
         }
       }
@@ -157,17 +156,44 @@ $(function () {
         });
       }
       self.info.capabilities([]);
-      for (let capability in data.info.capabilities) {
-        let value = data.info.capabilities[capability];
-        let cap = capitaliseWords(capability.replace(/_/gi, " "));
-        // format cap to more human-readable style
-        self.info.capabilities.push({
-          cap: cap,
-          val: value,
-        });
-      }
+
+      const capabilities = stableSort(
+        Object.keys(data.info.capabilities),
+        ascendingComparator
+      );
+      self.info.capabilities(
+        capabilities.map((capability) => ({
+          cap: capitaliseWords(capability.replace(/_/gi, " ")),
+          val: data.info.capabilities[capability],
+          link: link_for_cap(capability),
+        }))
+      );
+
       self.info.is_marlin(data.info.is_marlin);
       self.info.name(data.info.name);
+      self.printer_locked(data.info.locked);
+    };
+
+    self.stats = (function () {
+      var stats = {};
+
+      stats.prints = ko.observable("");
+      stats.finished = ko.observable("");
+      stats.failed = ko.observable("");
+      stats.total_time = ko.observable("");
+      stats.longest = ko.observable("");
+      stats.filament = ko.observable("");
+
+      return stats;
+    })();
+
+    self.stats_from_json = function (data) {
+      self.stats.prints(data.prints);
+      self.stats.finished(data.finished);
+      self.stats.failed(data.failed);
+      self.stats.total_time(data.total_time);
+      self.stats.longest(data.longest);
+      self.stats.filament(data.filament);
     };
 
     self.backups = ko.observableArray([]);
@@ -178,6 +204,9 @@ $(function () {
     self.initialLoad = ko.observable(true);
     self.saving = ko.observable(false);
     self.unsaved = ko.observable(false);
+
+    self.printer_locked = ko.observable(false);
+
     self.enable_fields = ko.pureComputed(function () {
       return (
         !self.loading() &&
@@ -193,7 +222,7 @@ $(function () {
       return (
         !self.loading() &&
         !self.initialLoad() &&
-        self.info.is_marlin() &&
+        (self.info.is_marlin() || self.printer_locked()) && // Allow refresh button when locked
         !self.printerState.isBusy() &&
         self.printerState.isReady()
       );
@@ -427,7 +456,17 @@ $(function () {
       if (data.type === "load") {
         self.eeprom_from_json(data.data);
         self.info_from_json(data.data);
+        self.stats_from_json(data.data.stats);
         self.loading(false);
+        self.printer_locked(false);
+      }
+      if (data.type === "locked") {
+        self.loading(false);
+        self.printer_locked(true);
+      }
+      if (data.type === "unlocked") {
+        self.loading(false);
+        self.printer_locked(false);
       }
     };
 
@@ -442,6 +481,7 @@ $(function () {
           self.eeprom_from_json(response);
           self.info_from_json(response);
           self.backups_from_response(response.backups);
+          self.stats_from_json(response.stats);
           self.loading(false);
           self.initialLoad(false);
         });
@@ -467,3 +507,90 @@ $(function () {
     elements: ["#tab_plugin_eeprom_marlin"],
   });
 });
+
+function ascendingComparator(a, b) {
+  if (b > a) {
+    return -1;
+  }
+  if (b < a) {
+    return 0;
+  }
+  return 0;
+}
+
+function stableSort(array, comparator) {
+  const stabilizedThis = array.map((el, index) => [el, index]);
+  stabilizedThis.sort((a, b) => {
+    const order = comparator(a[0], b[0]);
+    if (order !== 0) return order;
+    return a[1] - b[1];
+  });
+  return stabilizedThis.map((el) => el[0]);
+}
+
+const KNOWN_CAPABILITIES = {
+  /*
+   * These are known capabililties, retrieved from the Marlin source (11/21) and some docs links found.
+   */
+  PAREN_COMMENTS:
+    "https://marlinfw.org/docs/configuration/configuration.html#cnc-g-code-options",
+  // "QUOTED_STRINGS": "",
+  SERIAL_XON_XOFF:
+    "https://marlinfw.org/docs/configuration/configuration.html#host-receive-buffer",
+  BINARY_FILE_TRANSFER:
+    "https://marlinfw.org/docs/configuration/configuration.html#binary-file-transfer",
+  EEPROM: "https://marlinfw.org/docs/configuration/configuration.html#eeprom",
+  VOLUMETRIC:
+    "https://marlinfw.org/docs/configuration/configuration.html#volumetric-mode-default",
+  AUTOREPORT_POS: "https://marlinfw.org/docs/gcode/M154.html",
+  AUTOREPORT_TEMP:
+    "https://marlinfw.org/docs/configuration/configuration.html#temperature-auto-report",
+  // "PROGRESS": "",  // Seems to have no options associated
+  PRINT_JOB: "https://marlinfw.org/docs/gcode/M075.html",
+  AUTOLEVEL: "https://marlinfw.org/docs/features/auto_bed_leveling.html",
+  RUNOUT:
+    "https://marlinfw.org/docs/configuration/configuration.html#filament-runout-sensor",
+  Z_PROBE: "https://marlinfw.org/docs/features/auto_bed_leveling.html",
+  LEVELING_DATA: "https://marlinfw.org/docs/gcode/M420.html",
+  BUILD_PERCENT:
+    "https://marlinfw.org/docs/configuration/configuration.html#set-print-progress",
+  SOFTWARE_POWER:
+    "https://marlinfw.org/docs/configuration/configuration.html#power-supply",
+  TOGGLE_LIGHTS:
+    "https://marlinfw.org/docs/configuration/configuration.html#case-light",
+  CASE_LIGHT_BRIGHTNESS:
+    "https://marlinfw.org/docs/configuration/configuration.html#case-light",
+  EMERGENCY_PARSER:
+    "https://marlinfw.org/docs/configuration/configuration.html#emergency-parser",
+  HOST_ACTION_COMMANDS:
+    "https://marlinfw.org/docs/configuration/configuration.html#host-action-commands",
+  "PROMPT-SUPPORT":
+    "https://marlinfw.org/docs/configuration/configuration.html#host-action-commands",
+  SDCARD: "https://marlinfw.org/docs/configuration/configuration.html#sd-card",
+  REPEAT: "https://marlinfw.org/docs/gcode/M808.html",
+  SD_WRITE:
+    "https://marlinfw.org/docs/configuration/configuration.html#sd-card-support",
+  AUTOREPORT_SD_STATUS:
+    "https://marlinfw.org/docs/configuration/configuration.html#auto-report-sd-status",
+  LONG_FILENAME:
+    "https://marlinfw.org/docs/configuration/configuration.html#long-filenames",
+  THERMAL_PROTECTION:
+    "https://marlinfw.org/docs/configuration/configuration.html#safety",
+  MOTION_MODES:
+    "https://marlinfw.org/docs/configuration/configuration.html#cnc-g-code-options",
+  ARCS:
+    "https://marlinfw.org/docs/configuration/configuration.html#g2/g3-arc-support",
+  BABYSTEPPING:
+    "https://marlinfw.org/docs/configuration/configuration.html#babystepping",
+  CHAMBER_TEMPERATURE:
+    "https://marlinfw.org/docs/configuration/configuration.html#heated-chamber",
+  COOLER_TEMPERATURE: "https://marlinfw.org/docs/gcode/M143.html",
+  // "MEATPACK": "",
+};
+
+function link_for_cap(cap) {
+  if (KNOWN_CAPABILITIES[cap]) {
+    return KNOWN_CAPABILITIES[cap];
+  }
+  return "";
+}
