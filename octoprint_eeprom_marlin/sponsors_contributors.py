@@ -16,18 +16,9 @@ GITHUB_URL = "https://github.com/"
 ##############################################
 
 SPONSORS = [
-    {"name": "@ssl-3", "username": "ssl-3"},
-    {"name": "Gina Häußge", "username": "foosel"},
-    {"name": "@FlynHokie", "username": "FlynHokie"},
     {"name": "Ken Lucke", "username": "KenLucke"},
     {"name": "Guyot François", "username": "iFrostizz"},
-    {"name": "@pRINTERnOODLE", "username": "pRINTERnOODLE"},
-    {"name": "@samwiseg0", "username": "samwiseg0"},
-    {"name": "Nigel", "username": "nigelboubert"},
-    {"name": "Matt Ockendon", "username": "mockendon"},
-    {"name": "@otaku13", "username": "otaku13"},
-    {"name": "@ReggieMDavis", "username": "ReggieMDavis"},
-    {"name": "@erickstryck", "username": "erickstryck"},
+    {"name": "And 7 others supporting me through GitHub Sponsors!", "username": ""},
 ]
 
 CONTRIBUTORS = [
