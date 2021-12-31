@@ -171,6 +171,7 @@ $(function () {
 
       self.info.is_marlin(data.info.is_marlin);
       self.info.name(data.info.name);
+      self.printer_locked(data.info.locked);
     };
 
     self.stats = (function () {
@@ -221,7 +222,7 @@ $(function () {
       return (
         !self.loading() &&
         !self.initialLoad() &&
-        self.info.is_marlin() &&
+        (self.info.is_marlin() || self.printer_locked()) && // Allow refresh button when locked
         !self.printerState.isBusy() &&
         self.printerState.isReady()
       );
@@ -462,6 +463,10 @@ $(function () {
       if (data.type === "locked") {
         self.loading(false);
         self.printer_locked(true);
+      }
+      if (data.type === "unlocked") {
+        self.loading(false);
+        self.printer_locked(false);
       }
     };
 

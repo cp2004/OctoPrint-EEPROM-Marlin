@@ -1,5 +1,5 @@
 
-<div class="eeprom-notconnected" data-bind="visible: !initialLoad() && !(info.name().length > 0)">
+<div class="eeprom-notconnected" data-bind="visible: !initialLoad() && !(info.name().length > 0) && !printer_locked()">
     <p>
         <span class="fa-stack fa-3x">
             <i class="fas fa-plug fa-stack-2x text-info"></i>
