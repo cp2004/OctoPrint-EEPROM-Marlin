@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 import unittest
-
-import mock
+from unittest import mock
 
 from octoprint_eeprom_marlin import parser
 
@@ -35,9 +33,7 @@ class ParserTestCase(unittest.TestCase):
         }
         for test, result in test_cases_params.items():
             for param in result["params"]:
-                param_match = parser.regexes_parameters["float{}".format(param)].search(
-                    test
-                )
+                param_match = parser.regexes_parameters[f"float{param}"].search(test)
                 self.assertEqual(param_match.group("value"), result["results"][param])
 
     def test_parser(self):

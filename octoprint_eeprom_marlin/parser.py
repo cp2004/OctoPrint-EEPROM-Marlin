@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, unicode_literals
-
 import copy
 
 """
@@ -27,7 +24,7 @@ regex_int_pattern = r"\d+"
 def regex_creator(value_type, param_letter):
     value_pattern = regex_float_pattern if value_type == "float" else regex_int_pattern
     letter = param_letter.upper() + param_letter.lower()
-    return re.compile(r"(^|[^A-Za-z])[%s](?P<value>%s)" % (letter, value_pattern))
+    return re.compile(rf"(^|[^A-Za-z])[{letter}](?P<value>{value_pattern})")
 
 
 regexes_parameters = {
@@ -113,7 +110,7 @@ class Parser:
         # work out what values we have
         parameters = {}
         for param, param_value in params.items():
-            param_match = regexes_parameters["float{}".format(param)].search(line)
+            param_match = regexes_parameters[f"float{param}"].search(line)
             if param_match:
                 value = float(param_match.group("value"))
                 if param_value["type"] == "bool":

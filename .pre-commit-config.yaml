@@ -1,7 +1,7 @@
 exclude: ^(translations/|.*\.css|.*\.svg|octoprint_eeprom_marlin/static/webfonts|versioneer.py|octoprint_eeprom_marlin/_version.py)
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.3.0
+    rev: v4.1.0
     hooks:
       - id: end-of-file-fixer
       - id: trailing-whitespace
@@ -10,33 +10,34 @@ repos:
       - id: check-yaml
       - id: check-toml
       - id: check-merge-conflict
-      - id: fix-encoding-pragma
-  - repo: https://github.com/OctoPrint/codemods
-    rev: main
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v2.31.1
     hooks:
-      - id: codemod_dict_to_literal
-        stages: ["manual"]
-      - id: codemod_set_to_literal
-        stages: ["manual"]
-      - id: codemod_not_in
-        stages: ["manual"]
+      - id: pyupgrade
+        args: ["--py37-plus"]
+        exclude: "setup.py|versioneer.py|_version.py"
+  - repo: https://github.com/OctoPrint/codemods
+    rev: "0.6.3"
+    hooks:
+      - id: codemod_batch
+        args: ["--check", "not_in", "--check", "detect_past_builtins_imports"]
   - repo: https://github.com/pre-commit/mirrors-isort
-    rev: v5.5.4
+    rev: v5.10.1
     hooks:
       - id: isort
         args: ["--profile", "black", "--filter-files"]
   - repo: https://github.com/psf/black
-    rev: stable
+    rev: 22.3.0
     hooks:
       - id: black
   - repo: https://gitlab.com/pycqa/flake8
-    rev: 3.8.1
+    rev: 3.9.1
     hooks:
       - id: flake8
         additional_dependencies:
           - flake8-bugbear
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: master
+    rev: v2.5.1
     hooks:
       - id: prettier
         args: ["--tab-width", "2"]

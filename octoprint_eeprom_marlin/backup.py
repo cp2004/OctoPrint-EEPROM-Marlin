@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, unicode_literals
-
 """
 Handles backing up, saving, loading, restoring and more related to the backups
 """
@@ -8,7 +5,6 @@ __license__ = "GNU Affero General Public License http://www.gnu.org/licenses/agp
 __copyright__ = (
     "Copyright (C) 2020 Charlie Powell - Released under terms of the AGPLv3 License"
 )
-import io
 import json
 import os
 import time
@@ -97,11 +93,11 @@ class BackupHandler:
                     )
                 )
 
-            with io.open(self._metadata_file_path, "rt") as metadata:
+            with open(self._metadata_file_path) as metadata:
                 data = json.load(metadata)
                 if not self._validate_metadata(data):
                     raise MetadataInvalidError(
-                        "Invalid metadata file at {}".format(self._metadata_file_path)
+                        f"Invalid metadata file at {self._metadata_file_path}"
                     )
                 else:
                     self.metadata = MetaData(
@@ -138,14 +134,14 @@ class BackupHandler:
         """
         for backup in self.metadata.backups:
             if backup["name"] == name:
-                raise BackupNameTakenError("Backup {} already exists!".format(name))
+                raise BackupNameTakenError(f"Backup {name} already exists!")
 
         if not backup_time:
             now = time.strftime("%Y-%m-%d %H:%M:%S")
         else:
             now = backup_time
 
-        with io.open(self._get_backup_filename(name), "wt") as backup_file:
+        with open(self._get_backup_filename(name), "wt") as backup_file:
             backup_file.write(
                 to_unicode(
                     json.dumps(
@@ -170,9 +166,9 @@ class BackupHandler:
         :raises BackupMissingError if backup couldn't be found.
         """
         if not os.path.exists(self._get_backup_filename(name)):
-            raise BackupMissingError("Backup could not be loaded from {}".format(name))
+            raise BackupMissingError(f"Backup could not be loaded from {name}")
 
-        with io.open(self._get_backup_filename(name), "rt") as backup_file:
+        with open(self._get_backup_filename(name)) as backup_file:
             data = json.load(backup_file)
 
         return data
@@ -181,12 +177,12 @@ class BackupHandler:
         backup_path = self._get_backup_filename(name)
         if not os.path.exists(backup_path):
             raise BackupMissingError(
-                "Could not delete backup at {}, it is not there".format(backup_path)
+                f"Could not delete backup at {backup_path}, it is not there"
             )
         try:
             os.remove(backup_path)
         except Exception as e:
-            self._logger.error("There was an error deleting {}".format(backup_path))
+            self._logger.error(f"There was an error deleting {backup_path}")
             self._logger.exception(e)
             raise
 
@@ -198,7 +194,7 @@ class BackupHandler:
         :param name:
         :return:
         """
-        return os.path.join(self._data_folder, BACKUPS_PATH, "{}.json".format(name))
+        return os.path.join(self._data_folder, BACKUPS_PATH, f"{name}.json")
 
     def _validate_metadata(self, data):
         """
@@ -303,7 +299,7 @@ class MetaData:
         """
         path = os.path.join(self.folder, name)
         if not os.path.exists(path):
-            raise BackupMissingError("Backup not found at {}".format(path))
+            raise BackupMissingError(f"Backup not found at {path}")
         else:
             return path
 
@@ -313,7 +309,7 @@ class MetaData:
         :return: None
         """
         data = {"version": self.version, "backups": self.backups}
-        with io.open(self.path, "wt", encoding="utf-8") as metadata_file:
+        with open(self.path, "wt", encoding="utf-8") as metadata_file:
             metadata_file.write(to_unicode(json.dumps(data)))
 
     def add_backup(self, name, time):

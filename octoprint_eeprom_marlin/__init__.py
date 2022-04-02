@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, unicode_literals
-
 __license__ = "GNU Affero General Public License http://www.gnu.org/licenses/agpl.html"
 __copyright__ = (
     "Copyright (C) 2020 Charlie Powell - Released under terms of the AGPLv3 License"
@@ -139,9 +136,7 @@ class EEPROMMarlinPlugin(
         return flask.Response(
             json.dumps(backup_data),
             mimetype="text/plain",
-            headers={
-                "Content-Disposition": 'attachment; filename="{}.json"'.format(name)
-            },
+            headers={"Content-Disposition": f'attachment; filename="{name}.json"'},
         )
 
     # Websocket communication
@@ -179,11 +174,11 @@ class EEPROMMarlinPlugin(
         subcode=None,
         tags=None,
         *args,
-        **kwargs
+        **kwargs,
     ):
         # https://docs.octoprint.org/en/master/plugins/hooks.html#protocol_gcodephase_hook
         if cmd == "M501" or cmd == "M503":
-            self._logger.info("{} detected, collecting data".format(cmd))
+            self._logger.info(f"{cmd} detected, collecting data")
             self.collecting_eeprom = True
 
         if cmd == "M78":
@@ -304,7 +299,7 @@ __plugin_description__ = """
 __plugin_author__ = "Charlie Powell"
 __plugin_license__ = "AGPLv3"
 __plugin_url__ = "https://github.com/cp2004/OctoPrint-EEPROM-Marlin"
-__plugin_pythoncompat__ = ">=2.7,<4"
+__plugin_pythoncompat__ = ">=3.7,<4"
 __plugin_version__ = __version__
 
 

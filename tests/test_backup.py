@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 import time
 import unittest
-
-import mock
+from unittest import mock
 
 from octoprint_eeprom_marlin import backup
 

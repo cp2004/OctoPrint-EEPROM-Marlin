@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, unicode_literals
-
 __license__ = "GNU Affero General Public License http://www.gnu.org/licenses/agpl.html"
 __copyright__ = (
     "Copyright (C) 2020 Charlie Powell - Released under terms of the AGPLv3 License"
@@ -136,7 +133,7 @@ class API:
 
             if commands:
                 self._logger.info("Saving EEPROM data")
-                self._logger.info("Commands to send: {}".format(commands))
+                self._logger.info(f"Commands to send: {commands}")
                 self._printer.commands(commands)
                 self._printer.commands("M500")
 
@@ -158,7 +155,7 @@ class API:
                 # Name consisted of only symbols or something, no empty names around here
                 name = util.build_backup_name()
 
-        self._logger.info("Creating backup {}".format(name))
+        self._logger.info(f"Creating backup {name}")
 
         eeprom_data = self._eeprom_data.to_dict()
         try:
@@ -189,7 +186,7 @@ class API:
                 {"success": False, "error": "Backup specified does not exist"}
             )
 
-        self._logger.info("Restoring backup from {}".format(name))
+        self._logger.info(f"Restoring backup from {name}")
 
         eeprom_data = backup_data["data"]
         # convert json dict to a list, for usage of common parsing methods
@@ -211,7 +208,7 @@ class API:
                 "success": False,
                 "error": "The backup specified could not be found",
             }
-            self._logger.error("Backup at {} could not be found".format(name))
+            self._logger.error(f"Backup at {name} could not be found")
         except Exception as e:
             response = {
                 "success": False,

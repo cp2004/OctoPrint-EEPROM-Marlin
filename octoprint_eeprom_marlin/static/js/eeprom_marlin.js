@@ -578,8 +578,7 @@ const KNOWN_CAPABILITIES = {
     "https://marlinfw.org/docs/configuration/configuration.html#safety",
   MOTION_MODES:
     "https://marlinfw.org/docs/configuration/configuration.html#cnc-g-code-options",
-  ARCS:
-    "https://marlinfw.org/docs/configuration/configuration.html#g2/g3-arc-support",
+  ARCS: "https://marlinfw.org/docs/configuration/configuration.html#g2/g3-arc-support",
   BABYSTEPPING:
     "https://marlinfw.org/docs/configuration/configuration.html#babystepping",
   CHAMBER_TEMPERATURE:

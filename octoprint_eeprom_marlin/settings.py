@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, unicode_literals
-
 """
 Contains the default settings for the plugin, to extract them from the main plugin class
 """
