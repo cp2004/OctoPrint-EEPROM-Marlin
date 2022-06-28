@@ -17,7 +17,6 @@ from octoprint.util import dict_merge
 
 # This defines the data structure used in both the frontend and the backend. Must be kept in sync with
 # the observables in the viewmodel. UI will update automatically from this structure using the Jinja templates.
-# TODO double check the data types
 # float1: 1 decimal place number input
 # float2: 2 decimal place number input
 # int:    integer input
@@ -162,6 +161,29 @@ ALL_DATA_STRUCTURE = {
         },
         "name": "Bed PID",
         "link": "https://marlinfw.org/docs/gcode/M304.html",
+    },
+    "hotend_mpc": {
+        "command": "M304",
+        "params": {
+            "A": {
+                "type": "float2",
+                "label": "Ambient heat transfer coefficient (no fan)",
+            },
+            "C": {"type": "float2", "label": "Heatblock capacity", "untits": "J/K"},
+            "F": {
+                "type": "float2",
+                "label": "Ambient heat transfer coefficient (fan on full).",
+            },
+            "H": {
+                "type": "float2",
+                "label": "Filament heat capacity",
+                "units": "J/K/mm",
+            },
+            "P": {"type": "int", "label": "Heater power", "units": "W"},
+            "R": {"type": "int", "label": "Sensor responsiveness"},
+        },
+        "name": "Hotend MPC",
+        "link": "https://marlinfw.org/docs/gcode/M306.html",
     },
     "advanced": {
         "command": "M205",

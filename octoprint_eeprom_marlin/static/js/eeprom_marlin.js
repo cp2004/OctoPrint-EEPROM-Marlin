@@ -75,6 +75,15 @@ $(function () {
 
       eeprom.hotend_pid = create_eeprom_observables(["P", "I", "D"]);
 
+      eeprom.hotend_mpc = create_eeprom_observables([
+        "A",
+        "C",
+        "F",
+        "H",
+        "P",
+        "R",
+      ]);
+
       eeprom.linear = create_eeprom_observables(["K"]);
 
       eeprom.material1 = create_eeprom_observables(["B", "F", "H", "S"]);
