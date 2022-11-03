@@ -1,17 +1,12 @@
+from __future__ import annotations
+
 __license__ = "GNU Affero General Public License http://www.gnu.org/licenses/agpl.html"
 __copyright__ = (
     "Copyright (C) 2020 Charlie Powell - Released under terms of the AGPLv3 License"
 )
 
 import copy
-
-try:
-    from typing import Dict, Optional
-except ImportError:
-    # we don't need these, just for typed comments
-    # TODO PY3: Type annotations!
-    Dict = Optional = None
-    pass
+from dataclasses import asdict, dataclass, field
 
 from octoprint.util import dict_merge
 
@@ -297,21 +292,22 @@ def find_name_from_command(command):
         raise ValueError
 
 
+@dataclass
 class FirmwareInfo:
     """
     Holds firmware info data
     """
 
-    name = ""  # type: str
-    is_marlin = False  # type: bool
-    additional_info = {}  # type: dict
-    capabilities = {}  # type: dict
-    locked = False
+    name: str = ""
+    is_marlin: bool = False
+    additional: dict = field(default_factory=dict)
+    capabilities: dict = field(default_factory=dict)
+    locked: bool = False
 
     def additional_info_from_dict(self, data):
-        self.additional_info = {}
+        self.additional = {}
         for key, value in data.items():
-            self.additional_info[key] = value
+            self.additional[key] = value
 
     def add_capabilities(self, caps):
         for capability, value in caps.items():
@@ -319,24 +315,20 @@ class FirmwareInfo:
 
     def to_dict(self):
         # For sending to UI
-        return {
-            "name": self.name,
-            "is_marlin": self.is_marlin,
-            "additional": self.additional_info,
-            "capabilities": self.capabilities,
-            "locked": self.locked,
-        }
+        return asdict(self)
 
 
+@dataclass
 class IndividualData:
     """
     Holding individual data entries
     """
 
-    def __init__(self, name, command, params):
-        self.name = name
-        self.command = command
-        self.params = params
+    name: str = ""
+    command: str = ""
+    params: dict = field(default_factory=dict)
+
+    def __post_init__(self):
         for param in self.params:
             self.params[param]["value"] = None
 

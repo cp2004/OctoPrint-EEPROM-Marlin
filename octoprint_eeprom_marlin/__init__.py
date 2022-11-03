@@ -38,19 +38,18 @@ class EEPROMMarlinPlugin(
     octoprint.plugin.BlueprintPlugin,
 ):
     # Data models
-    _firmware_info = None
-    _eeprom_data = None
-    _changed_data = None
+    _firmware_info: data.FirmwareInfo
+    _firmware_stats: data.FirmwareStats
+    _eeprom_data: data.EEPROMData
 
     # Useful classes
-    _backup_handler = None
-    _parser = None
-    _api = None
-    _event_reactor = None
+    _backup_handler: backup.BackupHandler
+    _parser: parser.Parser
+    _api: api.API
 
     # Flags
-    collecting_eeprom = False
-    collecting_stats = False
+    collecting_eeprom: bool = False
+    collecting_stats: bool = False
 
     def initialize(self):
         # Initialise is called when all injections are complete
