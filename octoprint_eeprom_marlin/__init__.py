@@ -138,6 +138,9 @@ class EEPROMMarlinPlugin(
             headers={"Content-Disposition": f'attachment; filename="{name}.json"'},
         )
 
+    def is_blueprint_csrf_protected(self):
+        return True
+
     # Websocket communication
     def send_message(self, type, data):
         payload = {"type": type, "data": data}
