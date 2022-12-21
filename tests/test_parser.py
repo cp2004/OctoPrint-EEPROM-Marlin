@@ -132,14 +132,14 @@ class ParserTestCase(unittest.TestCase):
             },
             "echo:; Material heatup parameters:": None,
             "echo: M145 S0 B60.0 F255.0 H199.0": {
-                "name": "material1",  # This step of the process does not differentiate between materials
+                "name": "material",
                 "command": "M145",
-                "params": {"S": 0.0, "B": 60.0, "H": 199.0, "F": 255.0},
+                "params": {"S": 0, "B": 60.0, "H": 199.0, "F": 255.0},
             },
             "echo: M145 S1 B75.0 F0.0 H240.0": {
-                "name": "material1",  # This step of the process does not differentiate between materials
+                "name": "material",
                 "command": "M145",
-                "params": {"S": 1.0, "B": 75.0, "H": 240.0, "F": 0.0},
+                "params": {"S": 1, "B": 75.0, "H": 240.0, "F": 0.0},
             },
             "echo:; Hotend PID settings:": None,
             "echo: M301 P30.5 I2.51 D73.09": {
@@ -158,8 +158,23 @@ class ParserTestCase(unittest.TestCase):
                 "command": "M900",
                 "params": {"K": 1.5},
             },
+            "echo:  M913 X229 Y229 Z164": {
+                "name": "tmc_hybrid",
+                "command": "M913",
+                "params": {"X": 229, "Y": 229, "Z": 164},
+            },
+            "echo:  M913 I1 Z164": {
+                "name": "tmc_hybrid",
+                "command": "M913",
+                "params": {"I": 1, "Z": 164},
+            },
+            "echo:  M913 T0 E19": {
+                "name": "tmc_hybrid",
+                "command": "M913",
+                "params": {"T": 0, "E": 19},
+            },
         }
 
         eeprom_parser = parser.Parser(logger)
-        for line, result in m503_response.items():
-            self.assertEqual(eeprom_parser.parse_eeprom_data(line), result)
+        for line, expected_result in m503_response.items():
+            self.assertEqual(eeprom_parser.parse_eeprom_data(line), expected_result)

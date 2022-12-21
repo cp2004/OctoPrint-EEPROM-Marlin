@@ -94,17 +94,11 @@ class Parser:
             self._logger.warning("Line: {}".format(line.strip("\r\n ")))
             return
 
-        # grab parameters that we can look at
-        # COPY so we don't break it
-        params = copy.deepcopy(data.ALL_DATA_STRUCTURE[command_name]["params"])
-        # TODO this should no longer be required, but I will touch it after the release
-
-        # If we're looking at materials, add in the S parameter
-        if command_name.startswith("material"):
+        data_structure = data.ALL_DATA_STRUCTURE[command_name]
+        params = copy.deepcopy(data_structure["params"])
+        if "switches" in data_structure:
             params.update(
-                {
-                    "S": {"type": "int"},
-                }
+                {f"{param}": {"type": "switch"} for param in data_structure["switches"]}
             )
 
         # work out what values we have
@@ -115,6 +109,8 @@ class Parser:
                 value = float(param_match.group("value"))
                 if param_value["type"] == "bool":
                     value = True if int(value) == 1 else False
+                if param_value["type"] == "switch":
+                    value = int(value)
 
                 parameters[param] = value
 

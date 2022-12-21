@@ -212,35 +212,14 @@ ALL_DATA_STRUCTURE = {
         "name": "Autolevel",
         "link": "https://marlinfw.org/docs/gcode/M420.html",
     },
-    "material1": {
+    "material": {
         "command": "M145",
         "params": {
             "H": {"type": "float1", "label": "Hotend temperature", "units": "°C"},
             "B": {"type": "float1", "label": "Bed temperature", "units": "°C"},
             "F": {"type": "int", "label": "Fan speed", "units": "0-255"},
-            "S": {
-                "type": "int",
-                "label": "Material number",
-                "should_show": False,
-            },  # This should NOT be in the UI
         },
-        "name": "Material Preset (1)",
-        "link": "https://marlinfw.org/docs/gcode/M145.html",
-    },
-    "material2": {
-        "command": "M145",
-        "params": {
-            "H": {"type": "float1", "label": "Hotend temperature", "units": "°C"},
-            "B": {"type": "float1", "label": "Bed temperature", "units": "°C"},
-            "F": {"type": "int", "label": "Fan speed", "units": "0-255"},
-            "S": {
-                "type": "int",
-                "label": "Material number",
-                "should_show": False,
-            },  # This should NOT be in the UI
-        },
-        "name": "Material Preset (2)",
-        "link": "https://marlinfw.org/docs/gcode/M145.html",
+        "switches": ["S"],
     },
     "filament_change": {
         "command": "M603",
@@ -269,6 +248,7 @@ ALL_DATA_STRUCTURE = {
             "Y": {"type": "float2", "label": "Current for Y Stepper", "units": "mA"},
             "Z": {"type": "float2", "label": "Current for Z Stepper", "units": "mA"},
         },
+        "switches": ["I", "T"],
         "link": "https://marlinfw.org/docs/gcode/M906.html",
     },
     "tmc_hybrid": {
@@ -280,6 +260,7 @@ ALL_DATA_STRUCTURE = {
             "E": {"type": "float2", "label": "Hybrid Threshold for E axis"},
         },
         "link": "https://marlinfw.org/docs/gcode/M913.html",
+        "switches": ["I", "T"],
     },
 }
 
@@ -362,6 +343,72 @@ class IndividualData:
         return command
 
 
+class MultipleData:
+    """
+    Eg. for the TMC drivers 'Hybrid Threshold'
+    echo:; Hybrid Threshold:
+    echo:  M913 X229 Y229 Z164
+    echo:  M913 I1 Z164
+    echo:  M913 T0 E19
+    {
+    "I1": { IndividualData },
+    "T0": { IndividualData },
+    }
+    """
+
+    # def __post_init__(self):
+    #     self.data = {}
+    #     for switch in self.switches:
+    #         self.data[switch] = IndividualData()
+
+    def __init__(self, name, command, switches):
+        self.name = name
+        self.command = command
+        self.switches = switches
+        self.data = {}
+        for param, content in ALL_DATA_STRUCTURE[name]["params"].items():
+            self.data[param] = content
+            self.data[param]["value"] = None
+
+    def data_for_switch(self, switch):
+        if switch in self.switches:
+            return self.data[switch]
+
+    def set_data_for_switch(self, switch, data):
+        if switch[0] not in self.switches:
+            raise ValueError("unknown switch")
+
+        if switch not in data:
+            # This particular switch not seen, so create data class for it
+            self.data[switch] = IndividualData(
+                name=self.name,
+                command=self.command,
+                params=copy.deepcopy(ALL_DATA_STRUCTURE[self.name]["params"]),
+            )
+
+        self.data[switch].params_from_dict(data)
+
+    def set_data_no_switch(self, data):
+        for key, value in data.items():
+            if value is not None:
+                if key not in self.data:
+                    self.data[key] = {}
+                self.data[key]["value"] = value
+
+    def is_switch_valid(self, switch):
+        return switch[0] in self.switches
+
+    def params_to_dict(self):
+        params = {}
+        for key, value in self.data.items():
+            if key[0] in self.switches:
+                params[key] = value.params_to_dict()
+            else:
+                params[key] = value["value"]
+
+        return params
+
+
 class EEPROMData:
     """
     Holds recieved EEPROM data
@@ -371,8 +418,21 @@ class EEPROMData:
         self.plugin = plugin
 
         for key, data in ALL_DATA_STRUCTURE.items():
-            data = copy.deepcopy(data)  # Avoid modifiying the constant
-            setattr(self, key, IndividualData(key, data["command"], data["params"]))
+            data = copy.deepcopy(data)  # Avoid modifying the constant
+            if "switches" in data:
+                # Supports multiple sets of data
+                # Switched on one parameter
+                setattr(
+                    self,
+                    key,
+                    MultipleData(
+                        key,
+                        data["command"],
+                        data["switches"],
+                    ),
+                )
+            else:
+                setattr(self, key, IndividualData(key, data["command"], data["params"]))
 
         # noinspection PyProtectedMember
         self.plugin._logger.info("EEPROM Data initialised")
@@ -393,30 +453,34 @@ class EEPROMData:
         :param ui: bool, where the data came from
         :return: None
         """
-        if not ui and data["command"] == "M145":
-            try:
-                if int(data["params"]["S"]) == 0:
-                    data_class = self.material1
-                elif int(data["params"]["S"]) == 1:
-                    data_class = self.material2
-                else:
-                    # unable to parse again - lazy way of not writing duplicate code
-                    raise KeyError
-            except KeyError:
-                # Unable to parse M145
-                # noinspection PyProtectedMember
-                self.plugin._logger.error("Unable to parse M145 command")
-                return
-        else:
-            try:
-                data_class = getattr(self, data["name"])
-            except AttributeError:
-                self._logger.error(
-                    "Could not parse data, name was {}".format(data["name"])
-                )
-                return
 
-        data_class.params_from_dict(data["params"])
+        try:
+            data_class = getattr(self, data["name"])
+        except AttributeError:
+            # noinspection PyProtectedMember
+            self.plugin._logger.error(
+                "Could not parse data, name was {}".format(data["name"])
+            )
+            return
+
+        if type(data_class) == MultipleData:
+            # Work out which parameter is the switch
+            params = data["params"].keys()
+            switches = list(set(params).intersection(data_class.switches))
+            if len(switches) == 0:
+                # No switches
+                data_class.set_data_no_switch(data["params"])
+            else:
+                # We ignore the fact there could be more than one switch and use
+                # only the first
+                switch_value = data["params"][switches[0]]
+                # Remove switch from params, so it's not set on data
+                data["params"].pop(switches[0])
+                data_class.set_data_for_switch(
+                    f"{switches[0]}{switch_value}", data["params"]
+                )
+        else:
+            data_class.params_from_dict(data["params"])
 
     def to_dict(self):
         # Wraps all the data up to send it to the UI
