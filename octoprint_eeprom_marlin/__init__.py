@@ -214,7 +214,7 @@ class EEPROMMarlinPlugin(
         if self.collecting_eeprom:
             parsed = self._parser.parse_eeprom_data(line)
             if parsed:
-                self._eeprom_data.from_dict(parsed, ui=False)
+                self._eeprom_data.from_parser(parsed)
         elif self.collecting_stats:
             stats = self._parser.parse_stats_line(line)
             if stats:

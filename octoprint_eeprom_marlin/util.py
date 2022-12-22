@@ -11,9 +11,20 @@ def build_backup_name():
     return "eeprom_backup-{}".format(time.strftime("%Y%m%d-%H%M%S"))
 
 
-def construct_command(data, name):
+def construct_command(data, name) -> list:
+    # Check for switched command
+    for value in data["params"].values():
+        if type(value) == dict:
+            return construct_command_switched(data, name)
+
+    # Otherwise, we have a regular command:
     command = data["command"]
-    for param, value in data["params"].items():
+    return [_construct_command_from_params(name, command, data["params"])]
+
+
+def _construct_command_from_params(name: str, cmd: str, params: dict) -> str:
+    command = cmd
+    for param, value in params.items():
         # Check that the value exists, avoid M205 [...] JNone
         if value is None:
             continue
@@ -22,12 +33,38 @@ def construct_command(data, name):
         if DATA[name]["params"][param]["type"] == "bool":
             value = "1" if value is True else "0"
         else:
-            value = (
-                str(value) if command != "M145" and param != "S" else str(int(value))
-            )
+            value = str(value)
 
-        command = command + " " + param + value
+        command = f"{command} {param}{value}"
     return command
+
+
+def construct_command_switched(data, name) -> list:
+    """
+    Returns a list of commands to send to the printer
+    """
+    result = []
+    cmd = data["command"]
+
+    for param, value in data["params"].items():
+        if value is None:
+            continue
+
+        if type(value) == dict:
+            result.append(_construct_command_from_params(name, f"{cmd} {param}", value))
+        else:
+            # Check the command type, and map boolean back to 0/1
+            if DATA[name]["params"][param]["type"] == "bool":
+                value = "1" if value is True else "0"
+            else:
+                value = str(value)
+
+            cmd = f"{cmd} {param}{value}"
+
+    if cmd != data["command"]:
+        result.append(cmd)
+
+    return result
 
 
 def backup_json_to_list(eeprom_data):

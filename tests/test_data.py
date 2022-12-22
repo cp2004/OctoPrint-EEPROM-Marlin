@@ -36,7 +36,7 @@ class DataTestCase(unittest.TestCase):
         # Simple one first
         line = "echo: M92 X80.0 Y80.0 Z800.0 E90.0"
         parsed_data = eeprom_parser.parse_eeprom_data(line)
-        data_class.from_dict(parsed_data)
+        data_class.from_parser(parsed_data)
 
         self.assertEqual(
             data_class.to_dict()["steps"],
@@ -46,7 +46,7 @@ class DataTestCase(unittest.TestCase):
         # Now a switched one
         line = "echo: M913 I1 Z164"
         parsed_data = eeprom_parser.parse_eeprom_data(line)
-        data_class.from_dict(parsed_data)
+        data_class.from_parser(parsed_data)
 
         # print(data_class.to_dict()["tmc_hybrid"])
 
@@ -60,7 +60,7 @@ class DataTestCase(unittest.TestCase):
 
         line = "echo:  M913 T0 E19"
         parsed_data = eeprom_parser.parse_eeprom_data(line)
-        data_class.from_dict(parsed_data)
+        data_class.from_parser(parsed_data)
 
         self.assertEqual(
             data_class.to_dict()["tmc_hybrid"],
@@ -75,7 +75,7 @@ class DataTestCase(unittest.TestCase):
 
         line = "echo:  M913 X229 Y229 Z164"
         parsed_data = eeprom_parser.parse_eeprom_data(line)
-        data_class.from_dict(parsed_data)
+        data_class.from_parser(parsed_data)
 
         self.assertEqual(
             data_class.to_dict()["tmc_hybrid"],
@@ -146,7 +146,7 @@ class DataTestCase(unittest.TestCase):
         for line in sink.splitlines():
             parsed_data = eeprom_parser.parse_eeprom_data(line.strip())
             if parsed_data:
-                eeprom_data.from_dict(parsed_data)
+                eeprom_data.from_parser(parsed_data)
 
         result = eeprom_data.to_dict()
 

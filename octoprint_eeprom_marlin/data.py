@@ -389,6 +389,8 @@ class MultipleData:
         self.data[switch].params_from_dict(data)
 
     def set_data_no_switch(self, data):
+        if not data:
+            return
         for key, value in data.items():
             if value is not None:
                 if key not in self.data:
@@ -464,9 +466,29 @@ class EEPROMData:
             return
 
         if type(data_class) == MultipleData:
+            for param, value in data["params"].items():
+                if type(value) == dict:
+                    data_class.set_data_for_switch(param, value)
+                else:
+                    data_class.set_data_no_switch({param: value})
+
+        else:
+            data_class.params_from_dict(data["params"])
+
+    def from_parser(self, data):
+        try:
+            data_class = getattr(self, data["name"])
+        except AttributeError:
+            # noinspection PyProtectedMember
+            self.plugin._logger.error(
+                "Could not parse data, name was {}".format(data["name"])
+            )
+            return
+
+        if type(data_class) == MultipleData:
             # Work out which parameter is the switch
             params = data["params"].keys()
-            switches = list(set(params).intersection(data_class.switches))
+            switches = list({p[0] for p in params}.intersection(data_class.switches))
             if len(switches) == 0:
                 # No switches
                 data_class.set_data_no_switch(data["params"])
