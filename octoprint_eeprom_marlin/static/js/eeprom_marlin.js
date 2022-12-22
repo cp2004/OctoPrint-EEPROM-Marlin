@@ -4,12 +4,18 @@
  * This file no longer contains any work of previous contributors as of version 3.0
  */
 
-function create_eeprom_observables(params) {
+function create_eeprom_observables(params, switches) {
   var result = {};
 
-  params.forEach(function (param) {
+  params.forEach(function (param, switches) {
     result[param] = ko.observable();
   });
+
+  if (switches) {
+    switches.forEach(function (param) {
+      result[param] = ko.observableArray();
+    });
+  }
 
   result["visible"] = ko.computed(function () {
     for (let param in result) {
@@ -86,9 +92,7 @@ $(function () {
 
       eeprom.linear = create_eeprom_observables(["K"]);
 
-      eeprom.material1 = create_eeprom_observables(["B", "F", "H", "S"]);
-
-      eeprom.material2 = create_eeprom_observables(["B", "F", "H", "S"]);
+      eeprom.material = create_eeprom_observables(["B", "F", "H"], ["S"]);
 
       eeprom.max_acceleration = create_eeprom_observables(["E", "X", "Y", "Z"]);
 
@@ -113,12 +117,50 @@ $(function () {
       // loops through response and assigns values to observables
       for (let key in data.eeprom) {
         let value = data.eeprom[key];
+        // Store switched params to deal with after the loop
+        const switched = [];
         for (let param in value.params) {
-          try {
-            self.eeprom[key][param](value.params[param]);
-          } catch {
-            console.log("unable to parse response - " + key + ": " + param);
+          if (
+            typeof value.params[param] === "object" &&
+            value.params[param] !== null
+          ) {
+            // Save for later
+            switched.push(param);
+          } else {
+            try {
+              self.eeprom[key][param](value.params[param]);
+            } catch {
+              console.log("unable to parse response - " + key + ": " + param);
+            }
           }
+        }
+        if (switched.length > 0) {
+          // Empty any switched arrays
+          switched.forEach((sw) => {
+            try {
+              self.eeprom[key][sw.charAt(0)]([]);
+            } catch {
+              console.log(
+                "unable to empty switched array for " +
+                  key +
+                  " (" +
+                  sw.charAt(0) +
+                  ")"
+              );
+            }
+          });
+          // Now fill them back up
+          switched.forEach((sw) => {
+            try {
+              const result = ko.mapping.fromJS(value.params[sw]);
+              result["key"] = sw;
+              self.eeprom[key][sw.charAt(0)].push(result);
+            } catch {
+              console.log(
+                "unable to fill switched array for " + key + " (" + sw + ")"
+              );
+            }
+          });
         }
       }
       self.unsaved(false);
@@ -126,12 +168,19 @@ $(function () {
 
     self.eeprom_to_json = function () {
       // loops through eeprom data, to create a JSON object to POST
-      var eeprom = [];
-      for (let key in self.eeprom) {
-        let data = { name: key, params: {} };
-        let value = self.eeprom[key];
-        for (let param in value) {
-          if (param !== "visible") {
+      const eeprom = [];
+      for (const key in self.eeprom) {
+        const data = { name: key, params: {} };
+        const value = self.eeprom[key];
+        for (const param in value) {
+          if (param === "visible") continue;
+
+          if (typeof value[param]() === "object" && value[param]() !== null) {
+            // We have a switched param
+            value[param]().forEach((sw) => {
+              data.params[sw.key] = ko.mapping.toJS(sw);
+            });
+          } else {
             data.params[param] = value[param]();
           }
         }

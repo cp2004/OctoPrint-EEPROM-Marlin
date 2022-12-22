@@ -40,3 +40,42 @@ eeprom.{{ key }}.{{ value }}
 </div>
 {% endif %}
 {% endmacro %}
+
+{% macro switched_field(key, data) %}
+{# This is designed to go inside a ko foreach, so it is already scoped to the relevant data #}
+{% set input_id = "eeprom-" + key + "-" + ((range(1000) | random) | string) %}  {# TODO Can't join string and int #}
+<div class="row-fluid" data-bind="visible: {{ key }}() !== null">
+    <div class="span6">
+        <label for="{{ input_id }}" class="pull-right">
+            {{ data["label"] }}
+        </label>
+    </div>
+    <div class="span6">
+        {% if data["type"] != "bool" %}
+            {% if data["type"] == "float1" %}
+                {% set step = "0.1" %}
+            {% elif data["type"] == "float2" %}
+                {% set step = "0.01" %}
+            {% elif data["type"] == "int" %}
+                {% set step = "1" %}
+            {% endif %}
+            {% if "units" in data %}
+                <div class="input-append">
+                    <input
+                            type="number"
+                            id="{{ input_id }}"
+                            class="input-small"
+                            step="{{ step }}"
+                            data-bind="value: {{ key }}, enable: $root.enable_fields, event: {keyup: $root.edited}"
+                    >
+                    <span class="add-on">{{ data.units }}</span>
+                </div>
+            {% else %}
+                <input id="{{ input_id }}" type="number" class="input-small" step="{{ step }}" data-bind="value: {{ key }}, enable: $root.enable_fields(), event: {keyup: $root.edited()}">
+            {% endif %}
+        {% else %}
+        <input id="{{ input_id }}" type="checkbox" class="eeprom-checkbox" data-bind="checked: {{ key }}, enable: $root.enable_fields(), event: {change: $root.edited()}">
+        {% endif %}
+    </div>
+</div>
+{% endmacro %}

@@ -5,9 +5,22 @@
     <strong>{{ _(name) }}</strong>
     <a href="{{ plugin_eeprom_marlin_DATA_STRUCTURE[id].link }}" target="_blank" class="pull-right">Marlin Docs</a>
     <hr>
+
     {% for key, value in plugin_eeprom_marlin_DATA_STRUCTURE[id].params.items() %}
     {{ field.single_field(id, key, value) }}
     {% endfor %}
+
+    {% if "switches" in plugin_eeprom_marlin_DATA_STRUCTURE[id] %}
+        {% for switch in plugin_eeprom_marlin_DATA_STRUCTURE[id]["switches"] %}
+            <!-- ko foreach: eeprom.{{ id }}.{{ switch }} -->
+            <p data-bind="text: key"></p>
+            <hr>
+            {% for key, value in plugin_eeprom_marlin_DATA_STRUCTURE[id].params.items() %}
+                {{ field.switched_field(key, value) }}
+            {% endfor %}
+            <!-- /ko -->
+        {% endfor %}
+    {% endif %}
 </div>
 {% endmacro %}
 
@@ -40,8 +53,7 @@
     {{ section("Filament Settings", "filament") }}
     {{ section("Filament Sensor Settings", "filament_runout") }}
     {{ section("Filament Change Settings", "filament_change") }}
-    {{ section("Material Preset (1)", "material1") }}
-    {{ section("Material Preset (2)", "material2") }}
+    {{ section("Material Preset", "material") }}
 </div>
 <div id="eeprom_offset" class="tab-pane">
     {{ section("Home Offset", "home_offset") }}
