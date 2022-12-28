@@ -158,7 +158,7 @@ ALL_DATA_STRUCTURE = {
         "link": "https://marlinfw.org/docs/gcode/M304.html",
     },
     "hotend_mpc": {
-        "command": "M304",
+        "command": "M306",
         "params": {
             "A": {
                 "type": "float2",
