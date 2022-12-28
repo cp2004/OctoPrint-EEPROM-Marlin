@@ -17,7 +17,7 @@ jobs:
       - name: 🏗 Set up Python 3.10
         uses: actions/setup-python@v4
         with:
-          python-version: 3.10
+          python-version: "3.10"
       - name: 🏗 Install build dependencies
         run: |
           python -m pip install wheel --user
@@ -64,7 +64,7 @@ jobs:
       - name: 🏗 Set up Python 3.10
         uses: actions/setup-python@v1
         with:
-          python-version: 3.10
+          python-version: "3.10"
       - name: 🏗 Set up dev dependencies
         run: |
           pip install octoprint[develop]
@@ -80,7 +80,7 @@ jobs:
       - name: 🏗 Set up Python 3.10
         uses: actions/setup-python@v4
         with:
-          python-version: 3.10
+          python-version: "3.10"
       - name: 🏗 Set up dev dependencies
         run: |
           pip install octoprint[develop]
@@ -96,7 +96,7 @@ jobs:
       - name: 🏗 Set up Python 3.10
         uses: actions/setup-python@v4
         with:
-          python-version: 3.10
+          python-version: "3.10"
       - name: 🏗 Set up dev dependencies
         run: |
           pip install octoprint[develop]
@@ -112,7 +112,7 @@ jobs:
       - name: 🏗 Set up Python 3.10
         uses: actions/setup-python@v4
         with:
-          python-version: 3.10
+          python-version: "3.10"
       - name: 🏗 Set up OctoPrint dev dependencies
         run: |
           pip install octoprint[develop]
