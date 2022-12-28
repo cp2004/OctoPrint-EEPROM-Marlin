@@ -75,7 +75,7 @@ $(function () {
 
       eeprom.feedrate = create_eeprom_observables(["X", "Y", "Z", "E"], ["T"]);
 
-      eeprom.filament = create_eeprom_observables(["D"]);
+      eeprom.filament = create_eeprom_observables(["D"], ["T"]);
 
       eeprom.home_offset = create_eeprom_observables(["X", "Y", "Z"]);
 
@@ -103,10 +103,7 @@ $(function () {
 
       eeprom.filament_change = create_eeprom_observables(["L", "U"]);
 
-      eeprom.filament_runout = create_eeprom_observables(
-        ["D", "H", "S"],
-        ["T"]
-      );
+      eeprom.filament_runout = create_eeprom_observables(["D", "H", "S"]);
 
       eeprom.tmc_current = create_eeprom_observables(
         ["E", "X", "Y", "Z"],
