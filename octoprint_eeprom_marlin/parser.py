@@ -77,7 +77,7 @@ class Parser:
             if match[0] in params.keys():
                 # We have a supported parameter
                 p = match[0].upper()
-                v = match[1]
+                v = float(match[1])
 
                 if params[p]["type"] == "bool":
                     v = True if int(v) == 1 else False
