@@ -54,7 +54,13 @@ class DataTestCase(unittest.TestCase):
             data_class.to_dict()["tmc_hybrid"],
             {
                 "command": "M913",
-                "params": {"I1": {"E": None, "X": None, "Y": None, "Z": 164.0}},
+                "params": {
+                    "I1": {"E": None, "X": None, "Y": None, "Z": 164.0},
+                    "X": None,
+                    "Y": None,
+                    "Z": None,
+                    "E": None,
+                },
             },
         )
 
@@ -69,6 +75,10 @@ class DataTestCase(unittest.TestCase):
                 "params": {
                     "I1": {"X": None, "Y": None, "Z": 164, "E": None},
                     "T0": {"X": None, "Y": None, "Z": None, "E": 19},
+                    "X": None,
+                    "Y": None,
+                    "Z": None,
+                    "E": None,
                 },
             },
         )
@@ -87,6 +97,7 @@ class DataTestCase(unittest.TestCase):
                     "X": 229,
                     "Y": 229,
                     "Z": 164,
+                    "E": None,
                 },
             },
         )
