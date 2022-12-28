@@ -51,7 +51,11 @@ def construct_command_switched(data, name) -> list:
             continue
 
         if type(value) == dict:
-            result.append(_construct_command_from_params(name, f"{cmd} {param}", value))
+            result.append(
+                _construct_command_from_params(
+                    name, f"{data['command']} {param}", value
+                )
+            )
         else:
             # Check the command type, and map boolean back to 0/1
             if DATA[name]["params"][param]["type"] == "bool":
