@@ -157,7 +157,7 @@ class ParserTestCase(unittest.TestCase):
             "echo: M900 T1 K1.50": {
                 "name": "linear",
                 "command": "M900",
-                "params": {"K": 1.5},
+                "params": {"K": 1.5, "T": 1},
             },
             "echo:  M913 X229 Y229 Z164": {
                 "name": "tmc_hybrid",
