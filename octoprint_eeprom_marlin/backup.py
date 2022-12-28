@@ -141,7 +141,7 @@ class BackupHandler:
         else:
             now = backup_time
 
-        with open(self._get_backup_filename(name), "wt") as backup_file:
+        with open(self._get_backup_filename(name), "w") as backup_file:
             backup_file.write(
                 to_unicode(
                     json.dumps(
@@ -309,7 +309,7 @@ class MetaData:
         :return: None
         """
         data = {"version": self.version, "backups": self.backups}
-        with open(self.path, "wt", encoding="utf-8") as metadata_file:
+        with open(self.path, "w", encoding="utf-8") as metadata_file:
             metadata_file.write(to_unicode(json.dumps(data)))
 
     def add_backup(self, name, time):

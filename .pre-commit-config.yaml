@@ -1,7 +1,7 @@
 exclude: ^(translations/|.*\.css|.*\.svg|octoprint_eeprom_marlin/static/webfonts|versioneer.py|octoprint_eeprom_marlin/_version.py)
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.3.0
+    rev: v4.4.0
     hooks:
       - id: end-of-file-fixer
       - id: trailing-whitespace
@@ -11,7 +11,7 @@ repos:
       - id: check-toml
       - id: check-merge-conflict
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.37.1
+    rev: v3.3.1
     hooks:
       - id: pyupgrade
         args: ["--py37-plus"]
@@ -22,16 +22,16 @@ repos:
       - id: codemod_batch
         args: ["--check", "not_in", "--check", "detect_past_builtins_imports"]
   - repo: https://github.com/PyCQA/isort
-    rev: "5.10.1"
+    rev: "5.11.4"
     hooks:
       - id: isort
         args: ["--profile", "black", "--filter-files"]
   - repo: https://github.com/psf/black
-    rev: 22.6.0
+    rev: 22.12.0
     hooks:
       - id: black
-  - repo: https://gitlab.com/pycqa/flake8
-    rev: 3.9.2
+  - repo: https://github.com/pycqa/flake8
+    rev: 6.0.0
     hooks:
       - id: flake8
         additional_dependencies:
