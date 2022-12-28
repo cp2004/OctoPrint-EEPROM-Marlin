@@ -32,9 +32,10 @@ class ParserTestCase(unittest.TestCase):
             },
         }
         for test, result in test_cases_params.items():
-            for param in result["params"]:
-                param_match = parser.regexes_parameters[f"float{param}"].search(test)
-                self.assertEqual(param_match.group("value"), result["results"][param])
+            matches = parser.regex_parameter.findall(test)
+            for match in matches:
+                if match[0] in result["params"]:
+                    self.assertEqual(match[1], result["results"][match[0]])
 
     def test_parser(self):
         # Lets throw the entire M503 response at it, line by line...

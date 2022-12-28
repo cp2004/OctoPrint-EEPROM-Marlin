@@ -12,43 +12,12 @@ import re
 
 from octoprint_eeprom_marlin import data
 
-# Bunch of regexes that are useful for parsing
-# Some of these are borrowed straight out of OctoPrint's comm layer
-# I didn't import them just in case they get renamed/modified in
-# future versions, breaking the plugin in the process.
+# Some regexes used for parsing. Initially borrowed from OctoPrint's comm layer
+# but modified to suit the plugin better.
+
 regex_float_pattern = r"[-+]?[0-9]*\.?[0-9]+"
-regex_positive_float_pattern = r"[+]?[0-9]*\.?[0-9]+"
-regex_int_pattern = r"\d+"
 
-
-def regex_creator(value_type, param_letter):
-    value_pattern = regex_float_pattern if value_type == "float" else regex_int_pattern
-    letter = param_letter.upper() + param_letter.lower()
-    return re.compile(rf"(^|[^A-Za-z])[{letter}](?P<value>{value_pattern})")
-
-
-regexes_parameters = {
-    "floatA": regex_creator("float", "A"),
-    "floatB": regex_creator("float", "B"),
-    "floatC": regex_creator("float", "C"),
-    "floatD": regex_creator("float", "D"),
-    "floatE": regex_creator("float", "E"),
-    "floatF": regex_creator("float", "F"),
-    "floatH": regex_creator("float", "H"),
-    "floatI": regex_creator("float", "I"),
-    "floatJ": regex_creator("float", "J"),
-    "floatK": regex_creator("float", "K"),
-    "floatL": regex_creator("float", "L"),
-    "floatP": regex_creator("float", "P"),
-    "floatR": regex_creator("float", "R"),
-    "floatS": regex_creator("float", "S"),
-    "floatT": regex_creator("float", "T"),
-    "floatU": regex_creator("float", "U"),
-    "floatX": regex_creator("float", "X"),
-    "floatY": regex_creator("float", "Y"),
-    "floatZ": regex_creator("float", "Z"),
-}
-
+regex_parameter = re.compile(r"(?P<letter>[A-Za-z])(?P<value>[-+]?[0-9]*\.?[0-9]+)")
 regex_command = re.compile(r"echo:\s*(?P<gcode>M(?P<value>\d{1,3}))")
 
 regex_stats = {
@@ -103,16 +72,19 @@ class Parser:
 
         # work out what values we have
         parameters = {}
-        for param, param_value in params.items():
-            param_match = regexes_parameters[f"float{param}"].search(line)
-            if param_match:
-                value = float(param_match.group("value"))
-                if param_value["type"] == "bool":
-                    value = True if int(value) == 1 else False
-                if param_value["type"] == "switch":
-                    value = int(value)
+        matches = regex_parameter.findall(line)
+        for match in matches:
+            if match[0] in params.keys():
+                # We have a supported parameter
+                p = match[0].upper()
+                v = match[1]
 
-                parameters[param] = value
+                if params[p]["type"] == "bool":
+                    v = True if int(v) == 1 else False
+                if params[p]["type"] == "switch":
+                    v = int(v)
+
+                parameters[p] = v
 
         # construct response
         return {
