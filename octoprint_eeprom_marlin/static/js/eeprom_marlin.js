@@ -115,6 +115,8 @@ $(function () {
         ["I", "T"]
       );
 
+      eeprom.input_shaping = create_eeprom_observables(["D", "F"]);
+
       return eeprom;
     })();
 

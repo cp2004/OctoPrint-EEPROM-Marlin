@@ -270,6 +270,15 @@ ALL_DATA_STRUCTURE = {
         "link": "https://marlinfw.org/docs/gcode/M913.html",
         "switches": ["I", "T"],
     },
+    "input_shaping": {
+        "command": "M593",
+        "params": {
+            "F": {"type": "float2", "label": "Damping Frequency", "units": "hz"},
+            "D": {"type": "float2", "label": "Zeta/damping factor"},
+        },
+        "link": "https://marlinfw.org/docs/gcode/M593.html",
+        "name": "Input Shaping (both axes)",
+    },
 }
 
 
