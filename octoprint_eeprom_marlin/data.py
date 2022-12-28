@@ -12,6 +12,7 @@ from octoprint.util import dict_merge
 
 # This defines the data structure used in both the frontend and the backend. Must be kept in sync with
 # the observables in the viewmodel. UI will update automatically from this structure using the Jinja templates.
+# JAVASCRIPT OBSERVABLES MUST ALSO BE UPDATED
 # float1: 1 decimal place number input
 # float2: 2 decimal place number input
 # int:    integer input
@@ -25,6 +26,7 @@ ALL_DATA_STRUCTURE = {
             "Z": {"type": "float1", "label": "Z Steps", "units": "steps/mm"},
             "E": {"type": "float1", "label": "E Steps", "units": "steps/mm"},
         },
+        "switches": ["T"],
         "name": "Steps",
         "link": "https://marlinfw.org/docs/gcode/M092.html",
     },
@@ -36,6 +38,7 @@ ALL_DATA_STRUCTURE = {
             "Z": {"type": "float1", "label": "Z axis", "units": "mm/s"},
             "E": {"type": "float1", "label": "E axis", "units": "mm/s"},
         },
+        "switches": ["T"],
         "name": "Feedrate",
         "link": "https://marlinfw.org/docs/gcode/M203.html",
     },
@@ -63,6 +66,7 @@ ALL_DATA_STRUCTURE = {
                 "units": "mm/s2",
             },
         },
+        "switches": ["T"],
         "name": "Maximum Acceleration",
         "link": "https://marlinfw.org/docs/gcode/M201.html",
     },
@@ -126,6 +130,7 @@ ALL_DATA_STRUCTURE = {
     "linear": {
         "command": "M900",
         "params": {"K": {"type": "float2", "label": "K factor"}},
+        "switches": ["T"],
         "name": "Linear Advance",
         "link": "https://marlinfw.org/docs/gcode/M900.html",
     },
@@ -134,6 +139,7 @@ ALL_DATA_STRUCTURE = {
         "params": {
             "D": {"type": "float2", "label": "Filament Diameter", "units": "mm"}
         },
+        "switches": ["T"],
         "name": "Filament Settings",
         "link": "https://marlinfw.org/docs/gcode/M200.html",
     },
@@ -144,6 +150,7 @@ ALL_DATA_STRUCTURE = {
             "I": {"type": "float2", "label": "Hotend kI"},
             "D": {"type": "float2", "label": "Hotend kD"},
         },
+        "switches": ["E"],
         "name": "Hotend PID",
         "link": "https://marlinfw.org/docs/gcode/M301.html",
     },
@@ -177,6 +184,7 @@ ALL_DATA_STRUCTURE = {
             "P": {"type": "int", "label": "Heater power", "units": "W"},
             "R": {"type": "int", "label": "Sensor responsiveness"},
         },
+        "switches": ["E"],
         "name": "Hotend MPC",
         "link": "https://marlinfw.org/docs/gcode/M306.html",
     },

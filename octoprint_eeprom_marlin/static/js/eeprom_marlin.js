@@ -73,42 +73,50 @@ $(function () {
 
       eeprom.endstop = create_eeprom_observables(["X", "Y", "Z"]);
 
-      eeprom.feedrate = create_eeprom_observables(["X", "Y", "Z", "E"]);
+      eeprom.feedrate = create_eeprom_observables(["X", "Y", "Z", "E"], ["T"]);
 
       eeprom.filament = create_eeprom_observables(["D"]);
 
       eeprom.home_offset = create_eeprom_observables(["X", "Y", "Z"]);
 
-      eeprom.hotend_pid = create_eeprom_observables(["P", "I", "D"]);
+      eeprom.hotend_pid = create_eeprom_observables(["P", "I", "D"], ["E"]);
 
-      eeprom.hotend_mpc = create_eeprom_observables([
-        "A",
-        "C",
-        "F",
-        "H",
-        "P",
-        "R",
-      ]);
+      eeprom.hotend_mpc = create_eeprom_observables(
+        ["A", "C", "F", "H", "P", "R"],
+        ["E"]
+      );
 
       eeprom.linear = create_eeprom_observables(["K"]);
 
       eeprom.material = create_eeprom_observables(["B", "F", "H"], ["S"]);
 
-      eeprom.max_acceleration = create_eeprom_observables(["E", "X", "Y", "Z"]);
+      eeprom.max_acceleration = create_eeprom_observables(
+        ["E", "X", "Y", "Z"],
+        ["T"]
+      );
 
       eeprom.print_acceleration = create_eeprom_observables(["P", "R", "T"]);
 
       eeprom.probe_offset = create_eeprom_observables(["X", "Y", "Z"]);
 
-      eeprom.steps = create_eeprom_observables(["E", "X", "Y", "Z"]);
+      eeprom.steps = create_eeprom_observables(["E", "X", "Y", "Z"], ["T"]);
 
       eeprom.filament_change = create_eeprom_observables(["L", "U"]);
 
-      eeprom.filament_runout = create_eeprom_observables(["D", "H", "S"]);
+      eeprom.filament_runout = create_eeprom_observables(
+        ["D", "H", "S"],
+        ["T"]
+      );
 
-      eeprom.tmc_current = create_eeprom_observables(["E", "X", "Y", "Z"]);
+      eeprom.tmc_current = create_eeprom_observables(
+        ["E", "X", "Y", "Z"],
+        ["I", "T"]
+      );
 
-      eeprom.tmc_hybrid = create_eeprom_observables(["E", "X", "Y", "Z"]);
+      eeprom.tmc_hybrid = create_eeprom_observables(
+        ["E", "X", "Y", "Z"],
+        ["I", "T"]
+      );
 
       return eeprom;
     })();
