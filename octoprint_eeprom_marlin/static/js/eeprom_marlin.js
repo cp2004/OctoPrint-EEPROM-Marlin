@@ -18,12 +18,26 @@ function create_eeprom_observables(params, switches) {
   }
 
   result["visible"] = ko.computed(function () {
-    for (let param in result) {
+    for (const param in result) {
       if (param === "visible") {
+        // Skip checking ourselves
         continue;
       }
-      if (result[param]() !== null) {
-        return true;
+
+      const r = result[param]();
+
+      if (typeof r === "object" && r !== null) {
+        // Switched, check length
+        // In theory, if we have a switch added here, there should be at least one value
+        // somewhere. It won't be full of nulls.
+        if (r.length > 0) {
+          return true;
+        }
+      } else {
+        // regular, just check value
+        if (r !== null) {
+          return true;
+        }
       }
     }
     return false;
