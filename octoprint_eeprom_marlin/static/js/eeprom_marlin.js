@@ -100,7 +100,7 @@ $(function () {
         ["E"]
       );
 
-      eeprom.linear = create_eeprom_observables(["K"]);
+      eeprom.linear = create_eeprom_observables(["K"], ["T"]);
 
       eeprom.material = create_eeprom_observables(["B", "F", "H"], ["S"]);
 
