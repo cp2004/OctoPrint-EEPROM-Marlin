@@ -1,29 +1,27 @@
-# Marlin EEPROM Editor
+# ✏️ Marlin EEPROM Editor
 
 The Marlin EEPROM editor provides an easy to use, feature-rich UI to edit your machine's configuration.
 
-## Features
+## ✨ Features
 
-- Load & parse the EEPROM data out of the firmware
-- Edit many of the values configured
+- Load and parse a wide range of EEPROM data out of the firmware
+- Edit all the data in a user-friendly UI
 - Save EEPROM changes on the printer with a minimal number of commands
-
 - Storage of data on the OctoPrint server, so it can be viewed while printer is disconnected or printing.
 - Backup feature:
-
   - Enabled saving configuration snapshots, restoring, downloading, uploading
-
-- Display firmware info, including capability report
+- Displaying firmware info, including capability report & printer statistics
+- Links to Marlin documentation to help you understand the settings
 
 Be sure to [check out the screenshots](#screenshots) below for more details!
 
-## Setup
+## 🔧 Setup
 
 Install via the bundled [plugin manager](https://docs.octoprint.org/en/master/bundledplugins/pluginmanager.html) or manually using this URL:
 
     https://github.com/cp2004/OctoPrint-EEPROM-Marlin/releases/latest/download/release.zip
 
-## Firmware requirements
+## 🏗️ Firmware requirements
 
 This plugin requires three things:
 
@@ -31,7 +29,7 @@ This plugin requires three things:
 - The `M503` command enabled - do not uncomment disabling it, leave it as `//#define DISABLE_M503`
 - Of course, EEPROM to be enabled 🙂
 
-## New in Marlin EEPROM Editor V3.0.0
+## 🎉 New in Marlin EEPROM Editor V3
 
 A complete re-write of this plugin, now V3!
 
