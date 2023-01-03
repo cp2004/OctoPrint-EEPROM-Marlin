@@ -18,10 +18,10 @@ from octoprint_eeprom_marlin import (
     _version,
     api,
     backup,
+    contributors,
     data,
     parser,
     settings,
-    sponsors_contributors,
 )
 
 __version__ = _version.get_versions()["version"]
@@ -104,8 +104,7 @@ class EEPROMMarlinPlugin(
         return {
             "version": self._plugin_version,
             "DATA_STRUCTURE": data.ALL_DATA_STRUCTURE,
-            "SPONSORS": sponsors_contributors.export_sponsors(),
-            "CONTRIBUTORS": sponsors_contributors.export_contributors(),
+            "CONTRIBUTORS": contributors.export_contributors(),
         }
 
     # Settings handling - see settings submodule

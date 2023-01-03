@@ -12,11 +12,6 @@ GITHUB_URL = "https://github.com/"
 # if username is empty, then it will not be linked
 ##############################################
 
-SPONSORS = [
-    {"name": "Ken Lucke", "username": "KenLucke"},
-    {"name": "Guyot François", "username": "iFrostizz"},
-    {"name": "And 7 others supporting me through GitHub Sponsors!", "username": ""},
-]
 
 CONTRIBUTORS = [
     {"name": "Anderson Silva (Previous maintainer)", "username": "amsbr"},
@@ -24,10 +19,6 @@ CONTRIBUTORS = [
     {"name": "@Desterly", "username": "Desterly"},
     {"name": "@gddeen", "username": "gddeen"},
 ]
-
-
-def export_sponsors():
-    return _export_urls(SPONSORS)
 
 
 def export_contributors():

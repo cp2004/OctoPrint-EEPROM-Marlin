@@ -1,0 +1,22 @@
+<div id="EEPROMContributorModal" class="modal hide fade">
+	<div class="modal-header">
+		<a href="#" class="close" data-dismiss="modal" aria-hidden="true">&times;</a>
+		<h3>Contributors!</h3>
+	</div>
+	<div class="modal-body">
+        <p>These wonderful people have helped out in development of this plugin. Whether it's fixing bugs, improvements to the code, or new features, all are useful!</p>
+        <p>Want to see your name here? Get involved over on the repo. Any help is always appreciated!</p>
+        <ul>
+        {% for contributor in plugin_eeprom_marlin_CONTRIBUTORS %}
+            {% if contributor["url"] %}
+            <li><a href="{{ contributor["url"] }}">{{ contributor["name"] }}</a> </li>
+            {% else %}
+            <li>{{ contributor["name"] }}</li>
+            {% endif %}
+        {% endfor %}
+        </ul>
+    </div>
+	<div class="modal-footer">
+		<a href="#" class="btn" data-dismiss="modal" aria-hidden="true">{{ _('Close') }}</a>
+	</div>
+</div>
