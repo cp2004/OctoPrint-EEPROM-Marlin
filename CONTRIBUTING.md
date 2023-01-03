@@ -38,7 +38,7 @@ There's a limited `pytest` test suite, that can be used. Plans to expand this in
 
 Make sure you take credit for your contribution! It's easy to add your name, please do so!
 
-In the file [`octoprint_eeprom_marlin/sponsors_contributors.py`](https://github.com/cp2004/OctoPrint-EEPROM-Marlin/blob/master/octoprint_eeprom_marlin/sponsors_contributors.py) there is a list of contributors, that looks like this:
+In the file [`octoprint_eeprom_marlin/contributors.py`](https://github.com/cp2004/OctoPrint-EEPROM-Marlin/blob/master/octoprint_eeprom_marlin/contributors.py) there is a list of contributors, that looks like this:
 
 ```python
 CONTRIBUTORS = [
