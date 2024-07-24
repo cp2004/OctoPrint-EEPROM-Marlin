@@ -93,6 +93,8 @@ $(function () {
 
       eeprom.home_offset = create_eeprom_observables(["X", "Y", "Z"]);
 
+      eeprom.hotends_offset = create_eeprom_observables(["X", "Y", "Z"], ["T"]);
+
       eeprom.hotend_pid = create_eeprom_observables(["P", "I", "D"], ["E"]);
 
       eeprom.hotend_mpc = create_eeprom_observables(

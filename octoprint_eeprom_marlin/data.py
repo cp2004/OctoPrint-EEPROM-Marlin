@@ -100,6 +100,17 @@ ALL_DATA_STRUCTURE = {
         "name": "Home Offset",
         "link": "https://marlinfw.org/docs/gcode/M206.html",
     },
+    "hotends_offset": {
+        "command": "M218",
+        "params": {
+            "X": {"type": "float2", "label": "X hotends offset", "units": "mm"},
+            "Y": {"type": "float2", "label": "Y hotends offset", "units": "mm"},
+            "Z": {"type": "float2", "label": "Z hotends offset", "units": "mm"},
+        },
+        "switches": ["T"],
+        "name": "Hotends Offset",
+        "link": "https://marlinfw.org/docs/gcode/M218.html",
+    },
     "endstop": {
         "command": "M666",
         "params": {

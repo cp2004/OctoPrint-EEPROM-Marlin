@@ -11,7 +11,7 @@
     <li data-bind="visible: eeprom.max_acceleration.visible() || eeprom.print_acceleration.visible()">
         <a data-toggle="tab" href="#eeprom_acceleration">Acceleration</a>
     </li>
-    <li data-bind="visible: eeprom.home_offset.visible() || eeprom.probe_offset.visible()">
+    <li data-bind="visible: eeprom.home_offset.visible() || eeprom.hotends_offset.visible() || eeprom.probe_offset.visible()">
         <a data-toggle="tab" href="#eeprom_offset">Offsets</a>
     </li>
     <li data-bind="visible: eeprom.bed_pid.visible() || eeprom.hotend_pid.visible()">
