@@ -319,3 +319,6 @@ def __plugin_load__():
         "octoprint.comm.protocol.atcommand.sending": plugin.comm_protocol_atcommand_sending,
         "octoprint.access.permissions": plugin.get_additional_permissions,
     }
+
+from . import _version
+__version__ = _version.get_versions()['version']
